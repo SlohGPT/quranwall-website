@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "How to Put a Quran Verse on Your iPhone Lock Screen",
+    "description": "A step-by-step guide to showing a daily Quran verse on your iPhone lock screen using widgets, wallpapers, and iOS Focus modes. Works on iOS 16 and later.",
+    "date": "June 19, 2026",
+    "datePublished": "2026-06-19",
+    "dateModified": "2026-06-19",
+    "readTime": "6 min read",
+    "image": "/og-image.png",
+    "keywords": [
+      "Quran verse iPhone lock screen",
+      "Quran lock screen",
+      "iPhone Quran widget",
+      "iOS Focus mode Quran",
+      "daily Quran iPhone"
+    ],
+    "cluster": "daily-quran-lock-screen"
+  },
+  "sections": [
+    {
+      "type": "paragraph",
+      "text": "To put a Quran verse on your iPhone lock screen, add a Quran lock-screen widget or set a verse wallpaper, then pair it with an iOS Focus mode so it appears automatically. You need an iPhone running iOS 16 or later. The whole thing takes about a minute. An app like [QuranWall](/) handles the setup for you, so you never have to export, crop, or re-set an image by hand."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why the lock screen is the best place for Quran"
+    },
+    {
+      "type": "paragraph",
+      "text": "Most of us check our phones dozens of times a day. The lock screen is the one surface you see every single time, before any app, notification, or feed. Putting a verse there means the first thing you read is the Quran, not a red badge. You are not relying on willpower to open another app. The reminder simply meets you where you already are."
+    },
+    {
+      "type": "verse",
+      "reference": "Quran 51:55",
+      "text": "And remind, for indeed, the reminder benefits the believers."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What you need before you start"
+    },
+    {
+      "type": "list",
+      "items": [
+        "An iPhone running **iOS 16 or later** (lock-screen widgets and per-screen wallpapers arrived in iOS 16).",
+        "The free **QuranWall** app, for the automatic method, or a saved verse image if you want to do it by hand.",
+        "About **two minutes** of setup time."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Method 1: Add a Quran lock-screen widget (recommended)"
+    },
+    {
+      "type": "paragraph",
+      "text": "A lock-screen widget shows a fresh verse each day, updates on its own, and sits quietly below or above the clock. This is the lowest-effort way to keep Quran in front of you."
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Download **QuranWall** free from the App Store and open it.",
+        "Choose a verse pack that fits where you are right now, such as **Anxiety**, **Patience**, **Gratitude**, or **Mercy**.",
+        "Touch and hold your lock screen, tap **Customize**, then select **Lock Screen**.",
+        "Tap the widget area under the clock and add the **QuranWall** widget.",
+        "Tap **Done**. A new verse now appears on your lock screen each day."
+      ]
+    },
+    {
+      "type": "tip",
+      "content": "Use the rectangular widget under the clock for full verses, or the inline widget above the clock for short reminders. You can keep both."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Method 2: Set a verse wallpaper with a Focus mode"
+    },
+    {
+      "type": "paragraph",
+      "text": "The wallpaper method puts the verse front and center, and pairing it with a Focus mode makes it appear at the right times while quieting notifications. This is the move if you want a calmer phone during prayer, study, or before bed."
+    },
+    {
+      "type": "steps",
+      "items": [
+        "In QuranWall, pick a verse wallpaper you like and tap to install it.",
+        "Open **Settings > Focus** and create a Focus such as **Quiet Time** or **Prayer**.",
+        "Under that Focus, tap **Customize** on the lock screen and choose your QuranWall wallpaper.",
+        "Give the Focus a schedule, for example your morning routine or the minutes before each prayer, so the verse appears on its own."
+      ]
+    },
+    {
+      "type": "highlight",
+      "content": "Pairing a verse wallpaper with a Focus turns Quiet Time into a one-tap retreat: the Quran fills your screen and the notifications step back."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Widget or wallpaper, which should you choose?"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Widget** is best for a fresh verse every day with almost no effort. It rotates on its own and stays out of your way.",
+        "**Wallpaper with Focus** is best when you want a calmer phone at set times, with the verse taking the whole screen.",
+        "**Both** works well too: run a verse wallpaper inside a Quiet Time Focus and keep the widget on your everyday lock screen."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Troubleshooting: verse not updating or showing"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Confirm your iPhone is on **iOS 16 or later** in Settings > General > Software Update.",
+        "If a widget is blank, remove it and add it again from the lock-screen editor.",
+        "If a wallpaper will not switch, check that the matching Focus is active and linked to that lock screen.",
+        "Give widgets a few seconds after setup. The first verse can take a moment to load."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Frequently asked questions"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Do I need to jailbreak or use Shortcuts?"
+    },
+    {
+      "type": "paragraph",
+      "text": "No. Since iOS 16, any app can add native lock-screen widgets and wallpapers. There is no jailbreak and no Shortcuts automation required."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Is it free?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Yes. QuranWall is free to download and the daily verse widget is included. Optional premium unlocks unlimited verse packs and customization, with the exact price shown in the App Store at checkout in your local currency."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Will it drain my battery?"
+    },
+    {
+      "type": "paragraph",
+      "text": "No. Lock-screen widgets and wallpapers use the same native iOS systems as Apple's own, so the battery impact is negligible."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Does it work on iPad or Android?"
+    },
+    {
+      "type": "paragraph",
+      "text": "This guide is for iPhone on iOS 16 and later. iPad and Android handle lock screens differently and are not set up the same way."
+    },
+    {
+      "type": "callout",
+      "icon": "sparkles",
+      "title": "The short version",
+      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** for a fresh verse every day, or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both work on iOS 16 or later and take about a minute to set up."
+    },
+    {
+      "type": "paragraph",
+      "text": "QuranWall is built by [Karol Billik](/about/karol-billik), an indie iOS maker, around one idea: carry the Quran onto the most-seen surface of your phone instead of asking you to remember another app."
+    },
+    {
+      "type": "cta",
+      "title": "Put the Quran on your lock screen today",
+      "description": "QuranWall sets up your daily verse in about 60 seconds. Free on the App Store, no account needed.",
+      "buttonText": "Download QuranWall",
+      "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
+    }
+  ]
+}

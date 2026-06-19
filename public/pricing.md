@@ -3,6 +3,10 @@
 QuranWall is an iOS app that displays daily Quran verses on the iPhone lock screen.
 Free to download. Premium plans unlock unlimited verse packs and customization.
 
+The amounts below are the typical US-store prices. The exact price, billing period,
+and any free-trial offer are shown in the App Store at checkout in your local
+currency, and may vary by region and over time.
+
 ## Plans
 
 ### Free
@@ -43,4 +47,4 @@ iosnotewall@gmail.com
 
 ## Last updated
 
-2026-05-19
+2026-06-19
