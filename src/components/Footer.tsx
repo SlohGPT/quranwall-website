@@ -43,7 +43,7 @@ export default function Footer() {
                 alt="QuranWall"
                 width={256}
                 height={256}
-                className="w-10 h-10"
+                className="w-12 h-12 rounded-[22%] ring-1 ring-white/10 shadow-lg shadow-black/30"
                 loading="lazy"
               />
               <span className="text-xl font-semibold text-white tracking-tight">

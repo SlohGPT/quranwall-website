@@ -15,8 +15,8 @@ const today = new Date().toISOString().slice(0, 10);
 // Real last-edit dates per route. Bump when content materially changes —
 // Google ignores `lastmod` that always equals "today".
 const STATIC_ROUTES = [
-  { path: '/', lastmod: '2026-05-19', changefreq: 'weekly', priority: '1.0' },
-  { path: '/blog', lastmod: '2026-05-19', changefreq: 'weekly', priority: '0.9' },
+  { path: '/', lastmod: '2026-06-19', changefreq: 'weekly', priority: '1.0' },
+  { path: '/blog', lastmod: '2026-06-19', changefreq: 'weekly', priority: '0.9' },
   { path: '/about/karol-billik', lastmod: '2026-05-19', changefreq: 'monthly', priority: '0.5' },
   { path: '/privacy-policy', lastmod: '2026-05-19', changefreq: 'monthly', priority: '0.3' },
   { path: '/terms-of-use', lastmod: '2026-05-19', changefreq: 'monthly', priority: '0.3' },

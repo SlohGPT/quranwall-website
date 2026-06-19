@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "How to Set Up a Quran Focus Mode on Your iPhone",
+    "description": "Use an iOS Focus mode to turn prayer and quiet time into a calm, distraction-free moment with the Quran on your iPhone. A step-by-step setup for iOS 16 and later.",
+    "date": "June 19, 2026",
+    "datePublished": "2026-06-19",
+    "dateModified": "2026-06-19",
+    "readTime": "7 min read",
+    "image": "/og-image.png",
+    "keywords": [
+      "Quran Focus mode iPhone",
+      "prayer Focus mode iPhone",
+      "iOS Quiet Time prayer",
+      "iPhone Focus Quran",
+      "reduce phone distractions prayer"
+    ],
+    "cluster": "daily-quran-lock-screen"
+  },
+  "sections": [
+    {
+      "type": "paragraph",
+      "text": "To set up a Quran Focus mode on your iPhone, create a custom Focus in Settings, give it a lock screen with a Quran verse wallpaper or widget, then schedule it for the times you want to slow down, such as before each prayer or first thing in the morning. When the Focus turns on, your phone quiets its notifications and the Quran fills the screen. You need iOS 16 or later, and the whole setup takes a few minutes."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What a Focus mode actually does"
+    },
+    {
+      "type": "paragraph",
+      "text": "Focus is Apple's built-in tool for controlling which notifications reach you and which lock screen you see. You can create a Focus for almost anything: Work, Sleep, Driving, or in this case prayer and quiet time. Each Focus can be tied to its own lock screen, so turning it on changes both what interrupts you and what you look at."
+    },
+    {
+      "type": "highlight",
+      "content": "This is the key idea: a Focus does not just silence your phone, it swaps your lock screen. Pair it with a Quran verse and the moment you reach for your phone during Quiet Time, you meet the Quran instead of a feed."
+    },
+    {
+      "type": "verse",
+      "reference": "Quran 13:28",
+      "text": "Unquestionably, by the remembrance of Allah hearts are assured."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What you need before you start"
+    },
+    {
+      "type": "list",
+      "items": [
+        "An iPhone on **iOS 16 or later** (per-Focus lock screens arrived in iOS 16).",
+        "A Quran verse lock screen, the fastest way is the free [QuranWall](/) wallpaper or widget.",
+        "A few minutes to create the Focus and set its schedule."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Step 1: Create your Quiet Time Focus"
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Open **Settings > Focus**.",
+        "Tap the **+** in the top right, then choose **Custom**.",
+        "Name it something that fits, such as **Quiet Time** or **Prayer**, pick a color and icon, and tap **Next**, then **Customize Focus**.",
+        "Under **Silence Notifications**, allow only the people and apps you truly need so the rest stays quiet while the Focus is on."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Step 2: Give it a Quran lock screen"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now connect a Quran verse lock screen to the Focus so it appears automatically whenever the Focus is active."
+    },
+    {
+      "type": "steps",
+      "items": [
+        "In **QuranWall**, choose a verse wallpaper or set up the verse widget, following the [lock-screen setup guide](/blog/quran-verse-iphone-lock-screen).",
+        "Touch and hold your lock screen, then swipe to the wallpaper you want to use for Quiet Time.",
+        "In **Settings > Focus**, open your Quiet Time Focus and tap the lock screen preview under **Customize Screens**.",
+        "Select your QuranWall lock screen and tap **Done**. That screen now shows whenever the Focus is on."
+      ]
+    },
+    {
+      "type": "tip",
+      "content": "Keep a plain, low-distraction lock screen for everyday use and reserve the full-bleed Quran wallpaper for the Quiet Time Focus. The contrast makes the quiet moment feel deliberate."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Step 3: Schedule it so it runs on its own"
+    },
+    {
+      "type": "paragraph",
+      "text": "A Focus is most useful when you do not have to remember it. iOS can turn yours on by time, location, or app."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**By time**: set a daily schedule, for example 5 to 6 a.m. for a morning Quran window, or short blocks around your prayer times.",
+        "**By location**: have it switch on when you arrive at the masjid or at home.",
+        "**Smart Activation**: let iOS turn it on automatically based on your routines."
+      ]
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Open your Quiet Time Focus in **Settings > Focus**.",
+        "Under **Set a Schedule**, tap **Add Schedule**.",
+        "Choose **Time**, **Location**, or **App**, set the details, and save."
+      ]
+    },
+    {
+      "type": "callout",
+      "icon": "lightbulb",
+      "title": "Pair it with prayer",
+      "content": "Set short Focus windows a few minutes before each prayer. As the notifications fall away and a verse fills the screen, the transition into salah gets a little easier, and your phone stops competing for the moment."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Troubleshooting"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**The lock screen does not change** when the Focus turns on: reopen the Focus and confirm the right lock screen is linked under Customize Screens.",
+        "**The Focus will not schedule**: make sure the schedule is toggled on, not just added.",
+        "**Notifications still come through**: check the allowed people and apps list inside the Focus.",
+        "**No Focus options at all**: update to **iOS 16 or later** in Settings > General > Software Update."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Frequently asked questions"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Can I have more than one prayer Focus?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Yes. You can create several Focus modes, each with its own lock screen and schedule. Some people keep separate ones for early morning, for each prayer, and for sleep."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Will a Focus block important calls?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Only what you tell it to. You choose which people and apps can break through, so family or emergency contacts can still reach you while everything else stays quiet."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Do I need a paid app for this?"
+    },
+    {
+      "type": "paragraph",
+      "text": "No. Focus modes are built into iOS for free. You only need a Quran lock screen to attach, and QuranWall provides that free as well, with the daily verse included."
+    },
+    {
+      "type": "callout",
+      "icon": "sparkles",
+      "title": "The short version",
+      "content": "Create a custom **Quiet Time** or **Prayer** Focus in Settings, attach a **Quran verse lock screen** to it, and **schedule it** by time or location. When it turns on, your phone quiets down and the Quran takes the screen. Works on iOS 16 or later."
+    },
+    {
+      "type": "cta",
+      "title": "Set your Quiet Time lock screen in 60 seconds",
+      "description": "QuranWall gives you the Quran verse wallpaper and widget to attach to your Focus. Free on the App Store, no account needed.",
+      "buttonText": "Download QuranWall",
+      "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
+    }
+  ]
+}

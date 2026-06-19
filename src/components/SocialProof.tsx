@@ -3,12 +3,13 @@ import { useInView, animate } from 'framer-motion';
 
 // NOTE: these numbers ship in the static/SSR HTML that crawlers and AI engines
 // read, so they must be true and consistent with the rest of the site
-// (Hero + FinalCTA both say "1,000+", and the schema rating is 4.7). Update all
-// of them together when the real figures change.
+// (Hero + FinalCTA both say "1,000+"). Update them all together when the real
+// figures change. No App Store rating stat here yet — add one back (and the
+// aggregateRating in index.html) only once there's a genuine public rating.
 const stats = [
   { value: 92, label: 'Early users feel closer to Allah', suffix: '%' },
   { value: 1000, label: 'Believers using QuranWall', suffix: '+' },
-  { value: 4.7, label: 'App Store rating', decimals: 1 },
+  { value: 60, label: 'Seconds to set up your lock screen', suffix: 's' },
 ];
 
 function formatCount(n: number, decimals: number, suffix: string) {
@@ -21,7 +22,7 @@ function formatCount(n: number, decimals: number, suffix: string) {
 function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
-  // Render the FINAL value ("92%" / "1,000+" / "4.7") in SSR so crawlers and
+  // Render the FINAL value ("92%" / "1,000+" / "60s") in SSR so crawlers and
   // AI bots that don't execute JS read the real numbers, not "0.0". The
   // count-up still runs on the client when the section scrolls into view
   // (off-screen on load, so users never see a reset). React-state-based update
@@ -57,7 +58,7 @@ export default function SocialProof() {
                 <div key={stat.label} className="text-center group">
                   <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-3">
                     <span className="bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
-                      <Counter value={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
+                      <Counter value={stat.value} suffix={stat.suffix} />
                     </span>
                   </div>
                   <p className="text-white/60 text-sm sm:text-base font-medium">

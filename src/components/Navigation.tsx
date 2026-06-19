@@ -218,7 +218,7 @@ export default function Navigation() {
                   alt="QuranWall"
                   width={256}
                   height={256}
-                  className="w-9 h-9 md:w-10 md:h-10 group-hover:scale-105 transition-transform duration-300"
+                  className="w-11 h-11 md:w-12 md:h-12 rounded-[22%] ring-1 ring-white/10 shadow-lg shadow-black/30 group-hover:scale-105 transition-transform duration-300"
                   loading="eager"
                 />
                 <span className="text-lg md:text-xl font-black text-white tracking-tight">
