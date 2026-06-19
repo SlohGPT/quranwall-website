@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Site-wide defaults. Per-page title/description/canonical/og:url/og:title/og:description are set via react-helmet-async on every page. -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+  <!-- Open Graph / Twitter site defaults -->
+  <meta property="og:site_name" content="QuranWall" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Favicon & Icons -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/icon-app-180.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#1E1338" />
+
+  <!-- Apple Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=6781802080" />
+
+  <!-- Preload critical assets -->
+  <link rel="preload" as="font" href="/fonts/dm-sans-latin.woff2" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" href="/assets/slideshow/slide1.webp" type="image/webp" fetchpriority="high" />
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "QuranWall",
+    "url": "https://quranwall.com",
+    "logo": "https://quranwall.com/icon-app-512.png",
+    "sameAs": [
+      "https://www.karchi.xyz/"
+    ],
+    "founder": {
+      "@type": "Person",
+      "name": "Karol Billik",
+      "url": "https://quranwall.com/about/karol-billik"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "hello@quranwall.com",
+      "contactType": "customer support"
+    }
+  }
+  </script>
+
+  <!-- Structured Data: WebSite (enables sitelinks search) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "QuranWall",
+    "url": "https://quranwall.com"
+  }
+  </script>
+
+  <!-- Structured Data: MobileApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "QuranWall",
+    "operatingSystem": "iOS 16.0+",
+    "applicationCategory": "LifestyleApplication",
+    "description": "QuranWall is an iOS app that displays daily Quran verses on the iPhone lock screen using wallpapers and widgets. Pick a verse pack, set it up in 60 seconds, and see the Quran every time you check your phone.",
+    "url": "https://quranwall.com",
+    "downloadUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free to download. Optional premium plans available in the App Store; pricing shown at checkout in your local currency."
+    },
+    "screenshot": [
+      "https://quranwall.com/assets/slideshow/slide1.webp",
+      "https://quranwall.com/assets/slideshow/slide2.webp",
+      "https://quranwall.com/assets/slideshow/slide3.webp",
+      "https://quranwall.com/assets/slideshow/slide4.webp",
+      "https://quranwall.com/assets/slideshow/slide5.webp"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "ratingCount": "14",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Karol Billik",
+      "url": "https://quranwall.com/about/karol-billik"
+    }
+  }
+  </script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

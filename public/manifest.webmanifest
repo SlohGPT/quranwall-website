@@ -1,0 +1,21 @@
+{
+  "name": "QuranWall - Daily Quran on Your Lock Screen",
+  "short_name": "QuranWall",
+  "description": "Transform your iPhone lock screen with daily Quran verses, duas, and inspiration.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E1338",
+  "theme_color": "#1E1338",
+  "icons": [
+    {
+      "src": "/icon-app-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-app-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

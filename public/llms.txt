@@ -1,0 +1,53 @@
+# QuranWall
+
+> QuranWall is a free iOS app that transforms the iPhone lock screen into a daily source of Quran, prayer, and Muslim inspiration. It uses the iOS wallpaper system and Focus modes (iOS 16+) to surface Quran verses every time you pick up your phone.
+
+## Key facts
+
+- **What it is**: iOS app for daily Quran verses on the iPhone lock screen
+- **Platform**: iOS 16.0 and later
+- **Price**: Free download with optional premium plans
+- **App Store**: https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080
+- **Website**: https://quranwall.com
+- **Author / Founder**: Karol Billik
+- **Built by**: karchi. (https://www.karchi.xyz/)
+- **Contact**: hello@quranwall.com
+- **Minimum iOS**: 16.0
+- **Pricing**: Free download. Premium plans from $1.99/month or $8.99/year (one-tier upgrade, no enterprise/teams plan).
+
+## Pricing
+
+- Free
+  - Daily Quran verse on the lock screen (wallpaper or widget)
+  - Curated verse packs and rotating verses
+  - iOS Focus mode integration
+- Premium, $1.99/month
+  - All free features
+  - Unlimited verse packs and customization
+  - Future updates included
+- Premium, $8.99/year (best value, equivalent to ~$0.75/month)
+  - Same as monthly, paid annually
+  - All future updates included
+
+Payment processing is handled by RevenueCat; QuranWall does not store card details.
+
+## How it works
+
+QuranWall delivers Quran to the most-seen surface on a smartphone, the lock screen, through two complementary methods:
+1. **Wallpapers**: A curated rotating set of verse-styled wallpapers, automatically installed via iOS Focus modes.
+2. **Widgets**: Native iOS widgets that display a fresh verse on the lock screen each day, with packs organized by theme (Anxiety, Patience, Gratitude, Mercy, etc.).
+
+## What makes it different
+
+- **Single-purpose**: Most Muslim apps try to do everything. QuranWall does one thing, Quran on the lock screen, and does it well.
+- **Frictionless setup**: A 60-second onboarding installs the lock screen automatically; no manual wallpaper export.
+- **Focus mode integration**: Pairs with iOS Focus to make Quiet Time a one-tap retreat from notifications.
+- **Designed for daily reach**: Uses spaced repetition through rotating verses rather than asking users to remember to open another app.
+
+## Key pages
+
+- Homepage: https://quranwall.com/
+- Blog index: https://quranwall.com/blog
+- Privacy Policy: https://quranwall.com/privacy-policy
+- Terms of Use: https://quranwall.com/terms-of-use
+- EULA: https://quranwall.com/eula

@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Self-hosted DM Sans, eliminates Google Fonts DNS lookup */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/dm-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@layer base {
+  html {
+    /* Hash-target offset: fixed navigation is ~76px tall, give breathing room
+       so anchor landings don't sit under it. ScrollManager respects this via
+       scrollIntoView({ block: 'start' }). */
+    scroll-padding-top: 100px;
+  }
+
+  body {
+    @apply antialiased bg-surface text-white font-sans;
+  }
+
+  ::selection {
+    @apply bg-brand/30 text-white;
+  }
+}
+
+@layer components {
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 overflow-hidden;
+  }
+
+  .section-space {
+    @apply py-20 sm:py-28 lg:py-36;
+  }
+
+  .card-glass {
+    @apply bg-surface-card/90 backdrop-blur-sm border border-surface-border rounded-3xl;
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-surface-card to-surface-elevated border border-surface-border rounded-3xl;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-brand text-brand-ink font-semibold rounded-2xl hover:bg-brand-light transition-all duration-200;
+  }
+
+  .text-muted {
+    @apply text-white/60;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent;
+  }
+
+  .glow-brand {
+    box-shadow: 0 0 40px rgba(217, 185, 104, 0.2), 0 0 80px rgba(217, 185, 104, 0.1);
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* SSR-safe entrance animations: element renders visible in HTML, animation
+     enhances on client. Avoids the blank-until-hydrate problem framer-motion's
+     `initial` causes when prerendered. */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInSlide {
+    from { opacity: 0; transform: translateX(20px) scale(0.95); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  .animate-fade-up { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .animate-fade-up-d1 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+  .animate-fade-up-d2 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+  .animate-fade-up-d3 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+  .animate-fade-up-d4 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both; }
+  .animate-fade-up-d6 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
+  .animate-fade-in-slide { animation: fadeInSlide 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+
+  /* Layered top padding for the fixed nav:
+       - base 1.25rem (mobile) / 1.5rem (desktop), the design spec
+       - env(safe-area-inset-top), covers the hardware notch when viewport-fit=cover
+       - var(--browser-top-inset), covers the iOS Chrome / iOS 26 Liquid Glass
+         URL bar overlay (live-tracked via visualViewport in Navigation.tsx).
+     On environments where the browser reserves layout space for the URL bar
+     (Safari iOS classic, desktop) the var is 0 and the rule is a no-op. */
+  .nav-safe-pt {
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--browser-top-inset, 0px) + 1.25rem);
+  }
+  @media (min-width: 768px) {
+    .nav-safe-pt {
+      padding-top: calc(env(safe-area-inset-top, 0px) + var(--browser-top-inset, 0px) + 1.5rem);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
