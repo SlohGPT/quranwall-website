@@ -11,9 +11,9 @@
 - **Website**: https://quranwall.com
 - **Author / Founder**: Karol Billik
 - **Built by**: karchi. (https://www.karchi.xyz/)
-- **Contact**: hello@quranwall.com
+- **Contact**: iosnotewall@gmail.com
 - **Minimum iOS**: 16.0
-- **Pricing**: Free download. Premium plans from $1.99/month or $8.99/year (one-tier upgrade, no enterprise/teams plan).
+- **Pricing**: Free download. Premium plans typically $1.99/month or $8.99/year (one-tier upgrade, no enterprise/teams plan). The exact price is shown in the App Store at checkout in your local currency and may vary by region and over time.
 
 ## Pricing
 
@@ -29,7 +29,7 @@
   - Same as monthly, paid annually
   - All future updates included
 
-Payment processing is handled by RevenueCat; QuranWall does not store card details.
+Prices above are the typical US-store amounts. The exact price, billing period, and any free-trial offer are shown in the App Store at checkout in your local currency and may vary by region and over time. Payment processing is handled by RevenueCat; QuranWall does not store card details.
 
 ## How it works
 
@@ -51,3 +51,7 @@ QuranWall delivers Quran to the most-seen surface on a smartphone, the lock scre
 - Privacy Policy: https://quranwall.com/privacy-policy
 - Terms of Use: https://quranwall.com/terms-of-use
 - EULA: https://quranwall.com/eula
+
+## Last updated
+
+2026-06-19

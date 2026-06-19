@@ -20,7 +20,7 @@ const footerLinks = {
     { name: 'Privacy Policy', href: '/privacy-policy' },
     { name: 'Terms of Use', href: '/terms-of-use' },
     { name: 'EULA', href: '/eula' },
-    { name: 'Contact', href: 'mailto:hello@quranwall.com' },
+    { name: 'Contact', href: 'mailto:iosnotewall@gmail.com' },
   ],
   socials: [
     { name: 'Instagram', href: '#' },
@@ -39,9 +39,11 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <img
-                src="/icon-app-180.png"
+                src="/icon-app-256.png"
                 alt="QuranWall"
-                className="w-10 h-10 rounded-xl"
+                width={256}
+                height={256}
+                className="w-10 h-10"
                 loading="lazy"
               />
               <span className="text-xl font-semibold text-white tracking-tight">

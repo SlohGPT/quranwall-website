@@ -6,6 +6,10 @@ Disallow: /api/
 User-agent: GPTBot
 Allow: /
 
+# OpenAI's live search crawler (powers ChatGPT search citations) — distinct from GPTBot
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: ChatGPT-User
 Allow: /
 
@@ -18,7 +22,21 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
 User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence / Siri — relevant for an iOS app
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft Copilot / Bing
+User-agent: bingbot
 Allow: /
 
 User-agent: CCBot

@@ -1,9 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 import { useInView, animate } from 'framer-motion';
 
+// NOTE: these numbers ship in the static/SSR HTML that crawlers and AI engines
+// read, so they must be true and consistent with the rest of the site
+// (Hero + FinalCTA both say "1,000+", and the schema rating is 4.7). Update all
+// of them together when the real figures change.
 const stats = [
   { value: 92, label: 'Early users feel closer to Allah', suffix: '%' },
-  { value: 500, label: 'Believers using QuranWall', suffix: '+' },
+  { value: 1000, label: 'Believers using QuranWall', suffix: '+' },
   { value: 4.7, label: 'App Store rating', decimals: 1 },
 ];
 
@@ -17,10 +21,12 @@ function formatCount(n: number, decimals: number, suffix: string) {
 function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
-  // Render the resting value ("0%" / "0+" / "0.0") in SSR so the layout
-  // is stable from first paint. React-state-based update means React
-  // tracks the text changes (no direct DOM mutation, no hydration drift).
-  const [display, setDisplay] = useState(() => formatCount(0, decimals, suffix));
+  // Render the FINAL value ("92%" / "1,000+" / "4.7") in SSR so crawlers and
+  // AI bots that don't execute JS read the real numbers, not "0.0". The
+  // count-up still runs on the client when the section scrolls into view
+  // (off-screen on load, so users never see a reset). React-state-based update
+  // means React tracks the text changes (no direct DOM mutation, no drift).
+  const [display, setDisplay] = useState(() => formatCount(value, decimals, suffix));
 
   useEffect(() => {
     if (!isInView) return;

@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
                     </ul>
 
                     <p>
-                        Questions or concerns? Reading this Privacy Notice will help you understand your privacy rights and choices. We are responsible for making decisions about how your personal information is processed. If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns, please contact us at <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a>.
+                        Questions or concerns? Reading this Privacy Notice will help you understand your privacy rights and choices. We are responsible for making decisions about how your personal information is processed. If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns, please contact us at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>.
                     </p>
 
                     <h2>SUMMARY OF KEY POINTS</h2>
@@ -154,7 +154,7 @@ export default function PrivacyPolicy() {
                     <p>If you are located in Switzerland, you may contact the Federal Data Protection and Information Commissioner.</p>
                     <p><strong>Withdrawing your consent:</strong> If we are relying on your consent to process your personal information, which may be express and/or implied consent depending on the applicable law, you have the right to withdraw your consent at any time. You can withdraw your consent at any time by contacting us by using the contact details provided in the section "How Can You Contact Us About This Notice?" below.</p>
                     <p>However, please note that this will not affect the lawfulness of the processing before its withdrawal nor, when applicable law allows, will it affect the processing of your personal information conducted in reliance on lawful processing grounds other than consent.</p>
-                    <p>If you have questions or comments about your privacy rights, you may email us at <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a>.</p>
+                    <p>If you have questions or comments about your privacy rights, you may email us at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>.</p>
 
                     <h3>7. CONTROLS FOR DO-NOT-TRACK FEATURES</h3>
                     <p>Most web browsers and some mobile operating systems and mobile applications include a Do-Not-Track ("DNT") feature or setting you can activate to signal your privacy preference not to have data about your online browsing activities monitored and collected. At this stage, no uniform technology standard for recognizing and implementing DNT signals has been finalized. As such, we do not currently respond to DNT browser signals or any other mechanism that automatically communicates your choice not to be tracked online. If a standard for online tracking is adopted that we must follow in the future, we will inform you about that practice in a revised version of this Privacy Notice.</p>
@@ -278,7 +278,7 @@ export default function PrivacyPolicy() {
                     </ul>
 
                     <h4>How to Exercise Your Rights</h4>
-                    <p>To exercise these rights, you can contact us by submitting a data subject access request, by emailing us at <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a>, or by referring to the contact details at the bottom of this document.</p>
+                    <p>To exercise these rights, you can contact us by submitting a data subject access request, by emailing us at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>, or by referring to the contact details at the bottom of this document.</p>
                     <p>Under certain US state data protection laws, you can designate an authorized agent to make a request on your behalf. We may deny a request from an authorized agent that does not submit proof that they have been validly authorized to act on your behalf in accordance with applicable laws.</p>
 
                     <h4>Request Verification</h4>
@@ -286,7 +286,7 @@ export default function PrivacyPolicy() {
                     <p>If you submit the request through an authorized agent, we may need to collect additional information to verify your identity before processing your request and the agent will need to provide a written and signed permission from you to submit such request on your behalf.</p>
 
                     <h4>Appeals</h4>
-                    <p>Under certain US state data protection laws, if we decline to take action regarding your request, you may appeal our decision by emailing us at <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a>. We will inform you in writing of any action taken or not taken in response to the appeal, including a written explanation of the reasons for the decisions. If your appeal is denied, you may submit a complaint to your state attorney general.</p>
+                    <p>Under certain US state data protection laws, if we decline to take action regarding your request, you may appeal our decision by emailing us at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>. We will inform you in writing of any action taken or not taken in response to the appeal, including a written explanation of the reasons for the decisions. If your appeal is denied, you may submit a complaint to your state attorney general.</p>
 
                     <h4>California "Shine The Light" Law</h4>
                     <p>California Civil Code Section 1798.83, also known as the "Shine The Light" law, permits our users who are California residents to request and obtain from us, once a year and free of charge, information about categories of personal information (if any) we disclosed to third parties for direct marketing purposes and the names and addresses of all third parties with which we shared personal information in the immediately preceding calendar year. If you are a California resident and would like to make such a request, please submit your request in writing to us by using the contact details provided in the section "How Can You Contact Us About This Notice?" below.</p>
@@ -317,7 +317,7 @@ export default function PrivacyPolicy() {
                     <p>We may update this Privacy Notice from time to time. The updated version will be indicated by an updated "Revised" date at the top of this Privacy Notice. If we make material changes to this Privacy Notice, we may notify you either by prominently posting a notice of such changes or by directly sending you a notification. We encourage you to review this Privacy Notice frequently to be informed of how we are protecting your information.</p>
 
                     <h3>11. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</h3>
-                    <p>If you have questions or comments about this notice, you may email us at <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a> or contact us by post at:</p>
+                    <p>If you have questions or comments about this notice, you may email us at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a> or contact us by post at:</p>
                     <p>QuranWall</p>
                     <p>Borová 9, 951 01 Nitrianske Hrnčiarovce, Slovakia</p>
                     <p>Nitrianske Hrnčiarovce, Nitriansky kraj 95101</p>

@@ -109,7 +109,7 @@ export default function AuthorKarol() {
               </li>
               <li>
                 Email me anytime at{' '}
-                <a href="mailto:hello@quranwall.com">hello@quranwall.com</a>.
+                <a href="mailto:iosnotewall@gmail.com">iosnotewall@gmail.com</a>.
               </li>
             </ul>
           </section>

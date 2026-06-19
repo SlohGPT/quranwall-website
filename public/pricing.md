@@ -39,7 +39,7 @@ Payment processing is handled by RevenueCat. QuranWall never stores card details
 
 ## Contact
 
-hello@quranwall.com
+iosnotewall@gmail.com
 
 ## Last updated
 

@@ -219,7 +219,7 @@ export default function EULA() {
                         Borová 9, 951 01 Nitrianske Hrnčiarovce, Slovakia<br />
                         Nitrianske Hrnčiarovce, Nitra 95101<br />
                         Slovakia<br />
-                        <a href="mailto:hello@quranwall.com" className="text-primary hover:underline">hello@quranwall.com</a>
+                        <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>
                     </p>
 
                     <h3>13. TERMINATION</h3>

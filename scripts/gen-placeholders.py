@@ -57,8 +57,11 @@ def paste_logo(bg, size, cx, cy):
     lg = logo_at(size)
     bg.paste(lg, (int(cx - size / 2), int(cy - size / 2)), lg)
 
-# ---- App icons / favicon (the real logo, with alpha) ----
-for px, name in [(512, "icon-app-512.png"), (180, "icon-app-180.png"), (64, "favicon.png")]:
+# ---- App icons / favicon / nav logo (the real logo, full quality, with alpha) ----
+# 256 is the crisp display size used by the nav + footer (sharp on 3x retina at
+# ~40px, far lighter than shipping the 512). 512 backs the PWA + schema logo.
+for px, name in [(512, "icon-app-512.png"), (256, "icon-app-256.png"),
+                 (180, "icon-app-180.png"), (64, "favicon.png")]:
     logo_at(px).save(os.path.join(PUB, name))
     print("icon", name)
 

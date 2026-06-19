@@ -12,7 +12,42 @@ import Footer from '../components/Footer';
 
 const HOME_TITLE = 'QuranWall: Daily Quran Verses on Your iPhone Lock Screen';
 const HOME_DESC =
-  'QuranWall is a free iOS app that displays a fresh Quran verse on your iPhone lock screen every day using wallpapers and widgets. 60-second setup, iOS 16.0+, with optional premium plans.';
+  'Free iOS app that puts a fresh Quran verse on your iPhone lock screen every day with wallpapers and widgets. 60-second setup, iOS 16+, optional premium.';
+
+// HowTo schema targets "how to put Quran on iPhone lock screen" style queries,
+// which is exactly what AI answer engines extract step lists for.
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to put a daily Quran verse on your iPhone lock screen',
+  description:
+    'Set up QuranWall to show a fresh Quran verse on your iPhone lock screen in about 60 seconds.',
+  totalTime: 'PT1M',
+  tool: [{ '@type': 'HowToTool', name: 'iPhone running iOS 16.0 or later' }],
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Download QuranWall',
+      text: 'Download QuranWall free from the App Store. No account or sign-up is required.',
+      url: 'https://quranwall.com/#how-it-works',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Choose a verse pack',
+      text: 'Open the app and pick a verse pack such as Anxiety, Patience, Gratitude, or Mercy.',
+      url: 'https://quranwall.com/#how-it-works',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Install the lock screen',
+      text: 'Follow the 60-second setup to install the Quran wallpaper or lock-screen widget using iOS Focus modes.',
+      url: 'https://quranwall.com/#how-it-works',
+    },
+  ],
+};
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -80,6 +115,7 @@ export default function Home() {
                 <meta name="twitter:description" content={HOME_DESC} />
                 <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
                 <meta name="twitter:image:alt" content="QuranWall: Daily Quran Verses on Your iPhone Lock Screen" />
+                <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
                 <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
             </Helmet>
             <Navigation />
