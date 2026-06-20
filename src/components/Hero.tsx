@@ -1,11 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
-
-const slides = [1, 2, 3, 4, 5];
-const images = slides.map(i => `/assets/slideshow/slide${i}.webp`);
-const mobileWebp = slides.map(i => `/assets/slideshow/slide${i}-mobile.webp`);
 
 const avatars = [
   '/assets/avatars/avatar-1.jpg',
@@ -13,60 +7,7 @@ const avatars = [
   '/assets/avatars/avatar-3.jpg',
 ];
 
-// Smooth spring transition for card stack (only motion.div used in Hero —
-// entrance animations are CSS to stay SSR-safe).
-const cardTransition = {
-  type: "spring" as const,
-  stiffness: 200,
-  damping: 30,
-  mass: 1,
-};
-
 export default function Hero() {
-  const [index, setIndex] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
-  const shouldReduceMotion = useReducedMotion();
-
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (shouldReduceMotion) return;
-    timerRef.current = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
-  }, [shouldReduceMotion]);
-
-  // Auto-play logic, also pause when the tab is hidden so we don't burn CPU.
-  useEffect(() => {
-    resetTimer();
-    const onVisibility = () => {
-      if (document.hidden) {
-        if (timerRef.current) clearInterval(timerRef.current);
-      } else {
-        resetTimer();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [resetTimer]);
-
-  const nextSlide = useCallback(() => {
-    setIndex((prev) => (prev + 1) % images.length);
-    resetTimer();
-  }, [resetTimer]);
-
-  const prevSlide = useCallback(() => {
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
-    resetTimer();
-  }, [resetTimer]);
-
-  const goToSlide = useCallback((i: number) => {
-    setIndex(i);
-    resetTimer();
-  }, [resetTimer]);
-
   return (
     <section className="relative min-h-screen bg-surface overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -80,7 +21,7 @@ export default function Hero() {
 
       <div className="container-main relative pt-32 md:pt-40 pb-20">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          <div className="text-center lg:text-left lg:-translate-y-32">
+          <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-4 px-5 py-3 rounded-full bg-surface-card border-2 border-brand/30 mb-8 animate-fade-up-d1">
               <div className="flex -space-x-2">
                 {avatars.map((src, i) => (
@@ -123,101 +64,27 @@ export default function Hero() {
 
           <div className="relative flex flex-col items-center justify-center lg:items-end animate-fade-in-slide">
             <div className="w-full max-w-[500px] flex flex-col items-center gap-8">
-              <div className="relative w-full flex items-center justify-center">
-
-                {/* Left Arrow */}
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-0 z-30 p-2 rounded-full bg-surface-card/90 border border-white/10 hover:bg-surface-card transition-colors text-white/80 hover:text-white"
-                  aria-label="Previous slide"
+              {/* Demo video — the App Store preview clip already renders its own
+                  iPhone, so it plays edge-to-edge over a soft brand glow rather
+                  than inside a CSS phone frame. */}
+              <div className="relative w-[270px] sm:w-[300px]">
+                <div className="absolute -inset-10 bg-gradient-to-br from-brand/12 via-brand/4 to-transparent rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+                <video
+                  className="relative w-full rounded-[2.25rem] border border-white/10 shadow-2xl bg-surface"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  poster="/quranwall-demo-poster.webp"
+                  aria-label="QuranWall app demo: choosing a Quran verse and setting it as a daily iPhone lock screen"
                 >
-                  <ChevronLeft size={24} />
-                </button>
-
-                <div className="relative w-[280px] sm:w-[320px] aspect-[9/19] flex items-center justify-center pointer-events-none">
-                  <div className="absolute -inset-12 bg-gradient-to-br from-brand/8 via-brand/3 to-transparent rounded-full blur-[100px]" />
-
-                  {/* Slideshow */}
-                  {images.map((src, i) => {
-                    const diff = (i - index + images.length) % images.length;
-                    const altTexts = [
-                      'QuranWall lock screen showing a Quran verse on iPhone',
-                      'QuranWall widget and wallpaper setup options on iPhone',
-                      'QuranWall user reviews and testimonials from believers',
-                      'QuranWall Quran verse explorer with surahs and juz',
-                      'QuranWall customization with fonts and color options',
-                    ];
-
-                    let style: any = {};
-                    if (diff === 0) {
-                      style = { scale: 1, rotate: 0, opacity: 1, x: 0, zIndex: 10 };
-                    } else if (diff === 1) {
-                      style = { scale: 0.93, rotate: 5, opacity: 0.7, x: 28, zIndex: 5 };
-                    } else if (diff === 2) {
-                      style = { scale: 0.86, rotate: -5, opacity: 0.4, x: -28, zIndex: 3 };
-                    } else {
-                      style = { scale: 0.8, rotate: 0, opacity: 0, x: 0, zIndex: 1 };
-                    }
-
-                    return (
-                      <motion.div
-                        key={i}
-                        className="absolute w-full h-full rounded-[2.5rem] border-4 border-surface-card shadow-2xl overflow-hidden"
-                        style={{ willChange: 'transform, opacity' }}
-                        initial={false}
-                        animate={style}
-                        transition={cardTransition}
-                      >
-                        <picture>
-                          <source
-                            type="image/webp"
-                            srcSet={`${mobileWebp[i]} 640w, ${src} 1284w`}
-                            sizes="(max-width: 768px) 320px, 500px"
-                          />
-                          <img
-                            src={mobileWebp[i]}
-                            srcSet={`${mobileWebp[i]} 640w, ${src} 1284w`}
-                            sizes="(max-width: 768px) 320px, 500px"
-                            alt={altTexts[i]}
-                            width={1284}
-                            height={2778}
-                            className="w-full h-full object-cover"
-                            loading={i === 0 ? "eager" : "lazy"}
-                            decoding="async"
-                            {...(i === 0 ? { fetchpriority: "high" as const } : {})}
-                          />
-                        </picture>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Right Arrow */}
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-0 z-30 p-2 rounded-full bg-surface-card/90 border border-white/10 hover:bg-surface-card transition-colors text-white/80 hover:text-white"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight size={24} />
-                </button>
+                  <source src="/quranwall-demo.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
 
-              {/* Dots */}
-              <div className="flex gap-2 z-30">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goToSlide(i)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === index
-                      ? 'bg-brand w-8'
-                      : 'bg-white/20 hover:bg-white/40'
-                      }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* Mobile buttons - below slideshow, side by side (stack on very narrow screens) */}
+              {/* Mobile buttons - below video, side by side (stack on very narrow screens) */}
               <div className="flex lg:hidden flex-row flex-wrap gap-3 justify-center items-center w-full mt-4 animate-fade-up-d6">
                 <AppStoreButton className="h-[56px] shrink-0" href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
                 <a
