@@ -6,14 +6,15 @@ import AppStoreButton from './AppStoreButton';
 
 const footerLinks = {
   about: [
-    { name: 'Features', href: '/#features' },
+    { name: 'Features', href: '/features' },
     { name: 'Download', href: 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080' },
     { name: 'Pricing', href: '/#pricing' },
-    { name: 'FAQ', href: '/#faq' },
+    { name: 'Support', href: '/support' },
   ],
   resources: [
     { name: 'Blog', href: '/blog' },
     { name: 'How it works', href: '/#how-it-works' },
+    { name: 'FAQ', href: '/support#faq' },
   ],
   company: [
     { name: 'About Karol', href: '/about/karol-billik' },
@@ -154,13 +155,13 @@ export default function Footer() {
           <p className="text-white/40 text-sm text-center md:text-left">
             &copy; 2026 QuranWall. Made with love for Allah.
           </p>
-          <div className="flex items-center justify-center md:justify-end gap-1.5">
-            <span className="text-white/30 text-[15px] tracking-wide">Built by</span>
+          <div className="flex items-baseline justify-center md:justify-end gap-2 sm:gap-3">
+            <span className="text-white/30 font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight">Built by</span>
             <a
               href="https://www.karchi.xyz/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/40 hover:text-white/80 transition-colors duration-300 text-[20px] font-black tracking-tight leading-none"
+              className="text-white/50 hover:text-white transition-colors duration-300 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none"
               aria-label="karchi. digital agency"
             >
               karchi.

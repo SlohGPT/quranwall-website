@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const steps = [
@@ -19,40 +18,7 @@ const steps = [
     },
 ];
 
-const screenshots = [
-    {
-        id: 1,
-        title: 'Lock Screen Quran',
-        image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"Indeed, with hardship comes ease."',
-        sub: 'Quran 94:6'
-    },
-    {
-        id: 2,
-        title: 'Beautiful Wallpapers',
-        image: 'https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"In the remembrance of Allah do hearts find rest."',
-        sub: 'Quran 13:28'
-    },
-    {
-        id: 3,
-        title: 'Nature & Faith',
-        image: 'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"And put your trust in Allah."',
-        sub: 'Quran 3:159'
-    },
-    {
-        id: 4,
-        title: 'Peaceful Moments',
-        image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"Allah does not burden a soul beyond what it can bear."',
-        sub: 'Quran 2:286'
-    },
-];
-
 export default function HowItWorksAndPreview() {
-    const [activeIndex, setActiveIndex] = useState(0);
-
     return (
         <section id="how-it-works" className="section-space relative bg-surface-elevated overflow-hidden">
             {/* Background decoration */}
@@ -124,65 +90,29 @@ export default function HowItWorksAndPreview() {
                             </div>
 
                             <div className="flex flex-col items-center">
-                                {/* Phone Frame */}
-                                <div className="relative w-[240px] sm:w-[260px] shadow-2xl mb-8">
-                                    <div className="bg-surface rounded-[2.5rem] p-2 border-2 border-surface-border ring-1 ring-white/10">
-                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 bg-surface rounded-b-xl z-20" />
-
-                                        <div className="relative rounded-[2rem] overflow-hidden aspect-[9/19.5] bg-surface-elevated">
-                                            <motion.img
-                                                key={activeIndex}
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ duration: 0.4 }}
-                                                src={screenshots[activeIndex].image}
-                                                alt={screenshots[activeIndex].title}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
-
-                                            {/* Lock Screen Content */}
-                                            <div className="absolute inset-0 flex flex-col justify-center items-center p-6 pb-20 text-center z-10">
-                                                <motion.div
-                                                    key={`text-${activeIndex}`}
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: 0.2 }}
-                                                    className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow-lg"
-                                                >
-                                                    <p className="text-white text-xs font-medium leading-relaxed drop-shadow-md">
-                                                        {screenshots[activeIndex].quote}
-                                                    </p>
-                                                    <p className="text-white/80 text-[10px] mt-2 font-bold uppercase tracking-widest">
-                                                        {screenshots[activeIndex].sub}
-                                                    </p>
-                                                </motion.div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Demo video — the clip already renders its own iPhone, so
+                                    it plays edge-to-edge over a soft brand glow rather than
+                                    being wrapped in a second CSS phone frame. */}
+                                <div className="relative w-[250px] sm:w-[290px]">
+                                    <div className="absolute -inset-6 bg-brand/10 rounded-full blur-[70px] pointer-events-none" aria-hidden="true" />
+                                    <video
+                                        className="relative w-full rounded-[2rem] border border-white/10 shadow-2xl bg-surface"
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        preload="auto"
+                                        poster="/quranwall-demo-poster.webp"
+                                        aria-label="QuranWall app demo: choosing a Quran verse and setting it as a daily iPhone lock screen"
+                                    >
+                                        <source src="/quranwall-demo.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
                                 </div>
 
-                                {/* Selector Buttons */}
-                                <div className="flex flex-wrap justify-center gap-3">
-                                    {screenshots.map((screenshot, index) => (
-                                        <button
-                                            key={screenshot.id}
-                                            onClick={() => setActiveIndex(index)}
-                                            className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all duration-300 ${index === activeIndex
-                                                ? 'border-brand scale-110 shadow-brand/20 shadow-lg'
-                                                : 'border-transparent opacity-60 hover:opacity-100'
-                                                }`}
-                                        >
-                                            <img
-                                                src={screenshot.image}
-                                                alt={screenshot.title}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                    ))}
-                                </div>
+                                <p className="mt-6 text-sm text-white/50 text-center max-w-xs">
+                                    Pick an ayah and QuranWall sets it as your lock screen in seconds.
+                                </p>
                             </div>
                         </motion.div>
                     </div>

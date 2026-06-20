@@ -17,7 +17,7 @@ const root = join(__dirname, '..');
 const distDir = join(root, 'dist');
 const ssrEntry = join(root, 'dist-ssr', 'entry-server.js');
 
-const STATIC_ROUTES = ['/', '/privacy-policy', '/terms-of-use', '/eula', '/about/karol-billik', '/blog'];
+const STATIC_ROUTES = ['/', '/features', '/support', '/privacy-policy', '/terms-of-use', '/eula', '/about/karol-billik', '/blog'];
 // Topic-hub (pillar) and competitor-comparison routes are added back here once
 // pillars.json / comparisons.json are populated. Empty for the initial launch.
 const PILLARS = [];
