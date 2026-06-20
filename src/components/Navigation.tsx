@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { featureNav } from '../data/featureNav';
+
+const APP_STORE_URL = 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080';
 
 export default function Navigation() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileFeaturesOpen, setIsMobileFeaturesOpen] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isMobileView, setIsMobileView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -114,6 +118,14 @@ export default function Navigation() {
     rect.style.strokeDasharray = String(perimeter);
     rect.style.strokeDashoffset = String(perimeter * (1 - progress));
   }, [perimeter]);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setIsMobileFeaturesOpen(false);
+  };
+
+  const mobileLinkClass =
+    'px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold';
 
   return (
     <>
@@ -227,24 +239,12 @@ export default function Navigation() {
               </Link>
 
               <div className="flex items-center gap-6 ml-auto">
-                <div className="hidden lg:flex items-center gap-2">
+                <div className="hidden lg:flex items-center gap-1">
                   <Link
-                    to="/#features"
+                    to="/about/karol-billik"
                     className="text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
                   >
-                    Features
-                  </Link>
-                  <Link
-                    to="/#how-it-works"
-                    className="text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
-                  >
-                    How it works
-                  </Link>
-                  <Link
-                    to="/#pricing"
-                    className="text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
-                  >
-                    Pricing
+                    About Us
                   </Link>
                   <Link
                     to="/blog"
@@ -252,21 +252,51 @@ export default function Navigation() {
                   >
                     Blog
                   </Link>
+
+                  {/* Features: link to the page, reveal section deep-links on hover/focus.
+                      group-hover + group-focus-within keep it usable by mouse and keyboard
+                      with no JS; the pt-3 on the panel is a hover bridge to the trigger. */}
+                  <div className="relative group">
+                    <Link
+                      to="/features"
+                      className="inline-flex items-center gap-1 text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
+                    >
+                      Features
+                      <ChevronDown
+                        className="w-4 h-4 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                    <div className="absolute left-0 top-full min-w-[15rem] pt-3 opacity-0 invisible translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0">
+                      <div className="rounded-2xl border border-white/10 bg-surface-elevated/95 backdrop-blur-xl shadow-2xl shadow-black/40 p-2">
+                        {featureNav.map((f) => (
+                          <Link
+                            key={f.id}
+                            to={`/features#${f.id}`}
+                            className="block rounded-xl px-4 py-3 text-base font-medium text-white/75 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            {f.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                   <Link
-                    to="/#faq"
+                    to="/support"
                     className="text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
                   >
-                    FAQ
+                    Support
                   </Link>
                 </div>
 
                 <a
-                  href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
+                  href={APP_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hidden lg:inline-flex items-center justify-center px-7 py-3 bg-white text-surface text-xl font-semibold rounded-full hover:bg-white/90 transition-all duration-300"
                 >
-                  Try for free
+                  Download
                 </a>
 
                 <button
@@ -297,50 +327,62 @@ export default function Navigation() {
           style={{ top: 'calc(5rem + env(safe-area-inset-top, 0px) + var(--browser-top-inset, 0px))' }}
         >
           <div className="flex flex-col p-3 gap-2">
-            <Link
-              to="/#features"
-              className="px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Features
+            <Link to="/about/karol-billik" className={mobileLinkClass} onClick={closeMobileMenu}>
+              About Us
             </Link>
-            <Link
-              to="/#how-it-works"
-              className="px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              How it works
-            </Link>
-            <Link
-              to="/#pricing"
-              className="px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Pricing
-            </Link>
-            <Link
-              to="/blog"
-              className="px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
+            <Link to="/blog" className={mobileLinkClass} onClick={closeMobileMenu}>
               Blog
             </Link>
-            <Link
-              to="/#faq"
-              className="px-6 py-5 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xl font-semibold"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              FAQ
+
+            {/* Features: collapsible group of section deep-links */}
+            <div>
+              <button
+                onClick={() => setIsMobileFeaturesOpen((v) => !v)}
+                className={`w-full flex items-center justify-between ${mobileLinkClass}`}
+                aria-expanded={isMobileFeaturesOpen}
+              >
+                Features
+                <ChevronDown
+                  className={`w-5 h-5 transition-transform duration-200 ${isMobileFeaturesOpen ? 'rotate-180' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
+              {isMobileFeaturesOpen && (
+                <div className="mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col">
+                  <Link
+                    to="/features"
+                    className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                    onClick={closeMobileMenu}
+                  >
+                    All features
+                  </Link>
+                  {featureNav.map((f) => (
+                    <Link
+                      key={f.id}
+                      to={`/features#${f.id}`}
+                      className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                      onClick={closeMobileMenu}
+                    >
+                      {f.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link to="/support" className={mobileLinkClass} onClick={closeMobileMenu}>
+              Support
             </Link>
+
             <div className="pt-2 mt-2 border-t border-surface-border">
               <a
-                href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
+                href={APP_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-full px-8 py-3.5 bg-white text-surface text-xl font-semibold rounded-full transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
-                Try for free
+                Download
               </a>
             </div>
           </div>

@@ -108,14 +108,15 @@ export default function Hero() {
 
             {/* Desktop buttons - hidden on mobile */}
             <div className="hidden lg:flex flex-row gap-4 justify-start items-center animate-fade-up-d4">
-              <AppStoreButton href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
+              <AppStoreButton size="lg" href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
               <a
                 href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-8 h-[52px] text-base font-bold text-white transition-all duration-200 bg-brand rounded-xl hover:bg-brand-light hover:scale-105"
+                className="group inline-flex items-center justify-center gap-2 px-8 h-[60px] text-lg font-bold text-brand-ink bg-brand rounded-2xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-6px_rgba(217,185,104,0.6)]"
               >
                 Get Started
+                <ChevronRight size={20} className="transition-transform duration-200 group-hover:translate-x-1" />
               </a>
             </div>
           </div>
@@ -216,16 +217,17 @@ export default function Hero() {
                 ))}
               </div>
 
-              {/* Mobile buttons - below slideshow, side by side */}
-              <div className="flex lg:hidden flex-row gap-3 justify-center items-center w-full mt-4 animate-fade-up-d6">
-                <AppStoreButton href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
+              {/* Mobile buttons - below slideshow, side by side (stack on very narrow screens) */}
+              <div className="flex lg:hidden flex-row flex-wrap gap-3 justify-center items-center w-full mt-4 animate-fade-up-d6">
+                <AppStoreButton className="h-[56px] shrink-0" href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
                 <a
                   href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-6 h-[52px] text-base font-bold text-white transition-all duration-200 bg-brand rounded-xl hover:bg-brand-light hover:scale-105"
+                  className="group inline-flex shrink-0 items-center justify-center gap-2 px-6 h-[56px] text-base font-bold whitespace-nowrap text-brand-ink bg-brand rounded-2xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5"
                 >
                   Get Started
+                  <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </a>
               </div>
             </div>

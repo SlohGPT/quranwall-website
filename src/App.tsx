@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import FeaturesPage from './pages/FeaturesPage';
+import Support from './pages/Support';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import EULA from './pages/EULA';
@@ -23,6 +25,8 @@ export default function App() {
       <ScrollManager />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/support" element={<Support />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
         <Route path="/eula" element={<EULA />} />
