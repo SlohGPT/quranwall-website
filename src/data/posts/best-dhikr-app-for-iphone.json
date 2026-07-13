@@ -35,6 +35,7 @@
     },
     {
       "type": "heading",
+      "level": 2,
       "text": "What a dhikr app really needs to do"
     },
     {
@@ -43,7 +44,7 @@
     },
     {
       "type": "highlight",
-      "text": "1. QuranWall — best for keeping dhikr in front of you (Editor's pick)"
+      "content": "**1. QuranWall — best for keeping dhikr in front of you (Editor's pick)**"
     },
     {
       "type": "paragraph",
@@ -51,7 +52,7 @@
     },
     {
       "type": "tip",
-      "text": "Pair QuranWall with a Focus mode for after Maghrib — the lock screen becomes your cue for evening adhkar without a single notification."
+      "content": "Pair QuranWall with a Focus mode for after Maghrib — the lock screen becomes your cue for evening adhkar without a single notification."
     },
     {
       "type": "paragraph",
@@ -59,7 +60,7 @@
     },
     {
       "type": "highlight",
-      "text": "2. Muslim Pro — best all-in-one with a built-in tasbih"
+      "content": "**2. Muslim Pro — best all-in-one with a built-in tasbih**"
     },
     {
       "type": "paragraph",
@@ -67,7 +68,7 @@
     },
     {
       "type": "highlight",
-      "text": "3. Pillars — best for adhkar as a daily checklist"
+      "content": "**3. Pillars — best for adhkar as a daily checklist**"
     },
     {
       "type": "paragraph",
@@ -75,7 +76,7 @@
     },
     {
       "type": "highlight",
-      "text": "4. Athan by IslamicFinder — best if you mainly want prayer alerts"
+      "content": "**4. Athan by IslamicFinder — best if you mainly want prayer alerts**"
     },
     {
       "type": "paragraph",
@@ -83,6 +84,7 @@
     },
     {
       "type": "heading",
+      "level": 2,
       "text": "Where this gets hard"
     },
     {
@@ -91,8 +93,9 @@
     },
     {
       "type": "stat",
-      "value": "~144×",
-      "label": "times the average person picks up their phone each day, per Reviews.org's 2026 phone-habits report"
+      "number": "~144×",
+      "label": "phone pickups a day for the average person",
+      "description": "per Reviews.org's 2026 phone-habits report"
     },
     {
       "type": "paragraph",
@@ -105,11 +108,12 @@
     },
     {
       "type": "heading",
+      "level": 2,
       "text": "The 60-second setup"
     },
     {
       "type": "steps",
-      "steps": [
+      "items": [
         "Download QuranWall free from the App Store.",
         "Choose a verse pack for your season — Anxiety, Patience, Gratitude, or Mercy.",
         "Let it set your lock-screen wallpaper, and (optional) attach it to a Focus mode for prayer or evening.",
@@ -118,7 +122,7 @@
     },
     {
       "type": "important",
-      "text": "A dhikr counter counts what you already remembered to do. A lock-screen verse reminds you in the first place. For most people, the reminder is the missing piece — not the counter."
+      "content": "A dhikr counter counts what you already remembered to do. A lock-screen verse reminds you in the first place. For most people, the reminder is the missing piece — not the counter."
     },
     {
       "type": "paragraph",
