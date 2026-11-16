@@ -13,7 +13,7 @@ const avatars = [
 function MobileCtas({ className }: { className: string }) {
   return (
     <div className={className}>
-      <AppStoreButton className="h-[56px] shrink-0" href={appStoreUrl(CAMPAIGNS.home)} />
+      <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />
       <a
         href={appStoreUrl(CAMPAIGNS.home)}
         target="_blank"
@@ -72,7 +72,7 @@ export default function Hero() {
 
             {/* Desktop buttons - hidden on mobile */}
             <div className="hidden lg:flex flex-row gap-4 justify-start items-center animate-fade-up-d4">
-              <AppStoreButton size="lg" href={appStoreUrl(CAMPAIGNS.home)} />
+              <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />
               <a
                 href={appStoreUrl(CAMPAIGNS.home)}
                 target="_blank"

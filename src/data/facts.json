@@ -1,0 +1,20 @@
+{
+  "_note": "Single source of product facts for the site, schema, llms.txt, lints and prompts. Public App Store data only. scripts/check-facts.mjs compares it with the live US listing; it may rewrite only rating.* and only when the 1-decimal value or rating.show flips (show = value >= 4.5 and count >= 20). A change in storeName or minIOS needs a human because copy depends on it. storeUrl keeps the slug the repo CLAUDE.md documents; Apple 301s it to the current slug (quran-widget-quranwall) and keeps pt and ct (checked 2026-11-16).",
+  "brand": "QuranWall",
+  "storeName": "Quran Widget: QuranWall",
+  "appId": "6781802080",
+  "storeUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080",
+  "providerToken": "128303795",
+  "minIOS": "15.0",
+  "minIOSText": "iOS 15.0 or later",
+  "installLine": "Free to download, with an in-app subscription.",
+  "subscriptionLine": "With an in-app subscription.",
+  "rating": {
+    "value": "4.5",
+    "count": 2,
+    "asOf": "2026-11-16",
+    "storefront": "us",
+    "show": false
+  },
+  "contactEmail": "iosnotewall@gmail.com"
+}

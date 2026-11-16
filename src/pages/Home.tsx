@@ -10,12 +10,12 @@ import Pricing from '../components/Pricing';
 import ExploreMore from '../components/ExploreMore';
 import { faqPageSchema } from '../data/faqs';
 import Footer from '../components/Footer';
+import facts from '../data/facts.json';
 
 const HOME_TITLE = 'QuranWall: Daily Quran Verses on Your iPhone Lock Screen';
 const HOME_DESC =
   'Put an ayah of the Quran on your iPhone Lock Screen and Home Screen widget, Arabic beside a translation in 10 languages. Free to download, with an in-app subscription.';
 
-const APP_STORE_PLAIN = 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080';
 
 // HowTo schema targets "how to put Quran on iPhone lock screen" style queries,
 // which is exactly what AI answer engines extract step lists for.
@@ -25,7 +25,7 @@ const howToSchema = {
   name: 'How to put a Quran ayah on your iPhone Lock Screen',
   description:
     'Set up QuranWall to show an ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget.',
-  tool: [{ '@type': 'HowToTool', name: 'iPhone running iOS 15.0 or later' }],
+  tool: [{ '@type': 'HowToTool', name: `iPhone running ${facts.minIOSText}` }],
   step: [
     {
       '@type': 'HowToStep',
@@ -51,24 +51,25 @@ const howToSchema = {
   ],
 };
 
-// One MobileApplication node, on Home only. No aggregateRating or review on purpose:
-// Google bars ratings copied from another site (the App Store).
+// One MobileApplication node, on Home only, read from src/data/facts.json. No aggregateRating or review:
+// facts.rating.show is false, and Google bars ratings copied from another site (the App Store).
 const appSchema = {
   '@context': 'https://schema.org',
   '@type': 'MobileApplication',
   name: 'QuranWall',
-  alternateName: ['Quran Widget: QuranWall', 'Quran Verse Lock Screen'],
-  operatingSystem: 'iOS 15.0 or later',
+  alternateName: [facts.storeName, 'Quran Verse Lock Screen'],
+  operatingSystem: facts.minIOSText,
   applicationCategory: 'LifestyleApplication',
   description:
     'QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation in 10 languages.',
-  url: APP_STORE_PLAIN,
-  downloadUrl: APP_STORE_PLAIN,
+  url: facts.storeUrl,
+  installUrl: facts.storeUrl,
+  downloadUrl: facts.storeUrl,
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
-    description: 'Free to download, with an in-app subscription',
+    description: facts.installLine,
   },
   screenshot: [1, 2, 3, 4, 5].map((n) => `https://quranwall.com/assets/slideshow/slide${n}.webp`),
   author: {

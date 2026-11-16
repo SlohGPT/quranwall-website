@@ -47,7 +47,7 @@ export default function PillarPageView({ pillar, featured }: Props) {
           )}
         </header>
 
-        <BlogRenderer sections={pillar.sections} />
+        <BlogRenderer sections={pillar.sections} pageType="pillar" />
       </div>
 
       {featured.length > 0 && (

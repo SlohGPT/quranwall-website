@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import FinalCTA from '../components/FinalCTA';
 import { featureNav } from '../data/featureNav';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
+import AppStoreButton from '../components/AppStoreButton';
 
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
@@ -76,14 +77,7 @@ export default function FeaturesPage() {
                 Here is everything it does, and why each piece exists.
               </p>
               <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                <a
-                  href={APP_STORE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-7 py-3.5 bg-white text-surface text-lg font-semibold rounded-full hover:bg-white/90 transition-colors"
-                >
-                  Download on the App Store
-                </a>
+                <AppStoreButton href={APP_STORE} />
                 <a
                   href="#daily-verses"
                   className="inline-flex items-center justify-center px-7 py-3.5 text-lg font-semibold text-white rounded-full border border-white/15 hover:bg-white/5 transition-colors"

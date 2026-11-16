@@ -1,0 +1,524 @@
+/**
+ * Fact lint for quranwall.com: catches copy and markup that contradicts the product facts
+ * (src/data/facts.json), the App Store listing rules in CLAUDE.md, or the Apple link rules the site follows.
+ * Ported from the FaithWall gate (faithwall-website scripts/lint-facts.mjs) with QuranWall's values.
+ *
+ * No dependencies. Node 18+.
+ *
+ * Modes (combine freely):
+ *   --diff <base> [--worktree]  lint whole changed files, report only hits that overlap lines added in
+ *                               `git diff <base>...HEAD -U0`; --worktree adds uncommitted and untracked work
+ *   --dist [dir]                check the built site (default dist/): App Store links, JSON-LD, NUL bytes,
+ *                               404, sitemap, Smart App Banner, public/llms.txt + public/pricing.md vs facts.json
+ *   --prompts [files...]        lint ~/.claude/scheduled-tasks/quranwall-* /SKILL.md (read-only) and
+ *                               .claude/skills/quranwall-blog/SKILL.md, plus any extra files given
+ *   --all                       lint every source file (src, index.html, public/*.txt|md, .claude/skills/**)
+ *
+ * Exit code 1 on any FAIL. WARN never fails.
+ *
+ * Text rules fire on a sentence that names QuranWall (or, for a few phrases, on the bare phrase). A sentence
+ * that states the ban itself ("never write ...", "NOT CONFIRMED ...", "no Android app") is not a violation.
+ * Product facts and the campaign-token list are read from src/data/facts.json and src/lib/app-store.ts,
+ * so this file never holds its own copy of them.
+ */
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { join, dirname, relative, resolve, sep } from 'node:path';
+import { homedir } from 'node:os';
+import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const facts = JSON.parse(readFileSync(join(ROOT, 'src/data/facts.json'), 'utf8'));
+const APP_ID = facts.appId;
+const PT = facts.providerToken;
+
+/** Campaign tokens, parsed from the CAMPAIGNS object in src/lib/app-store.ts (single source of truth). */
+function readCampaigns() {
+  const src = readFileSync(join(ROOT, 'src/lib/app-store.ts'), 'utf8');
+  const block = /\bCAMPAIGNS\s*=\s*\{([\s\S]*?)\}\s*as const/.exec(src);
+  if (!block) throw new Error('lint-facts: cannot find the CAMPAIGNS object in src/lib/app-store.ts');
+  const map = {};
+  for (const m of block[1].replace(/\/\/.*$/gm, '').matchAll(/(\w+)\s*:\s*'([^']+)'/g)) map[m[1]] = m[2];
+  if (Object.keys(map).length === 0) throw new Error('lint-facts: CAMPAIGNS in src/lib/app-store.ts is empty');
+  return map;
+}
+const CAMPAIGNS = readCampaigns();
+const CAMPAIGN_TOKENS = Object.values(CAMPAIGNS);
+
+// ---------------------------------------------------------------- text rules
+
+const BRAND = String.raw`Quran ?Wall`;
+// A clause about the app, without crossing a sentence, comma, semicolon, colon, dash or bracket (keeps a
+// competitor's feature in "Muslim Pro has qibla, while QuranWall ..." from being read as ours).
+const CL = String.raw`[^.,;:—–()]`;
+// Local negation inside a sentence: a sentence that denies a feature is the opposite of a claim.
+const DENY = /\b(?:no|not|never|without|lacks?|doesn'?t|does not|isn'?t|is not|aren'?t|can'?t|cannot|won'?t|n'?t|only|rather than|instead of|unlike|except)\b/i;
+
+// Each rule: [id, regex, unused, allow?]. `allow` rescues a sentence that matches it.
+const rules = [
+  // A stated price, trial length or plan name about QuranWall.
+  ['price-or-trial', new RegExp(`\\b${BRAND}\\b[^.]{0,120}(?:\\$\\s?\\d|€\\s?\\d|£\\s?\\d|\\b\\d+[- ]days?\\s+(?:free\\s+)?trial|\\bfree trial\\b|\\b\\d+\\s+days?\\s+free\\b|\\bper (?:week|month|year)\\b|/(?:wk|week|mo|month|yr|year)\\b|\\b(?:weekly|monthly|yearly|annual|lifetime)\\s+(?:plan|subscription|premium|pass|membership)\\b)`, 'i'), null],
+  // "free" on its own about QuranWall ("free to download" is the one allowed phrasing).
+  ['free-claim', new RegExp(`\\b${BRAND}\\b(?:'s)?\\s+(?:is|are|was|stays|remains)\\s+(?:a\\s+|an\\s+)?(?:completely\\s+|totally\\s+|100%\\s+|truly\\s+|also\\s+|entirely\\s+|always\\s+)?free\\b(?!\\s+to\\s+(?:download|install|get))|\\bfree\\s+(?:\\w+\\s+){0,3}app\\b[^.]{0,30}\\b${BRAND}\\b|\\b${BRAND}\\b[^.?]{0,40}\\b(?:for free|free of charge|at no cost|free forever|free tier|free version|free plan|free app|no paywall|freemium|completely free|totally free|100% free|entirely free)\\b|\\b${BRAND}\\b[^.?]{0,40}\\bcosts? nothing\\b|\\bno cost\\b[^.]{0,30}\\b${BRAND}\\b`, 'i'), null, /\bno free tier\b|there is no free\b|has no free\b|not free\b|isn'?t free\b/i],
+  // "is a free app" with no brand in the sentence (a bare claim in a QuranWall page or post; search-intent
+  // wording such as "looking for a free Quran app" is not a claim).
+  ['free-app-bare', /\b(?:is|it'?s|it is|this is|that'?s|was|are)\s+(?:a|an)\s+(?:totally\s+|completely\s+|100%\s+)?free\s+(?:\w+\s+){0,2}app\b/i, null],
+  // NOT CONFIRMED by the listing: installing through iOS Focus modes.
+  ['focus-install', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\bFocus(?:\\s+(?:modes?|filters?))?\\b|\\bFocus modes?\\b${CL}{0,60}\\b${BRAND}\\b`, 'i'), null, /\blink(?:ed|s)?\b|\bpair(?:ed|s)?\b|\bswitch(?:es|ing)?\b/i],
+  // NOT CONFIRMED: verse packs or any named pack.
+  ['verse-packs', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:packs?|bundles?|collections? of (?:verses|ayat|ayahs))\\b`, 'i'), null],
+  ['verse-packs-bare', /\b(?:verse|ayah|ayat|surah|themed|wallpaper|theme|dua|dhikr|starter|bonus) packs?\b/i, null],
+  // NOT CONFIRMED: "Premium" or "unlimited" unlocks. "Premium is an in-app subscription" is a stated fact.
+  ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
+  // NOT CONFIRMED: duas inside QuranWall.
+  ['duas', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:du'?as?|du'?aa|supplications?|adhkar|adhkaar)\\b|\\b(?:personal|custom|your own|saved|favou?rite)\\s+(?:du'?as?|du'?aa|supplications?)\\b`, 'i'), null, /\b(?:read|reading|recit\w+|write|writing|praying|pray|make|making|about|topic|post|guide|article)\b/i],
+  // NOT CONFIRMED: a "60-second setup".
+  ['setup-60s', /\b(?:60|sixty)[- ]?seconds?\b[^.]{0,30}\b(?:set[- ]?up|install\w*|ready|get started|to set)\b|\b(?:set[- ]?up|setting up|install\w*|ready|get started)\b[^.]{0,30}\b(?:in|within|under|just|takes?)\s+(?:about\s+|only\s+|just\s+)?(?:60|sixty)[- ]?seconds?\b|\b(?:a|one|1)[- ]minute\s+set[- ]?up\b/i, null],
+  // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
+  ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
+  // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
+  // arrived in iOS 16) are allowed through the widget/Lock Screen/Focus wording.
+  ['ios16-as-min', new RegExp(`\\b(?:${BRAND}|the app)\\b[^.]{0,100}\\biOS\\s?16(?:\\.0)?(?:\\+|\\s+or\\s+(?:later|newer|higher)|\\s+and\\s+(?:later|newer|up))|\\b(?:requires?|needs?|minimum|min\\.?)\\s+(?:iOS\\s*)?16(?:\\.0)?\\b|Platform\\W{1,8}iOS 16|Minimum iOS\\W{1,8}16|operatingSystem"?\\W{1,6}iOS 16|^[-*\\s]*iOS 16(?:\\.0)?(?:\\+|\\s+or later|\\s+and later)?\\s*$`, 'i'), null, /widget|Lock Screen|Focus|competitor|customi[sz]|introduced|\bsince\b/i],
+  // Invented features (about QuranWall). A denial in the same sentence ("no audio", "doesn't have") is fine.
+  ['invented-android-web', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:Android|Google Play|Play Store|web app|web version|browser version|desktop app|Windows|Chrome extension)\\b|\\b(?:Android|web app|web version|browser version)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['invented-audio', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:audio(?: recitation)?|recitations?|recited|reciters?|qari|qaris|listen(?:ing)? to|hear)\\b|\\b(?:audio(?: recitation)?|recitations?|reciters?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['invented-tafsir', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:tafs[iī]rs?|commentar(?:y|ies)|exegesis)\\b|\\b(?:tafs[iī]rs?|commentar(?:y|ies))\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['invented-prayer-times', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:prayer times?|salah times?|salat times?|adhan|azan|qibla|qiblah|prayer reminders?|athan)\\b|\\b(?:prayer times?|qibla|qiblah|adhan)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['invented-hifz', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:hifz|hifdh|memori[sz]ation (?:tracking|tracker|tools?|progress|plans?|features?|mode)|memori[sz]ing (?:progress|tools?)|track\\w*\\s+(?:your\\s+)?(?:hifz|memori[sz]ation|memori[sz]ing|progress)|hifz (?:tracker|tools?|plans?|mode|features?))\\b`, 'i'), null, DENY],
+  ['invented-ai', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:AI|A\\.I\\.|artificial intelligence|machine learning|chatbot|AI-powered|AI-assisted)\\b|\\b(?:AI|artificial intelligence|chatbot)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+];
+
+// A sentence that states the ban itself ("never write ...", "NOT CONFIRMED ...") is not a violation.
+const NEG = /\b(?:never|don'?t|do not|doesn'?t|does not|banned|avoid|no claim|not confirmed|unconfirmed|not claim|must not|mustn'?t|forbidden|ruled out)\b|\bno\b[^.;]{0,100}\bclaims?\b/i;
+
+// JSON keys that hold identifiers, not prose.
+const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', 'url', 'href', 'id', 'imageAlt', 'alternateName', 'related', 'featured', 'cluster', 'target_keyword', 'query', 'queries']);
+
+// A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
+// claim through a bare phrase, so the bare-phrase rules skip it.
+const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
+const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'verse-packs-bare', 'free-app-bare']);
+
+/** Lint one piece of text. Pushes { id, s } into `out`. */
+function lintText(text, out) {
+  const aboutOtherApp = OTHER_APP_ITEM.test(text) && !/Quran ?Wall/i.test(text);
+  for (const s of text.split(/(?<=[.!?])["']?\s+/)) {
+    for (const [id, re, , allow] of rules) {
+      if (aboutOtherApp && BARE_RULES.has(id)) continue;
+      if (!re.test(s)) continue;
+      if (allow && allow.test(s)) continue;
+      if (NEG.test(s)) continue;
+      out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
+    }
+  }
+}
+
+/** Walk a parsed JSON value, linting every prose string. */
+function walkJson(node, loc, file, out) {
+  if (typeof node === 'string') {
+    const found = [];
+    lintText(node, found);
+    for (const h of found) out.push({ ...h, loc });
+    return;
+  }
+  if (Array.isArray(node)) {
+    node.forEach((n, i) => walkJson(n, `${loc}[${i}]`, file, out));
+    return;
+  }
+  if (node && typeof node === 'object') {
+    // seo-priorities.json: only pending items are future copy; done/closed items are history.
+    if (file.endsWith('seo-priorities.json') && 'status' in node && node.status !== 'pending') return;
+    for (const k of Object.keys(node)) {
+      if (k.startsWith('_')) continue;
+      if (SKIPKEYS.has(k)) continue;
+      walkJson(node[k], `${loc}.${k}`, file, out);
+    }
+  }
+}
+
+/** Lint a whole file. Returns hits { id, loc, s, lines: number[] | null } (lines: 1-based candidate lines). */
+function lintFile(abs) {
+  const txt = readFileSync(abs, 'utf8');
+  const hits = [];
+  if (abs.endsWith('.json')) {
+    let data;
+    try { data = JSON.parse(txt); } catch (e) {
+      return [{ id: 'json-parse', loc: '', s: `JSON does not parse: ${e.message}`, lines: null }];
+    }
+    const found = [];
+    walkJson(data, '', abs, found);
+    for (const h of found) hits.push({ ...h, lines: jsonLines(txt, h.s) });
+  } else {
+    txt.split('\n').forEach((ln, i) => {
+      const found = [];
+      lintText(ln, found);
+      for (const h of found) hits.push({ ...h, loc: `L${i + 1}`, lines: [i + 1] });
+    });
+  }
+  return hits;
+}
+
+/** Candidate 1-based line numbers where a JSON string value containing `sentence` sits in the raw file. */
+function jsonLines(raw, sentence) {
+  const needles = [JSON.stringify(sentence).slice(1, -1)];
+  // The hit text was whitespace-collapsed and truncated; also try a prefix without risky characters.
+  const safe = sentence.slice(0, 60).replace(/[^\x20-\x7e]/g, '\0').split('\0')[0].trim();
+  if (safe.length >= 12) needles.push(JSON.stringify(safe).slice(1, -1));
+  const lines = new Set();
+  for (const n of needles) {
+    let from = 0;
+    for (;;) {
+      const at = raw.indexOf(n, from);
+      if (at < 0) break;
+      lines.add(raw.slice(0, at).split('\n').length);
+      from = at + n.length;
+    }
+    if (lines.size) break;
+  }
+  return lines.size ? [...lines] : null; // null: could not locate, treat as overlapping
+}
+
+// ---------------------------------------------------------------- file sets
+
+function walk(dir, out = []) {
+  if (!existsSync(dir)) return out;
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name === '.git') continue;
+    const p = join(dir, e.name);
+    if (e.isDirectory()) walk(p, out);
+    else out.push(p);
+  }
+  return out;
+}
+
+const LINTABLE = /\.(tsx?|json|html|md|txt)$/;
+const rel = (abs) => relative(ROOT, abs).split(sep).join('/');
+
+function isLintable(relPath) {
+  if (!LINTABLE.test(relPath)) return false;
+  if (relPath.startsWith('src/') || relPath.startsWith('.claude/skills/')) return true;
+  if (relPath === 'index.html') return true;
+  return /^public\/[^/]+\.(txt|md)$/.test(relPath);
+}
+
+function allFiles() {
+  return [
+    ...walk(join(ROOT, 'src')),
+    join(ROOT, 'index.html'),
+    ...walk(join(ROOT, 'public')).filter((f) => /^public\/[^/]+\.(txt|md)$/.test(rel(f))),
+    ...walk(join(ROOT, '.claude/skills')),
+  ].filter((f) => existsSync(f) && isLintable(rel(f)));
+}
+
+// ---------------------------------------------------------------- diff mode
+
+function git(args) {
+  return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
+}
+
+/** Parse `git diff -U0` output into Map<relPath, Array<[start, end]>> of added line ranges. */
+function parseAdded(diffText, into) {
+  let file = null;
+  for (const ln of diffText.split('\n')) {
+    if (ln.startsWith('+++ ')) {
+      file = ln === '+++ /dev/null' ? null : ln.replace(/^\+\+\+ b\//, '');
+    } else if (file && ln.startsWith('@@')) {
+      const m = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/.exec(ln);
+      if (!m) continue;
+      const start = Number(m[1]);
+      const count = m[2] === undefined ? 1 : Number(m[2]);
+      if (count === 0) continue;
+      if (!into.has(file)) into.set(file, []);
+      into.get(file).push([start, start + count - 1]);
+    }
+  }
+}
+
+function addedRanges(base, worktree) {
+  const map = new Map();
+  parseAdded(git(['diff', `${base}...HEAD`, '-U0', '--no-color', '--no-ext-diff']), map);
+  if (worktree) {
+    parseAdded(git(['diff', 'HEAD', '-U0', '--no-color', '--no-ext-diff']), map);
+    for (const f of git(['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean)) {
+      if (!isLintable(f)) continue;
+      const n = readFileSync(join(ROOT, f), 'utf8').split('\n').length;
+      if (!map.has(f)) map.set(f, []);
+      map.get(f).push([1, n]);
+    }
+  }
+  return map;
+}
+
+// ---------------------------------------------------------------- reporting
+
+const results = []; // { level: 'FAIL' | 'WARN', rule, where, msg }
+const fail = (rule, where, msg) => results.push({ level: 'FAIL', rule, where, msg });
+const warn = (rule, where, msg) => results.push({ level: 'WARN', rule, where, msg });
+
+function report() {
+  const byRule = new Map();
+  for (const r of results) {
+    const k = `${r.level} ${r.rule}`;
+    if (!byRule.has(k)) byRule.set(k, []);
+    byRule.get(k).push(r);
+  }
+  for (const [k, list] of [...byRule].sort((a, b) => a[0].localeCompare(b[0]))) {
+    console.log(`\n## ${k} (${list.length})`);
+    for (const r of list) console.log(`${r.where}${r.where ? '  ' : ''}${r.msg}`);
+  }
+  const nFail = results.filter((r) => r.level === 'FAIL').length;
+  const nWarn = results.length - nFail;
+  console.log(`\nlint-facts: ${nFail} FAIL, ${nWarn} WARN`);
+  process.exit(nFail > 0 ? 1 : 0);
+}
+
+// ---------------------------------------------------------------- text modes
+
+let textFilesChecked = 0;
+
+function runText(files, rangesByFile) {
+  for (const abs of files) {
+    const r = rel(abs);
+    const ranges = rangesByFile ? rangesByFile.get(r) : null;
+    if (rangesByFile && !ranges) continue; // not changed
+    if (!existsSync(abs)) continue; // deleted in the worktree
+    textFilesChecked += 1;
+    for (const h of lintFile(abs)) {
+      if (ranges) {
+        const inAdded = h.lines === null || h.lines.some((l) => ranges.some(([a, b]) => l >= a && l <= b));
+        if (!inAdded) continue;
+      }
+      fail(h.id, `${r} ${h.loc}`, h.s);
+    }
+  }
+}
+
+/**
+ * Prompt and skill files name the banned phrases on purpose. Same text rules as the content, with two
+ * exemptions that mirror how the files are written: (1) a sentence that states the ban (NEG) is skipped,
+ * as in content; (2) a list item under a heading or label that itself states a ban ("Not confirmed ...",
+ * "Never ...", "Banned ...") is skipped, so a bulleted never-claim list needs no per-line "never".
+ */
+const BAN_HEADING = /\b(?:never|not confirmed|unconfirmed|banned|forbidden|do not|don'?t|must not|not allowed|ruled out)\b/i;
+
+function runPrompts(files) {
+  let n = 0;
+  for (const f of files) {
+    const abs = resolve(f);
+    const label = abs.startsWith(homedir()) ? '~' + abs.slice(homedir().length) : f;
+    if (!existsSync(abs)) { fail('prompt-missing', label, 'file not found'); continue; }
+    n += 1;
+    let banSection = false;
+    readFileSync(abs, 'utf8').split('\n').forEach((ln, i) => {
+      const isHeading = /^\s*#{1,6}\s/.test(ln);
+      const isLabel = /^\s*(?:\*\*[^*]+\*\*|[A-Z][A-Z0-9 /&-]{3,}|[A-Z][^.]{0,60}):\s*$/.test(ln);
+      const isItem = /^\s*(?:[-*]|\d+[.)])\s/.test(ln);
+      if (isHeading || isLabel) banSection = BAN_HEADING.test(ln);
+      else if (!isItem && ln.trim() === '') banSection = false;
+      if (banSection && isItem) return;
+      const found = [];
+      lintText(ln, found);
+      for (const h of found) fail(h.id, `${label} L${i + 1}`, h.s);
+    });
+  }
+  console.log(`prompts: ${n} file(s) linted`);
+}
+
+// ---------------------------------------------------------------- dist mode
+
+function* walkJsonLdNodes(v) {
+  if (Array.isArray(v)) { for (const x of v) yield* walkJsonLdNodes(x); return; }
+  if (v && typeof v === 'object') {
+    yield v;
+    for (const k of Object.keys(v)) yield* walkJsonLdNodes(v[k]);
+  }
+}
+
+const typesOf = (n) => [].concat(n['@type'] || []);
+
+/** Check one App Store link to our app. `where` is the label used in messages. */
+function checkAppLink(href, where, expectCt) {
+  if (!href.includes(`/id${APP_ID}`)) return false;
+  if (href.includes('apps.apple.com/account/')) return false; // Apple's own subscriptions page
+  let u;
+  try { u = new URL(href, 'https://quranwall.com'); } catch { fail('dist-link', where, `unparseable App Store link: ${href}`); return true; }
+  if (u.searchParams.get('pt') !== PT) fail('dist-link-pt', where, `pt != ${PT}: ${href}`);
+  const ct = u.searchParams.get('ct');
+  if (!ct) fail('dist-link-ct', where, `no ct: ${href}`);
+  else if (!CAMPAIGN_TOKENS.includes(ct)) fail('dist-link-ct', where, `ct "${ct}" is not in CAMPAIGNS (src/lib/app-store.ts): ${href}`);
+  else if (expectCt && ct !== expectCt) fail('dist-link-ct', where, `ct "${ct}" should be "${expectCt}": ${href}`);
+  return true;
+}
+
+/** public/llms.txt and public/pricing.md must agree with facts.json: minimum iOS, no price, own campaign token. */
+function checkMachineFiles() {
+  const files = [['public/llms.txt', CAMPAIGNS.llms], ['public/pricing.md', CAMPAIGNS.pricing]];
+  const minNum = parseFloat(facts.minIOS);
+  for (const [r, expectCt] of files) {
+    const abs = join(ROOT, r);
+    if (!existsSync(abs)) { fail('dist-machine-file', r, 'missing'); continue; }
+    const txt = readFileSync(abs, 'utf8');
+    if (!txt.includes(facts.minIOSText)) fail('dist-machine-file', r, `does not say "${facts.minIOSText}"`);
+    for (const m of txt.matchAll(/\biOS\s?(\d+(?:\.\d+)?)/g)) {
+      if (parseFloat(m[1]) !== minNum) fail('dist-machine-file', r, `names iOS ${m[1]}, facts.json minIOS is ${facts.minIOS}`);
+    }
+    txt.split('\n').forEach((ln, i) => {
+      if (/[$€£]\s?\d|\b\d+(?:[.,]\d+)?\s?(?:USD|EUR|GBP)\b|\b\d+[- ]days?\s+(?:free\s+)?trial\b|\bfree trial\b|\bper (?:week|month|year)\b|\/(?:wk|week|mo|month|yr|year)\b/i.test(ln)) {
+        fail('dist-machine-file', `${r} L${i + 1}`, `states a price or trial length: ${ln.trim().slice(0, 120)}`);
+      }
+      for (const m of ln.matchAll(/https:\/\/apps\.apple\.com\/[^\s)<>"']+/g)) checkAppLink(m[0], `${r} L${i + 1}`, expectCt);
+    });
+    if (!txt.includes(facts.installLine.replace(/\.$/, '')) && !/free to download, with an in-app subscription/i.test(txt)) {
+      warn('dist-machine-file', r, `does not state "${facts.installLine}"`);
+    }
+  }
+}
+
+function runDist(distArg) {
+  const DIST = resolve(distArg || join(ROOT, 'dist'));
+  const dl = (abs) => 'dist/' + relative(DIST, abs).split(sep).join('/');
+  if (!existsSync(DIST)) { fail('dist-missing', distArg || 'dist/', 'directory does not exist: run `npm run build` first'); return; }
+
+  const htmlFiles = walk(DIST).filter((f) => f.endsWith('.html'));
+  const apps = []; // { file, node }
+  const bannerMissing = [];
+  const bannerWrongCt = [];
+  let linkCount = 0;
+
+  for (const abs of htmlFiles) {
+    const r = dl(abs);
+    const buf = readFileSync(abs);
+    // NUL bytes: React 18.3.1 writeStringChunk bug, stripped in prerender.mjs.
+    if (buf.includes(0)) fail('dist-nul', r, 'contains NUL bytes');
+    const html = buf.toString('utf8');
+
+    // App Store links (anchors only; structured data keeps the plain listing URL on purpose)
+    for (const m of html.matchAll(/<a\b[^>]*?\bhref=(?:"([^"]*)"|'([^']*)')/gi)) {
+      const href = (m[1] ?? m[2]).replace(/&amp;/g, '&');
+      if (checkAppLink(href, r, null)) linkCount += 1;
+    }
+
+    // Smart App Banner carries its own campaign token (WARN for now: added in parallel)
+    const bm = /<meta\b[^>]*\bname="apple-itunes-app"[^>]*>/i.exec(html);
+    if (!bm) bannerMissing.push(r);
+    else {
+      const content = (/\bcontent="([^"]*)"/i.exec(bm[0])?.[1] ?? '').replace(/&amp;/g, '&');
+      const ct = /\bct=([^&,\s]+)/.exec(content)?.[1];
+      const pt = /\bpt=([^&,\s]+)/.exec(content)?.[1];
+      if (!content.includes(`app-id=${APP_ID}`)) fail('dist-banner', r, `apple-itunes-app does not carry app-id=${APP_ID}: ${content}`);
+      if (ct && !CAMPAIGN_TOKENS.includes(ct)) fail('dist-link-ct', r, `apple-itunes-app ct "${ct}" is not in CAMPAIGNS`);
+      if (pt && pt !== PT) fail('dist-link-pt', r, `apple-itunes-app pt != ${PT}`);
+      if (ct !== CAMPAIGNS.smartBanner || pt !== PT) bannerWrongCt.push(r);
+    }
+
+    // JSON-LD
+    let websites = 0;
+    for (const m of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)) {
+      let data;
+      try { data = JSON.parse(m[1]); } catch (e) { fail('dist-jsonld', r, `JSON-LD does not parse: ${e.message}`); continue; }
+      for (const node of walkJsonLdNodes(data)) {
+        const types = typesOf(node);
+        if (types.includes('MobileApplication')) apps.push({ file: r, node });
+        else if (types.includes('SoftwareApplication')) fail('dist-app-node', r, 'SoftwareApplication node: use the single MobileApplication node on the home page');
+        if (types.includes('WebSite')) websites += 1;
+        if ('aggregateRating' in node && !facts.rating?.show) {
+          fail('dist-aggregate-rating', r, 'aggregateRating in JSON-LD while facts.rating.show is false');
+        }
+      }
+    }
+    if (websites !== 1) fail('dist-website', r, `expected exactly one WebSite node, found ${websites}`);
+  }
+
+  if (bannerMissing.length) {
+    warn('dist-smart-banner', 'dist/', `${bannerMissing.length} page(s) have no apple-itunes-app meta (expected ct=${CAMPAIGNS.smartBanner}): ${bannerMissing.slice(0, 3).join(', ')}${bannerMissing.length > 3 ? ', ...' : ''}`);
+  }
+  if (bannerWrongCt.length) {
+    warn('dist-smart-banner', 'dist/', `${bannerWrongCt.length} page(s) have an apple-itunes-app meta without pt=${PT} and ct=${CAMPAIGNS.smartBanner}: ${bannerWrongCt.slice(0, 3).join(', ')}${bannerWrongCt.length > 3 ? ', ...' : ''}`);
+  }
+
+  // One MobileApplication node site-wide, on the home page only.
+  if (apps.length !== 1) fail('dist-app-node', 'dist/', `expected exactly one MobileApplication node site-wide, found ${apps.length}${apps.length ? ` (${apps.map((a) => a.file).join(', ')})` : ''}`);
+  for (const a of apps) {
+    if (a.file !== 'dist/index.html') fail('dist-app-node', a.file, 'MobileApplication node must be on the home page only');
+    if (a.node.operatingSystem !== facts.minIOSText) fail('dist-app-node', a.file, `operatingSystem "${a.node.operatingSystem}" != "${facts.minIOSText}"`);
+    if (a.node.downloadUrl !== facts.storeUrl) fail('dist-app-node', a.file, `downloadUrl "${a.node.downloadUrl}" != "${facts.storeUrl}"`);
+  }
+
+  // 404.html is noindex
+  const nf = join(DIST, '404.html');
+  if (!existsSync(nf)) fail('dist-404', 'dist/404.html', 'missing');
+  else {
+    const html = readFileSync(nf, 'utf8');
+    const robots = [...html.matchAll(/<meta\b[^>]*\bname="robots"[^>]*>/gi)].map((m) => m[0]);
+    if (robots.length !== 1) fail('dist-404', 'dist/404.html', `expected exactly one robots meta, found ${robots.length}`);
+    else if (!/noindex/i.test(robots[0])) fail('dist-404', 'dist/404.html', `robots meta is not noindex: ${robots[0]}`);
+  }
+
+  // Every sitemap <loc> maps to a built file
+  const distSitemap = join(DIST, 'sitemap.xml');
+  let sitemapCount = 0;
+  if (!existsSync(distSitemap)) fail('dist-sitemap', 'dist/sitemap.xml', 'missing');
+  else {
+    const xml = readFileSync(distSitemap, 'utf8');
+    for (const m of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+      sitemapCount += 1;
+      const u = new URL(m[1].trim());
+      const p = u.pathname.replace(/\/$/, '') || '/';
+      const file = p === '/' ? join(DIST, 'index.html') : join(DIST, p.slice(1), 'index.html');
+      if (!existsSync(file)) fail('dist-sitemap', m[1], `no built file (${dl(file)})`);
+    }
+  }
+
+  checkMachineFiles();
+
+  console.log(`dist: ${htmlFiles.length} html files, ${linkCount} App Store links, ${apps.length} MobileApplication node(s), ${sitemapCount} sitemap URLs, campaigns ${CAMPAIGN_TOKENS.length}`);
+}
+
+// ---------------------------------------------------------------- main
+
+const argv = process.argv.slice(2);
+if (argv.length === 0 || argv.includes('--help') || argv.includes('-h')) {
+  console.log('Usage: node scripts/lint-facts.mjs [--diff <base> [--worktree]] [--dist [dir]] [--prompts [files...]] [--all]');
+  process.exit(argv.length === 0 ? 1 : 0);
+}
+
+const flag = (n) => argv.includes(n);
+const valueOf = (n) => { const i = argv.indexOf(n); const v = i >= 0 ? argv[i + 1] : undefined; return v && !v.startsWith('--') ? v : undefined; };
+/** Positional values after `name`, up to the next flag. */
+const valuesAfter = (name) => {
+  const i = argv.indexOf(name);
+  const out = [];
+  for (const a of argv.slice(i + 1)) { if (a.startsWith('--')) break; out.push(a); }
+  return out;
+};
+
+if (flag('--all')) runText(allFiles(), null);
+
+if (flag('--diff')) {
+  const base = valueOf('--diff');
+  if (!base) { console.error('--diff needs a base ref'); process.exit(1); }
+  try {
+    git(['rev-parse', '--verify', '--quiet', `${base}^{commit}`]);
+    const ranges = addedRanges(base, flag('--worktree'));
+    runText(allFiles(), ranges);
+    console.log(`diff: ${textFilesChecked} changed file(s) linted against ${base}${flag('--worktree') ? ' (+ worktree)' : ''}`);
+  } catch (e) {
+    fail('diff-base', base, `cannot diff against "${base}": ${String(e.message).split('\n')[0]}`);
+  }
+}
+
+if (flag('--prompts')) {
+  const files = [
+    ...readdirSync(join(homedir(), '.claude/scheduled-tasks'), { withFileTypes: true })
+      .filter((e) => e.isDirectory() && e.name.startsWith('quranwall-'))
+      .map((e) => join(homedir(), '.claude/scheduled-tasks', e.name, 'SKILL.md'))
+      .sort(),
+    join(ROOT, '.claude/skills/quranwall-blog/SKILL.md'),
+    ...valuesAfter('--prompts'),
+  ];
+  runPrompts(files);
+}
+
+if (flag('--dist')) runDist(valueOf('--dist'));
+
+report();

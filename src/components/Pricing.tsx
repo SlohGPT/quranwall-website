@@ -56,7 +56,7 @@ export default function Pricing() {
           </ul>
 
           <div className="flex justify-center">
-            <AppStoreButton size="lg" href={appStoreUrl(CAMPAIGNS.pricing)} />
+            <AppStoreButton href={appStoreUrl(CAMPAIGNS.pricing)} />
           </div>
         </motion.div>
       </div>
