@@ -8,7 +8,7 @@ export default function NotFound() {
         <div className="min-h-screen bg-surface">
             <Helmet>
                 <title>Page Not Found | QuranWall</title>
-                <meta name="description" content="The page you're looking for doesn't exist. Return to QuranWall to transform your lock screen with daily Quran." />
+                <meta name="description" content="The page you're looking for doesn't exist. Return to QuranWall to put an ayah of the Quran on your iPhone Lock Screen." />
                 <meta name="robots" content="noindex" />
             </Helmet>
             <Navigation />

@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
-import { useInView, animate } from 'framer-motion';
+import { useInView, animate, useReducedMotion } from 'framer-motion';
+import Reveal from './ui/Reveal';
+import StarPattern from './ui/StarPattern';
 
 // NOTE: these numbers ship in the static/SSR HTML that crawlers and AI engines
 // read, so they must be true and consistent with the rest of the site
@@ -22,6 +24,7 @@ function formatCount(n: number, decimals: number, suffix: string) {
 function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const reduceMotion = useReducedMotion();
   // Render the FINAL value ("92%" / "1,000+" / "114") in SSR so crawlers and
   // AI bots that don't execute JS read the real numbers, not "0.0". The
   // count-up still runs on the client when the section scrolls into view
@@ -30,7 +33,7 @@ function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?:
   const [display, setDisplay] = useState(() => formatCount(value, decimals, suffix));
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reduceMotion) return;
     const controls = animate(0, value, {
       duration: 1.6,
       ease: [0.22, 1, 0.36, 1],
@@ -39,36 +42,41 @@ function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?:
       },
     });
     return () => controls.stop();
-  }, [isInView, value, decimals, suffix]);
+  }, [isInView, reduceMotion, value, decimals, suffix]);
 
-  return <span ref={ref}>{display}</span>;
+  return (
+    <span ref={ref} className="tabular-nums">
+      {display}
+    </span>
+  );
 }
 
 export default function SocialProof() {
   return (
-    <section className="py-20 bg-surface">
+    <section aria-label="QuranWall in numbers" className="relative overflow-hidden bg-surface py-16 sm:py-20">
       <div className="container-main">
-        <div className="relative rounded-[2rem] overflow-hidden border-2 border-brand/20">
-          <div className="absolute inset-0 bg-gradient-to-br from-brand/20 via-surface-card to-surface-elevated" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(217, 185, 104,0.15)_0%,_transparent_60%)]" />
+        <Reveal>
+          <div className="relative">
+            {/* hairlines top and bottom frame the band */}
+            <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
+            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+            <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-[min(90%,48rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.10),transparent)]" />
+            <StarPattern opacity={0.03} />
 
-          <div className="relative px-8 py-16 sm:px-12 sm:py-20 lg:px-20 lg:py-24">
-            <div className="grid sm:grid-cols-3 gap-12 sm:gap-8">
+            <dl className="relative grid divide-y divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               {stats.map((stat) => (
-                <div key={stat.label} className="text-center group">
-                  <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-3">
-                    <span className="bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
-                      <Counter value={stat.value} suffix={stat.suffix} />
-                    </span>
-                  </div>
-                  <p className="text-white/60 text-sm sm:text-base font-medium">
+                <div key={stat.label} className="flex flex-col-reverse items-center justify-end px-6 py-10 text-center sm:py-14 lg:py-16">
+                  <dt className="mt-3 max-w-[16rem] text-sm font-medium leading-snug text-white/60 sm:text-base">
                     {stat.label}
-                  </p>
+                  </dt>
+                  <dd className="bg-gradient-to-b from-brand-light to-brand bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent sm:text-5xl lg:text-7xl">
+                    <Counter value={stat.value} suffix={stat.suffix} />
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

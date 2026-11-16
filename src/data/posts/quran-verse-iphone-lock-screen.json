@@ -44,7 +44,7 @@
       "type": "list",
       "items": [
         "An iPhone running **iOS 16 or later** (lock-screen widgets and per-screen wallpapers arrived in iOS 16).",
-        "The **QuranWall** app (free to download, with an in-app subscription) for the automatic method, or a saved verse image if you want to do it by hand.",
+        "The **QuranWall** app for the automatic method, or a saved verse image if you want to do it by hand.",
         "Access to your lock-screen editor: touch and hold your lock screen to open it."
       ]
     },
@@ -137,15 +137,6 @@
     {
       "type": "heading",
       "level": 3,
-      "text": "Is it free?"
-    },
-    {
-      "type": "paragraph",
-      "text": "QuranWall is free to download, with an in-app subscription; the App Store shows the price before you subscribe."
-    },
-    {
-      "type": "heading",
-      "level": 3,
       "text": "Will it drain my battery?"
     },
     {
@@ -174,7 +165,7 @@
     {
       "type": "cta",
       "title": "Put the Quran on your lock screen today",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day. Free to download, with an in-app subscription.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

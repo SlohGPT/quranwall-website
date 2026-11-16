@@ -16,10 +16,6 @@ interface AppNudgeProps {
    */
   title?: string;
   description?: string;
-  /** The post's own copy already says "free to download": show only the subscription half of the install line. */
-  subscriptionOnly?: boolean;
-  /** The post's own copy already says both "free to download" and "subscription": skip the price line. */
-  omitPriceLine?: boolean;
   className?: string;
 }
 
@@ -35,7 +31,7 @@ export function RatingLine({ className = '' }: { className?: string }) {
 }
 
 /**
- * Install card for the blog posts: app icon, one product line, install line, requirements, Apple's badge,
+ * Install card for the blog posts: app icon, one product line, requirements, Apple's badge,
  * and on desktop (lg+) a QR code with "Copy link". No headings inside, and data-nosnippet on the card only,
  * so Google never lifts card text into a snippet. The server and the first client render produce identical
  * markup: the Android check runs in an effect (see useIsAndroid).
@@ -45,8 +41,6 @@ export default function AppNudge({
   placement,
   title,
   description,
-  subscriptionOnly = false,
-  omitPriceLine = false,
   className = '',
 }: AppNudgeProps) {
   const href = appStoreUrl(campaign);
@@ -80,11 +74,6 @@ export default function AppNudge({
             ) : (
               <p className="text-[17px] font-bold leading-snug text-white">
                 A Quran ayah on your iPhone Lock Screen and Home Screen widget.
-              </p>
-            )}
-            {!omitPriceLine && (
-              <p className="text-[15px] leading-snug text-white/75">
-                {subscriptionOnly ? facts.subscriptionLine : facts.installLine}
               </p>
             )}
             <p className="text-[15px] leading-snug text-white/65">{`iPhone · ${facts.minIOSText}`}</p>

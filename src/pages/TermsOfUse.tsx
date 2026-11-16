@@ -24,7 +24,7 @@ export default function TermsOfUse() {
 
                     <p>We operate the mobile application QuranWall, Daily Quran Verses on Your iPhone Lock Screen (the "App"), as well as any other related products and services that refer or link to these legal terms (the "Legal Terms") (collectively, the "Services").</p>
 
-                    <p>QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation. The app may process basic usage data to improve functionality.</p>
+                    <p>QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, in Arabic or a translation. The app may process basic usage data to improve functionality.</p>
 
                     <p>You can contact us by phone at (+421)907758852, email at <a href="mailto:iosnotewall@gmail.com" className="text-primary hover:underline">iosnotewall@gmail.com</a>, or by mail to Borová 9, 951 01 Nitrianske Hrnčiarovce, Slovakia, Nitrianske Hrnčiarovce, Nitriansky kraj 95101, Slovakia.</p>
 

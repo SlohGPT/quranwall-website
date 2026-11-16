@@ -24,7 +24,7 @@ const helpTopics = [
   {
     icon: LifeBuoy,
     title: 'Common questions',
-    body: 'Pricing, supported iPhones, how QuranWall works, and more.',
+    body: 'Supported iPhones, how QuranWall works, and more.',
     to: '#faq',
   },
   {

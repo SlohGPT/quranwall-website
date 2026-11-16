@@ -26,6 +26,9 @@ export default {
       },
       fontFamily: {
         sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        // Mockup type that matches the iOS app (see src/index.css).
+        quran: ['"Amiri Quran"', 'serif'],
+        serif: ['Lora', 'Georgia', 'serif'],
       },
       // Long-form legal pages (Privacy, Terms, EULA) use `prose prose-invert`.
       // Tune the inverted (dark-surface) variant to the brand: readable warm-white

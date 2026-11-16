@@ -16,6 +16,8 @@
  *   --all                       lint every source file (src, index.html, public/*.txt|md, .claude/skills/**)
  *                               and check that every email address equals facts.contactEmail
  *
+ * pricing-mention: QuranWall's price model is never described on the website (see PRICING_EXEMPT for the files that may).
+ *
  * Exit code 1 on any FAIL. WARN never fails.
  *
  * Text rules fire on a sentence that names QuranWall (or, for a few phrases, on the bare phrase). A sentence
@@ -81,6 +83,11 @@ const rules = [
   // "is a free app" with no brand in the sentence (a bare claim in a QuranWall page or post; search-intent
   // wording such as "looking for a free Quran app" is not a claim).
   ['free-app-bare', /\b(?:is|it'?s|it is|this is|that'?s|was|are)\s+(?:a|an)\s+(?:totally\s+|completely\s+|100%\s+)?free\s+(?:\w+\s+){0,2}app\b/i, null],
+  // No pricing on the website at all (Karol, 2026-11-16): QuranWall's own price model is never described on a page,
+  // post, CTA or install card; the App Store shows it. Bare phrases (every page and post is about QuranWall).
+  // Exempt, by file (see PRICING_EXEMPT): public/llms.txt, public/pricing.md (machine files), the legal pages and
+  // src/data/facts.json (feeds those machine files). JSON-LD is not visible text and is never scanned.
+  ['pricing-mention', /\bfree to (?:download|install|get)\b|\bfree downloads?\b|\bin-app subscriptions?\b|\bwith (?:a|an) (?:in-app )?subscription\b|\b(?:app store|apple) (?:listing )?shows (?:you )?(?:what is offered|the price|the prices|pricing)\b|\bshows? the price\b|\bbefore you (?:subscribe|pay)\b/i, null],
   // NOT CONFIRMED by the listing: installing through iOS Focus modes.
   ['focus-install', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\bFocus(?:\\s+(?:modes?|filters?))?\\b|\\bFocus modes?\\b${CL}{0,60}\\b${BRAND}\\b`, 'i'), null, /\blink(?:ed|s)?\b|\bpair(?:ed|s)?\b|\bswitch(?:es|ing)?\b/i],
   // NOT CONFIRMED: verse packs or any named pack.
@@ -132,7 +139,11 @@ const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', '
 // A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
 // claim through a bare phrase, so the bare-phrase rules skip it.
 const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
-const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare']);
+// Files where the pricing-mention rule does not apply: the machine files read by AI answer engines (they keep the
+// factual "free to download, with an in-app subscription, no prices" line on purpose), the legal pages, and the
+// facts file that feeds the machine files. Built legal pages: dist/terms-of-use, dist/eula, dist/privacy-policy.
+const PRICING_EXEMPT = /^(?:public\/(?:llms\.txt|pricing\.md)|src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|src\/data\/facts\.json|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)$/;
+const BARE_RULES = new Set(['pricing-mention', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare']);
 
 /**
  * Files whose negations are rule text, not copy: skills and the SEO queue/keyword notes say "NOT CONFIRMED: do not
@@ -160,6 +171,7 @@ function lintText(text, out, opts = {}) {
   for (const s of text.split(/(?<=[.!?])["']?\s+/)) {
     for (const [id, re, , allow] of rules) {
       if (aboutOtherApp && BARE_RULES.has(id)) continue;
+      if (id === 'pricing-mention' && PRICING_EXEMPT.test(opts.relPath || '')) continue;
       const m = re.exec(s);
       if (!m) continue;
       // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
@@ -215,7 +227,7 @@ function statText(node) {
 function walkJson(node, loc, file, out) {
   if (typeof node === 'string') {
     const found = [];
-    lintText(node, found, negOpts(file));
+    lintText(node, found, { ...negOpts(file), relPath: rel(file) });
     for (const h of found) out.push({ ...h, loc });
     return;
   }
@@ -231,7 +243,7 @@ function walkJson(node, loc, file, out) {
     const stat = statText(node);
     if (stat) {
       const found = [];
-      lintText(stat, found, negOpts(file));
+      lintText(stat, found, { ...negOpts(file), relPath: rel(file) });
       lintStat(node.label, stat, found);
       for (const h of found.filter((x, i) => found.findIndex((y) => y.id === x.id && y.s === x.s) === i)) out.push({ ...h, loc: `${loc} (stat)` });
     }
@@ -258,7 +270,7 @@ function lintFile(abs) {
   } else {
     txt.split('\n').forEach((ln, i) => {
       const found = [];
-      const no = negOpts(abs);
+      const no = { ...negOpts(abs), relPath: rel(abs) };
       lintText(ln, found, no);
       // JSX splits a phrase over tags ("Join <span ...>1,000+</span> believers"): lint the tag-stripped line for social proof.
       if (ln.includes('<')) {
@@ -606,7 +618,7 @@ function runDist(distArg) {
     // Visible text: the same prose rules as the sources, on tag-stripped text (a stat reads "60s Seconds to ...")
     // and the email check on the raw HTML (mailto: links, JSON-LD).
     const found = [];
-    for (const line of htmlToText(html).split('\n')) lintText(line, found);
+    for (const line of htmlToText(html).split('\n')) lintText(line, found, { relPath: r });
     for (const h of found) emit(h, r);
     checkEmailText(html, r);
 
