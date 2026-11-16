@@ -13,6 +13,7 @@
  *                               plus the visible text of every built page (same prose rules) and the email check
  *   --prompts [files...]        lint ~/.claude/scheduled-tasks/quranwall-* /SKILL.md (read-only) and
  *                               .claude/skills/quranwall-blog/SKILL.md, plus any extra files given
+ *   --self-test                 run the embedded table of probes (must-FAIL and must-PASS) through the same code paths
  *   --all                       lint every source file (src, index.html, public/*.txt|md, .claude/skills/**)
  *                               and check that every email address equals facts.contactEmail
  *
@@ -65,9 +66,15 @@ const QTY = String.raw`(?:(?:a|an|a couple of|a few|couple of)\s+(?:seconds?|sec
 // Words that may sit between a setup phrase and its time quantity ("in under", "takes just", "within about").
 const QLEAD = String.raw`(?:(?:in|within|under|just|only|about|around|roughly|less than|takes?|take)\s+)+`;
 // What counts as "setting up" in the setup-time rule.
-const SETUPV = String.raw`(?:set[- ]?up|sets? up|setting up|install\w*|ready|get(?:ting)? started|up and running)`;
+// Objects that may sit between "set" and "up" ("Set it up", "set QuranWall up").
+const SETOBJ = String.raw`(?:it|this|everything|Quran ?Wall|the app|your lock screen)`;
+const SETUPV = String.raw`(?:set(?:s|ting)?[- ]?up|set(?:s|ting)?\s+${SETOBJ}\s+up|install\w*|ready|get(?:ting)? started|up and running)`;
 // A head count: "1,000+", "50,000", "10k", "3 million" (social-proof rules).
 const COUNT = String.raw`\d[\d,.]*\+?(?:\s?(?:k|m|million|thousand)\b)?`;
+// A count in words: "a thousand", "one million", "a hundred thousand", "5 thousand", "thousands of", "hundreds of".
+const WCOUNT = String.raw`(?:(?:a few|several|a|one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+(?:hundred\s+)?(?:thousand|million)|(?:thousands|hundreds|millions) of)`;
+// Optional qualifier before a count.
+const QUAL = String.raw`(?:(?:over|more than|nearly|almost)\s+)?`;
 const PEOPLE = String.raw`(?:believers|muslims|users|people)`;
 // Local negation inside a sentence: a sentence that denies a feature is the opposite of a claim. Real negations
 // only. "only", "unlike", "except", "instead of", "rather than" are NOT negations ("QuranWall is the only app with
@@ -97,11 +104,11 @@ const rules = [
   ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
   // NOT CONFIRMED: the name "Premium". The listing's in-app purchases are called QuranWall+ Weekly / Yearly;
   // write "an in-app subscription" instead. Case-sensitive on purpose ("premium" as an adjective is fine).
-  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:subscription|plan)\b|\bPremium\s+(?:subscription|plan|tier|version)\b/, null],
+  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:[Ss]ubscription|[Pp]lan)\b|\bPremium\s+(?:[Ss]ubscription|[Pp]lan|[Tt]ier|[Vv]ersion|SUBSCRIPTION|PLAN|TIER|VERSION)\b/, null],
   // NOT CONFIRMED: duas inside QuranWall.
   ['duas', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:du'?as?|du'?aa|supplications?|adhkar|adhkaar)\\b|\\b(?:personal|custom|your own|saved|favou?rite)\\s+(?:du'?as?|du'?aa|supplications?)\\b`, 'i'), null, /\b(?:read|reading|recit\w+|write|writing|praying|pray|make|making|about|topic|post|guide|article)\b/i],
   // NOT CONFIRMED: a "60-second setup".
-  ['setup-60s', /\b(?:60|sixty)[- ]?seconds?\b[^.]{0,30}\b(?:set[- ]?up|install\w*|ready|get started|to set)\b|\b(?:set[- ]?up|setting up|install\w*|ready|get started)\b[^.]{0,30}\b(?:in|within|under|just|takes?)\s+(?:about\s+|only\s+|just\s+)?(?:60|sixty)[- ]?seconds?\b|\b(?:a|one|1)[- ]minute\s+set[- ]?up\b/i, null],
+  ['setup-60s', new RegExp(`\\b(?:60|sixty)[- ]?seconds?\\b[^.]{0,30}\\b(?:set[- ]?up|install\\w*|ready|get started|to set)\\b|\\b${SETUPV}\\b[^.]{0,30}\\b(?:in|within|under|just|takes?)\\s+(?:about\\s+|only\\s+|just\\s+)?(?:60|sixty)[- ]?seconds?\\b|\\b(?:a|one|1)[- ]minute\\s+set[- ]?up\\b`, 'i'), null],
   // NOT CONFIRMED: any stated setup time ("Seconds to set up", "2-minute setup", "Set up in under 2 minutes",
   // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
   // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
@@ -122,12 +129,13 @@ const rules = [
   // "1,000+ believers" lines; see GRANDFATHER below). The one allowed number is the App Store Connect downloads floor
   // from facts.json ("Downloaded <downloadsFloor> times", rule social-proof-downloads). Stats whose label names users,
   // believers, people or Muslims are linted separately (lintStat); this rule covers prose and tag-stripped HTML.
-  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+(?:over\\s+|more than\\s+)?(?:${COUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+(?:over\\s+|more than\\s+)?${COUNT}(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|k\\b)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|k)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
-  // "Downloaded <downloadsFloor> times" is the one allowed download claim; any other count FAILs.
-  ['social-proof-downloads', new RegExp(`\\bdownloaded\\s+(?!${escRe(facts.downloadsFloor)}\\s+times\\b)(?:over\\s+|more than\\s+)?\\d[\\d,.]*\\+?\\s+times\\b`, 'i'), null],
+  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|k\\b)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|k)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
+  // Two phrasings are allowed, both only with exactly facts.downloadsFloor (commas ignored, the "+" must match):
+  // "Downloaded <floor> times" and "<floor> downloads". Any other download count FAILs (see downloadHits).
+  ['social-proof-downloads', null, null],
   // NOT CONFIRMED: "Premium" as a plan name ("QuranWall Premium", "upgrade to Premium", "go Premium",
   // "Premium needs ..."). Case-sensitive on Premium on purpose; "premium" as an adjective is fine.
-  ['premium-plan-word', /\bQuran ?Wall Premium\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\s+)?Premium\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
+  ['premium-plan-word', /\bQuran ?Wall\+?\s+Premium\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\+?\s+)?Premium\b|\bPremium\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier)\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
 ];
 
 // A sentence that states the ban itself ("never write ...", "NOT CONFIRMED ...") is not a violation.
@@ -159,12 +167,48 @@ const negOpts = (file) => {
 // planText files a sentence that orders a removal is a mention, not a claim.
 const PLAN_VERBS = /\b(?:reword|rewrite|remove[sd]?|delete[sd]?|replace[sd]?|grandfather\w*|strip(?:ped)?)\b/i;
 
+/** A download count as a comparable string: commas and spaces dropped, so "1,000+" == "1000+" but "1,000" != "1,000+". */
+const normCount = (v) => String(v).replace(/[,\s]/g, '').toLowerCase();
+
+const DL_NUM = String.raw`\d[\d,.]*\+?`;
+const DL_RE_TIMES = new RegExp(String.raw`\bdownloaded\s+(${QUAL})(${DL_NUM}|${WCOUNT})\s+times\b`, 'gi');
+const DL_RE_COUNT = new RegExp(String.raw`(?<![\w.,])(${QUAL})(${DL_NUM}|${WCOUNT})\s+(?:\w+\s+)?downloads\b`, 'gi');
+
+/**
+ * Download counts in one sentence that are not the allowed phrasings. Allowed: "Downloaded <floor> times" and
+ * "<floor> downloads" with exactly facts.downloadsFloor (commas ignored, "+" must match, no "over"/"nearly"
+ * qualifier). A count in words ("a thousand") never matches the floor. Returns match-like arrays with .index.
+ */
+function downloadHits(s) {
+  const floor = normCount(facts.downloadsFloor);
+  const out = [];
+  for (const re of [DL_RE_TIMES, DL_RE_COUNT]) {
+    for (const m of s.matchAll(re)) {
+      const qual = m[1];
+      const tok = m[2];
+      const isDigits = /^\d[\d,.]*\+?$/.test(tok);
+      if (!qual && isDigits && normCount(tok) === floor) continue;
+      out.push(Object.assign([m[0]], { index: m.index }));
+    }
+  }
+  return out;
+}
+
+/** Start of the clause that holds position `idx` in sentence `s`: after the last ':' ';' ', but' ', yet' ', while' ', although' before it. */
+const CLAUSE_BREAK = /[:;]|,\s*(?:but|yet|while|although)\b|\s(?:but|although)\b/gi;
+function clauseStart(s, idx) {
+  let start = 0;
+  for (const b of s.slice(0, idx).matchAll(CLAUSE_BREAK)) start = b.index + b[0].length;
+  return start;
+}
+
 /**
  * Lint one piece of text. Pushes { id, s } into `out`.
  * NEG/DENY (a sentence that states the ban) is applied per clause for site content: only the clause that holds the
- * matched phrase counts, from its start up to the end of the match (clauses end at ':' and ';' as well as at the
- * sentence breaks). So "Never miss a verse: set up in 60 seconds." still fails. Prompt and skill files pass
- * { wholeSentenceNeg: true }: their rule text legitimately says "never write X" anywhere in the sentence.
+ * matched phrase counts, from its start up to the end of the match (clauses end at ':' and ';' and at ', but',
+ * ', yet', ', while', ', although'). So "Never miss a verse: set up in 60 seconds." and "We never claim this, but
+ * QuranWall has audio recitation." still fail. Prompt and skill files pass { wholeSentenceNeg: true }: their rule
+ * text legitimately says "never write X" anywhere in the sentence.
  */
 function lintText(text, out, opts = {}) {
   const aboutOtherApp = OTHER_APP_ITEM.test(text) && !/Quran ?Wall/i.test(text);
@@ -172,20 +216,20 @@ function lintText(text, out, opts = {}) {
     for (const [id, re, , allow] of rules) {
       if (aboutOtherApp && BARE_RULES.has(id)) continue;
       if (id === 'pricing-mention' && PRICING_EXEMPT.test(opts.relPath || '')) continue;
-      const m = re.exec(s);
-      if (!m) continue;
-      // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
-      let scope = s;
-      if (!opts.wholeSentenceNeg) {
-        const start = Math.max(s.lastIndexOf(':', m.index - 1), s.lastIndexOf(';', m.index - 1)) + 1;
-        scope = s.slice(m.index > 0 ? start : 0, m.index + m[0].length);
+      let found;
+      if (id === 'social-proof-downloads') found = downloadHits(s);
+      else { const m = re.exec(s); found = m ? [m] : []; }
+      for (const m of found) {
+        // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
+        const scope = opts.wholeSentenceNeg ? s : s.slice(clauseStart(s, m.index), m.index + m[0].length);
+        if (allow) {
+          if (allow === DENY ? DENY.test(scope) : allow.test(s)) continue;
+        }
+        if (NEG.test(scope)) continue;
+        if (opts.planText && PLAN_VERBS.test(s)) continue;
+        out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
+        break;
       }
-      if (allow) {
-        if (allow === DENY ? DENY.test(scope) : allow.test(s)) continue;
-      }
-      if (NEG.test(scope)) continue;
-      if (opts.planText && PLAN_VERBS.test(s)) continue;
-      out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
     }
   }
 }
@@ -193,12 +237,19 @@ function lintText(text, out, opts = {}) {
 /** A stat label that names a head count (users, believers, people, Muslims) is social proof whatever the value. */
 const STAT_PEOPLE_LABEL = /\b(?:users?|believers?|muslims?|people)\b/i;
 /** A stat label about setup or install time ("Seconds to set up", "Minute setup", "Setup time") fails whatever the value. */
-const STAT_SETUP_LABEL = /\b(?:seconds?|secs?|minutes?|mins?)\b[^.]{0,12}\b(?:set[- ]?up|install\w*)\b|\b(?:set[- ]?up|install\w*)\s+(?:time|speed|in)\b|\btime to (?:set[- ]?up|install|start|get started)\b|\b(?:set[- ]?up|install\w*)\b[^.]{0,12}\b(?:seconds?|secs?|minutes?|mins?)\b/i;
+const STAT_SETUP_LABEL = /\b(?:seconds?|secs?|minutes?|mins?)\b[^.]{0,12}\b(?:set[- ]?up|install\w*|get(?:ting)? started|ready|up and running)\b|\b(?:set[- ]?up|install\w*)\s+(?:time|speed|in)\b|\btime to (?:set[- ]?up|install|start|get started|be ready|ready)\b|\b(?:set[- ]?up|install\w*|get(?:ting)? started|ready|up and running)\b[^.]{0,12}\b(?:seconds?|secs?|minutes?|mins?)\b/i;
+/** A stat label about downloads: the value must be the downloads floor from facts.json. */
+const STAT_DOWNLOADS_LABEL = /\bdownload(?:s|ed)\b/i;
 
 /** Stat-specific rules on {value|number, suffix, label}; `joined` is the rendered "<n><suffix> <label>". */
 function lintStat(label, joined, out) {
-  if (STAT_PEOPLE_LABEL.test(label)) out.push({ id: 'social-proof', s: joined.replace(/\s+/g, ' ').slice(0, 190) });
-  if (STAT_SETUP_LABEL.test(label)) out.push({ id: 'setup-time', s: joined.replace(/\s+/g, ' ').slice(0, 190) });
+  const s = joined.replace(/\s+/g, ' ').slice(0, 190);
+  if (STAT_PEOPLE_LABEL.test(label)) out.push({ id: 'social-proof', s });
+  if (STAT_SETUP_LABEL.test(label)) out.push({ id: 'setup-time', s });
+  if (STAT_DOWNLOADS_LABEL.test(label)) {
+    const shown = joined.slice(0, Math.max(0, joined.length - label.length)).trim(); // "<value><suffix>"
+    if (normCount(shown) !== normCount(facts.downloadsFloor)) out.push({ id: 'social-proof-downloads', s });
+  }
 }
 
 /** Stat objects written on one source line ("{ value: 1000, label: '...', suffix: '+' }") as { label, joined }. */
@@ -269,28 +320,37 @@ function lintFile(abs) {
     for (const h of found) hits.push({ ...h, lines: jsonLines(txt, h.s) });
   } else {
     txt.split('\n').forEach((ln, i) => {
-      const found = [];
-      const no = { ...negOpts(abs), relPath: rel(abs) };
-      lintText(ln, found, no);
-      // JSX splits a phrase over tags ("Join <span ...>1,000+</span> believers"): lint the tag-stripped line for social proof.
-      if (ln.includes('<')) {
-        const stripped = ln.replace(/<\/?[A-Za-z][^<>]*>/g, ' ').replace(/\s+/g, ' ');
-        const extra = [];
-        lintText(stripped, extra, no);
-        const sp = extra.filter((h) => h.id === 'social-proof');
-        if (sp.length) { for (let k = found.length - 1; k >= 0; k--) if (found[k].id === 'social-proof') found.splice(k, 1); found.push(...sp); }
-      }
-      // A stat object on one line is linted as the text it renders.
-      for (const st of statsInSourceLine(ln)) {
-        lintText(st.joined, found, no);
-        lintStat(st.label, st.joined, found);
-      }
-      const uniq = found.filter((x, k) => found.findIndex((y) => y.id === x.id && y.s === x.s) === k);
-      for (const h of uniq) hits.push({ ...h, loc: `L${i + 1}`, lines: [i + 1] });
+      for (const h of lintSourceLine(ln, abs)) hits.push({ ...h, loc: `L${i + 1}`, lines: [i + 1] });
     });
   }
   return hits;
 }
+
+/** Lint one line of a source file (tsx, md, txt, html). Returns de-duplicated { id, s } hits. */
+function lintSourceLine(ln, abs) {
+  const found = [];
+  const no = { ...negOpts(abs), relPath: rel(abs) };
+  lintText(ln, found, no);
+  // JSX splits a phrase over tags ("Join <span ...>1,000+</span> believers"): lint the tag-stripped line for social proof
+  // and download counts.
+  if (ln.includes('<')) {
+    const stripped = ln.replace(/<\/?[A-Za-z][^<>]*>/g, ' ').replace(/\s+/g, ' ');
+    const extra = [];
+    lintText(stripped, extra, no);
+    const sp = extra.filter((h) => SPLIT_TAG_RULES.has(h.id));
+    if (sp.length) {
+      for (let k = found.length - 1; k >= 0; k--) if (SPLIT_TAG_RULES.has(found[k].id)) found.splice(k, 1);
+      found.push(...sp);
+    }
+  }
+  // A stat object on one line is linted as the text it renders.
+  for (const st of statsInSourceLine(ln)) {
+    lintText(st.joined, found, no);
+    lintStat(st.label, st.joined, found);
+  }
+  return found.filter((x, k) => found.findIndex((y) => y.id === x.id && y.s === x.s) === k);
+}
+const SPLIT_TAG_RULES = new Set(['social-proof', 'social-proof-downloads']);
 
 /** Candidate 1-based line numbers where a JSON string value containing `sentence` sits in the raw file. */
 function jsonLines(raw, sentence) {
@@ -511,6 +571,24 @@ function runText(files, rangesByFile) {
  */
 const BAN_HEADING = /\b(?:never|not confirmed|unconfirmed|banned|forbidden|do not|don'?t|must not|not allowed|ruled out)\b/i;
 
+/** Lint the lines of a prompt or skill file: { id, s, line } hits. */
+function lintPromptLines(lines) {
+  const hits = [];
+  let banSection = false;
+  lines.forEach((ln, i) => {
+    const isHeading = /^\s*#{1,6}\s/.test(ln);
+    const isLabel = /^\s*(?:\*\*[^*]+\*\*|[A-Z][A-Z0-9 /&-]{3,}|[A-Z][^.]{0,60}):\s*$/.test(ln);
+    const isItem = /^\s*(?:[-*]|\d+[.)])\s/.test(ln);
+    if (isHeading || isLabel) banSection = BAN_HEADING.test(ln);
+    else if (!isItem && ln.trim() === '') banSection = false;
+    if (banSection && isItem) return;
+    const found = [];
+    lintText(ln, found, { wholeSentenceNeg: true });
+    for (const h of found) hits.push({ ...h, line: i + 1 });
+  });
+  return hits;
+}
+
 function runPrompts(files) {
   let n = 0;
   for (const f of files) {
@@ -518,18 +596,7 @@ function runPrompts(files) {
     const label = abs.startsWith(homedir()) ? '~' + abs.slice(homedir().length) : f;
     if (!existsSync(abs)) { fail('prompt-missing', label, 'file not found'); continue; }
     n += 1;
-    let banSection = false;
-    readFileSync(abs, 'utf8').split('\n').forEach((ln, i) => {
-      const isHeading = /^\s*#{1,6}\s/.test(ln);
-      const isLabel = /^\s*(?:\*\*[^*]+\*\*|[A-Z][A-Z0-9 /&-]{3,}|[A-Z][^.]{0,60}):\s*$/.test(ln);
-      const isItem = /^\s*(?:[-*]|\d+[.)])\s/.test(ln);
-      if (isHeading || isLabel) banSection = BAN_HEADING.test(ln);
-      else if (!isItem && ln.trim() === '') banSection = false;
-      if (banSection && isItem) return;
-      const found = [];
-      lintText(ln, found, { wholeSentenceNeg: true });
-      for (const h of found) emit(h, `${label} L${i + 1}`);
-    });
+    for (const h of lintPromptLines(readFileSync(abs, 'utf8').split('\n'))) emit(h, `${label} L${h.line}`);
   }
   console.log(`prompts: ${n} file(s) linted`);
 }
@@ -705,11 +772,108 @@ function runDist(distArg) {
   console.log(`dist: ${htmlFiles.length} html files, ${linkCount} App Store links, ${apps.length} MobileApplication node(s), ${sitemapCount} sitemap URLs, campaigns ${CAMPAIGN_TOKENS.length}`);
 }
 
+// ---------------------------------------------------------------- self-test
+
+/**
+ * --self-test: a table of probes run through the same code paths as the real modes. kind 'site' = a prose string in site
+ * content (walkJson: per-clause NEG), 'stat' = a stat object (walkJson + lintStat), 'tsx' = one source line
+ * (lintSourceLine: JSX tag stripping and stat objects written inline), 'prompt' = lines of a prompt/skill file
+ * (lintPromptLines: whole-sentence NEG). expect FAIL = at least one hit (and one with id "rule" when given), PASS = no hit.
+ */
+const SELF_TEST = [
+  // must FAIL: items 1-6 of the peer review
+  ['FAIL', 'site', 'Set it up in under a minute.', 'setup-time'],
+  ['FAIL', 'site', 'Set it up in 60 seconds.', 'setup-60s'],
+  ['FAIL', 'site', 'Get it set up in under a minute.', 'setup-time'],
+  ['FAIL', 'site', 'Over a thousand downloads.', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Join over a thousand believers.', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by over a thousand Muslims.', 'social-proof'],
+  ['FAIL', 'site', 'A million users worldwide.', 'social-proof'],
+  ['FAIL', 'site', 'Hundreds of people already use it.', 'social-proof'],
+  ['FAIL', 'site', '5,000+ downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', '1,000 downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Downloaded 5,000+ times', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Downloaded 1,000 times', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Downloaded over 1,000+ times', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Get QuranWall+ Premium', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Plan', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Subscription', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Tier', 'premium-plan-word'],
+  ['FAIL', 'stat', { value: 5, label: 'Minutes to get started' }, 'setup-time'],
+  ['FAIL', 'stat', { value: 2, label: 'Minutes to be ready' }, 'setup-time'],
+  ['FAIL', 'stat', { value: 5, label: 'Minutes up and running' }, 'setup-time'],
+  ['FAIL', 'stat', { value: 5000, suffix: '+', label: 'Downloads' }, 'social-proof-downloads'],
+  ['FAIL', 'stat', { value: 1000, label: 'Downloads' }, 'social-proof-downloads'],
+  ['FAIL', 'stat', { value: 1000, suffix: '+', label: 'Downloaded by Muslims' }, 'social-proof'],
+  ['FAIL', 'stat', { value: 12, label: 'App downloaded' }, 'social-proof-downloads'],
+  ['FAIL', 'tsx', "{ value: 5, label: 'Minutes to get started' }", 'setup-time'],
+  ['FAIL', 'tsx', "{ value: 2000, suffix: '+', label: 'Downloads' }", 'social-proof-downloads'],
+  ['FAIL', 'tsx', 'Over <b>5,000</b> downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', 'We never claim this, but QuranWall has audio recitation.', 'invented-audio'],
+  ['FAIL', 'site', 'We do not claim this, yet QuranWall has audio recitation.', 'invented-audio'],
+  ['FAIL', 'site', 'Other apps lack it, while QuranWall has tafsir.', 'invented-tafsir'],
+  // must FAIL: earlier probes
+  ['FAIL', 'site', 'Thousands of believers use QuranWall.', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by 10,000+ users.', 'social-proof'],
+  ['FAIL', 'site', 'Join 50,000 believers.', 'social-proof'],
+  ['FAIL', 'stat', { number: '10,000+', label: 'Active users' }, 'social-proof'],
+  ['FAIL', 'site', 'QuranWall: 60s setup.', 'setup-time'],
+  ['FAIL', 'site', 'ready in under 2 minutes', 'setup-time'],
+  ['FAIL', 'site', 'Setup takes a minute.', 'setup-time'],
+  ['FAIL', 'site', 'Get started in 30 seconds.', 'setup-time'],
+  ['FAIL', 'site', 'It sets up in under a minute.', 'setup-time'],
+  ['FAIL', 'site', 'Never miss a verse: set up in 60 seconds.', 'setup-60s'],
+  ['FAIL', 'site', 'Premium needs a subscription.', 'premium-plan-word'],
+  ['FAIL', 'site', 'Upgrade to Premium.', 'premium-plan-word'],
+  ['FAIL', 'site', 'Go Premium for more fonts.', 'premium-plan-word'],
+  ['FAIL', 'site', 'Get QuranWall Premium today.', 'premium-plan-word'],
+  // must PASS
+  ['PASS', 'site', 'QuranWall is free to download, with an in-app subscription.', null, 'public/llms.txt'],
+  ['PASS', 'site', 'Downloaded 1,000+ times'],
+  ['PASS', 'site', 'Downloaded 1000+ times'],
+  ['PASS', 'site', '1,000+ downloads'],
+  ['PASS', 'stat', { value: 1000, suffix: '+', label: 'Downloads' }],
+  ['PASS', 'stat', { value: '1,000+', label: 'Downloads' }],
+  ['PASS', 'tsx', "{ value: 1000, suffix: '+', label: 'Downloads' }"],
+  ['PASS', 'site', 'QuranWall has no audio recitation.'],
+  ['PASS', 'site', 'QuranWall has no audio recitation, but it puts a verse on your Lock Screen.'],
+  ['PASS', 'site', 'Never miss a verse.'],
+  ['PASS', 'site', 'a translation in 10 languages'],
+  ['PASS', 'site', 'All 114 surahs, searchable'],
+  ['PASS', 'stat', { value: 114, suffix: '', label: 'Surahs, all searchable' }],
+  ['PASS', 'site', 'Over 1.8 billion Muslims read the Quran.'],
+  ['PASS', 'site', '90% of people forget what they read.'],
+  ['PASS', 'site', 'Better than a thousand months.'],
+  ['PASS', 'site', 'This premium wallpaper look suits a Lock Screen.'],
+  ['PASS', 'prompt', ['Never call the subscription "Premium".']],
+  ['PASS', 'prompt', ['Never claim this, but QuranWall has audio recitation.']],
+];
+
+function runSelfTest() {
+  let bad = 0;
+  for (const [expect, kind, input, rule, path] of SELF_TEST) {
+    const found = [];
+    if (kind === 'site') walkJson(input, '', join(ROOT, path || 'src/data/selftest.json'), found);
+    else if (kind === 'stat') walkJson(input, '', join(ROOT, 'src/data/selftest.json'), found);
+    else if (kind === 'tsx') found.push(...lintSourceLine(input, join(ROOT, 'src/components/SelfTest.tsx')));
+    else if (kind === 'prompt') found.push(...lintPromptLines(input));
+    const got = found.length ? 'FAIL' : 'PASS';
+    const ruleOk = !rule || expect !== 'FAIL' || found.some((h) => h.id === rule);
+    const ok = got === expect && ruleOk;
+    if (!ok) bad += 1;
+    const shown = typeof input === 'string' ? input : JSON.stringify(input);
+    const ids = [...new Set(found.map((h) => h.id))].join(',');
+    console.log(`${ok ? 'ok  ' : 'BAD '} expected ${expect} got ${got}${ids ? ' [' + ids + ']' : ''}${!ok && !ruleOk ? ' (wanted ' + rule + ')' : ''}  ${kind}: ${shown}`);
+    if (!ok) fail('self-test', kind, shown);
+  }
+  console.log(`self-test: ${SELF_TEST.length - bad}/${SELF_TEST.length} cases agree`);
+}
+
 // ---------------------------------------------------------------- main
 
 const argv = process.argv.slice(2);
 if (argv.length === 0 || argv.includes('--help') || argv.includes('-h')) {
-  console.log('Usage: node scripts/lint-facts.mjs [--diff <base> [--worktree]] [--dist [dir]] [--prompts [files...]] [--all]');
+  console.log('Usage: node scripts/lint-facts.mjs [--diff <base> [--worktree]] [--dist [dir]] [--prompts [files...]] [--all] [--self-test]');
   process.exit(argv.length === 0 ? 1 : 0);
 }
 
@@ -722,6 +886,8 @@ const valuesAfter = (name) => {
   for (const a of argv.slice(i + 1)) { if (a.startsWith('--')) break; out.push(a); }
   return out;
 };
+
+if (flag('--self-test')) runSelfTest();
 
 if (flag('--all')) { runText(allFiles(), null); checkSourceEmails(); }
 
