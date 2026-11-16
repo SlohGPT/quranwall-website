@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
                         This Privacy Notice for QuranWall ("we," "us," or "our"), describes how and why we might access, collect, store, use, and/or share ("process") your personal information when you use our services ("Services"), including when you:
                     </p>
                     <ul>
-                        <li>Download and use our mobile application (QuranWall, Daily Quran Verses on Your iPhone Lock Screen), or any other application of ours that links to this Privacy Notice</li>
+                        <li>Download and use our mobile application, QuranWall ("Quran Widget: QuranWall" on the App Store), or any other application of ours that links to this Privacy Notice</li>
                         <li>Use QuranWall. QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, in Arabic or a translation. The app may process basic usage data to improve functionality.</li>
                         <li>Engage with us in other related ways, including any marketing or events</li>
                     </ul>

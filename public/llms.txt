@@ -1,6 +1,6 @@
 # QuranWall
 
-> QuranWall (App Store title "Quran Widget: QuranWall") is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and a Home Screen widget, with the Uthmani Arabic beside a translation. It is free to download, with an in-app subscription.
+> QuranWall (App Store title "Quran Widget: QuranWall") is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and a Home Screen widget, in Uthmani Arabic or a translation. It is free to download, with an in-app subscription.
 
 ## Key facts
 
@@ -20,14 +20,15 @@ The download is free, with an in-app subscription. QuranWall states no prices he
 ## What it does
 
 - Puts an ayah on the iPhone Lock Screen wallpaper and on a Home Screen widget
-- Shows Uthmani Arabic beside a translation, in 10 languages
+- Shows the ayah in Uthmani Arabic or a translation: 10 languages in all
+- The Lock Screen wallpaper keeps the ayah you chose until you pick another; the widget can switch to a new ayah every day, every 8 hours or every hour
 - Lets you choose your own background (a preset or your own photo), font and colours
 - All 114 surahs are searchable by surah, ayah or keyword
-- No ads, and it works offline
+- No ads. The Quran text in every language ships inside the app, so browsing, search and the widget work offline
 
 ## What it does not do
 
-No audio recitation, tafsir, hifz tools, prayer times or qibla. There is no AI feature, no Android app and no web app.
+No tafsir, hifz tools, prayer times or qibla. There is no AI feature, no Android app and no web app.
 
 ## Key pages
 

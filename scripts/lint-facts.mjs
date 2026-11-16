@@ -62,7 +62,8 @@ const CL = String.raw`[^.,;:—–()|]`;
 // A number as digits or a small number word (setup-time rule).
 const NUM = String.raw`(?:\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|forty-five|sixty|ninety)`;
 // A time quantity: "60 seconds", "60s", "2 minutes", "a minute", "a couple of minutes", "a few seconds".
-const QTY = String.raw`(?:(?:a|an|a couple of|a few|couple of)\s+(?:seconds?|secs?|minutes?|mins?)|${NUM}\s?(?:seconds?|secs?|minutes?|mins?|s))\b`;
+// A bare plural unit ("in seconds", "in minutes") is a time claim too.
+const QTY = String.raw`(?:(?:a|an|a couple of|a few|couple of)\s+(?:seconds?|secs?|minutes?|mins?)|${NUM}\s?(?:seconds?|secs?|minutes?|mins?|s)|(?:seconds|secs|minutes|mins))\b`;
 // Words that may sit between a setup phrase and its time quantity ("in under", "takes just", "within about").
 const QLEAD = String.raw`(?:(?:in|within|under|just|only|about|around|roughly|less than|takes?|take)\s+)+`;
 // What counts as "setting up" in the setup-time rule.
@@ -70,9 +71,10 @@ const QLEAD = String.raw`(?:(?:in|within|under|just|only|about|around|roughly|le
 const SETOBJ = String.raw`(?:it|this|everything|Quran ?Wall|the app|your lock screen)`;
 const SETUPV = String.raw`(?:set(?:s|ting)?[- ]?up|set(?:s|ting)?\s+${SETOBJ}\s+up|install\w*|ready|get(?:ting)? started|up and running)`;
 // A head count: "1,000+", "50,000", "10k", "3 million" (social-proof rules).
-const COUNT = String.raw`\d[\d,.]*\+?(?:\s?(?:k|m|million|thousand)\b)?`;
+const COUNT = String.raw`\d[\d,.]*(?:\s?(?:k|m|million|thousand)\b)?\+?`;
 // A count in words: "a thousand", "one million", "a hundred thousand", "5 thousand", "thousands of", "hundreds of".
-const WCOUNT = String.raw`(?:(?:a few|several|a|one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+(?:hundred\s+)?(?:thousand|million)|(?:thousands|hundreds|millions) of)`;
+const NUMW = String.raw`(?:a few|several|a|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[- ](?:one|two|three|four|five|six|seven|eight|nine))?|\d+)`;
+const WCOUNT = String.raw`(?:${NUMW}\s+(?:hundred\s+)?(?:thousand|million)|(?:thousands|hundreds|millions) of|${NUMW}\s+hundred\b|hundred\s+(?:thousand|million))`;
 // Optional qualifier before a count.
 const QUAL = String.raw`(?:(?:over|more than|nearly|almost)\s+)?`;
 const PEOPLE = String.raw`(?:believers|muslims|users|people)`;
@@ -104,7 +106,7 @@ const rules = [
   ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
   // NOT CONFIRMED: the name "Premium". The listing's in-app purchases are called QuranWall+ Weekly / Yearly;
   // write "an in-app subscription" instead. Case-sensitive on purpose ("premium" as an adjective is fine).
-  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:[Ss]ubscription|[Pp]lan)\b|\bPremium\s+(?:[Ss]ubscription|[Pp]lan|[Tt]ier|[Vv]ersion|SUBSCRIPTION|PLAN|TIER|VERSION)\b/, null],
+  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:[Ss]ubscription|[Pp]lan)\b|\bPremium\s+(?:[Ss]ubscription|[Pp]lan|[Tt]ier|[Vv]ersion|[Mm]embership|SUBSCRIPTION|PLAN|TIER|VERSION|MEMBERSHIP)\b/, null],
   // NOT CONFIRMED: duas inside QuranWall.
   ['duas', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:du'?as?|du'?aa|supplications?|adhkar|adhkaar)\\b|\\b(?:personal|custom|your own|saved|favou?rite)\\s+(?:du'?as?|du'?aa|supplications?)\\b`, 'i'), null, /\b(?:read|reading|recit\w+|write|writing|praying|pray|make|making|about|topic|post|guide|article)\b/i],
   // NOT CONFIRMED: a "60-second setup".
@@ -112,7 +114,7 @@ const rules = [
   // NOT CONFIRMED: any stated setup time ("Seconds to set up", "2-minute setup", "Set up in under 2 minutes",
   // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
   // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
-  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b`, 'i'), null],
+  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b`, 'i'), null],
   // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
   ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
   // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
@@ -129,13 +131,13 @@ const rules = [
   // "1,000+ believers" lines; see GRANDFATHER below). The one allowed number is the App Store Connect downloads floor
   // from facts.json ("Downloaded <downloadsFloor> times", rule social-proof-downloads). Stats whose label names users,
   // believers, people or Muslims are linted separately (lintStat); this rule covers prose and tag-stripped HTML.
-  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|k\\b)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|k)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
+  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|[km]\\b\\+?)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|[km]\\b\\+?)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
   // Two phrasings are allowed, both only with exactly facts.downloadsFloor (commas ignored, the "+" must match):
   // "Downloaded <floor> times" and "<floor> downloads". Any other download count FAILs (see downloadHits).
   ['social-proof-downloads', null, null],
   // NOT CONFIRMED: "Premium" as a plan name ("QuranWall Premium", "upgrade to Premium", "go Premium",
   // "Premium needs ..."). Case-sensitive on Premium on purpose; "premium" as an adjective is fine.
-  ['premium-plan-word', /\bQuran ?Wall\+?\s+Premium\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\+?\s+)?Premium\b|\bPremium\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier)\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
+  ['premium-plan-word', /\bQuran ?Wall\+?\s+(?:Premium|Pro|Plus)\b|\b[Uu]pgrad(?:e|es|ed|ing)\s+to\s+(?:Pro|Plus)\b|\b(?:Pro|Plus)\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\+?\s+)?Premium\b|\bPremium\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
 ];
 
 // A sentence that states the ban itself ("never write ...", "NOT CONFIRMED ...") is not a violation.
@@ -170,9 +172,12 @@ const PLAN_VERBS = /\b(?:reword|rewrite|remove[sd]?|delete[sd]?|replace[sd]?|gra
 /** A download count as a comparable string: commas and spaces dropped, so "1,000+" == "1000+" but "1,000" != "1,000+". */
 const normCount = (v) => String(v).replace(/[,\s]/g, '').toLowerCase();
 
-const DL_NUM = String.raw`\d[\d,.]*\+?`;
-const DL_RE_TIMES = new RegExp(String.raw`\bdownloaded\s+(${QUAL})(${DL_NUM}|${WCOUNT})\s+times\b`, 'gi');
-const DL_RE_COUNT = new RegExp(String.raw`(?<![\w.,])(${QUAL})(${DL_NUM}|${WCOUNT})\s+(?:\w+\s+)?downloads\b`, 'gi');
+const DL_NUM = String.raw`\d[\d,.]*(?:[km]\b)?\+?`;
+// Installs are counted like downloads, but never allowed (even the floor: the floor is a download count).
+// "Step 2 installs the widget" is a verb, not a count.
+const NOT_ORDINAL = String.raw`(?<!\b(?:step|tap|option|method|part|stage|page|no\.?|number|#)\s)`;
+const DL_RE_TIMES = new RegExp(String.raw`\b(downloaded|installed)\s+(${QUAL})(${DL_NUM}|${WCOUNT})\s+times\b`, 'gi');
+const DL_RE_COUNT = new RegExp(String.raw`(?<![\w.,])${NOT_ORDINAL}(${QUAL})(${DL_NUM}|${WCOUNT})\s+(?:\w+\s+)?(downloads|installs)\b`, 'gi');
 
 /**
  * Download counts in one sentence that are not the allowed phrasings. Allowed: "Downloaded <floor> times" and
@@ -184,10 +189,9 @@ function downloadHits(s) {
   const out = [];
   for (const re of [DL_RE_TIMES, DL_RE_COUNT]) {
     for (const m of s.matchAll(re)) {
-      const qual = m[1];
-      const tok = m[2];
+      const [verb, qual, tok] = re === DL_RE_TIMES ? [m[1], m[2], m[3]] : [m[3], m[1], m[2]];
       const isDigits = /^\d[\d,.]*\+?$/.test(tok);
-      if (!qual && isDigits && normCount(tok) === floor) continue;
+      if (!/^install/i.test(verb) && !qual && isDigits && normCount(tok) === floor) continue;
       out.push(Object.assign([m[0]], { index: m.index }));
     }
   }
@@ -237,15 +241,18 @@ function lintText(text, out, opts = {}) {
 /** A stat label that names a head count (users, believers, people, Muslims) is social proof whatever the value. */
 const STAT_PEOPLE_LABEL = /\b(?:users?|believers?|muslims?|people)\b/i;
 /** A stat label about setup or install time ("Seconds to set up", "Minute setup", "Setup time") fails whatever the value. */
-const STAT_SETUP_LABEL = /\b(?:seconds?|secs?|minutes?|mins?)\b[^.]{0,12}\b(?:set[- ]?up|install\w*|get(?:ting)? started|ready|up and running)\b|\b(?:set[- ]?up|install\w*)\s+(?:time|speed|in)\b|\btime to (?:set[- ]?up|install|start|get started|be ready|ready)\b|\b(?:set[- ]?up|install\w*|get(?:ting)? started|ready|up and running)\b[^.]{0,12}\b(?:seconds?|secs?|minutes?|mins?)\b/i;
+const STAT_SETUP_LABEL = /\b(?:seconds?|secs?|minutes?|mins?|taps?|clicks?|steps?)\b[^.]{0,12}\b(?:set[- ]?up|install\w*|start(?:ed|ing)?|get(?:ting)? (?:started|going)|going|ready|up and running)\b|\b(?:set[- ]?up|install\w*)\s+(?:time|speed|in)\b|\btime to (?:set[- ]?up|install|start|get started|get going|be ready|ready)\b|\b(?:set[- ]?up|install\w*|start(?:ed|ing)?|get(?:ting)? (?:started|going)|going|ready|up and running)\b[^.]{0,12}\b(?:seconds?|secs?|minutes?|mins?|taps?|clicks?|steps?)\b/i;
 /** A stat label about downloads: the value must be the downloads floor from facts.json. */
 const STAT_DOWNLOADS_LABEL = /\bdownload(?:s|ed)\b/i;
+/** A stat label about installs: any value fails (the floor is a download count, not an install count). */
+const STAT_INSTALLS_LABEL = /\binstall(?:s|ed|ations?)\b/i;
 
 /** Stat-specific rules on {value|number, suffix, label}; `joined` is the rendered "<n><suffix> <label>". */
 function lintStat(label, joined, out) {
   const s = joined.replace(/\s+/g, ' ').slice(0, 190);
   if (STAT_PEOPLE_LABEL.test(label)) out.push({ id: 'social-proof', s });
   if (STAT_SETUP_LABEL.test(label)) out.push({ id: 'setup-time', s });
+  if (STAT_INSTALLS_LABEL.test(label)) out.push({ id: 'social-proof-downloads', s });
   if (STAT_DOWNLOADS_LABEL.test(label)) {
     const shown = joined.slice(0, Math.max(0, joined.length - label.length)).trim(); // "<value><suffix>"
     if (normCount(shown) !== normCount(facts.downloadsFloor)) out.push({ id: 'social-proof-downloads', s });
@@ -827,7 +834,48 @@ const SELF_TEST = [
   ['FAIL', 'site', 'Upgrade to Premium.', 'premium-plan-word'],
   ['FAIL', 'site', 'Go Premium for more fonts.', 'premium-plan-word'],
   ['FAIL', 'site', 'Get QuranWall Premium today.', 'premium-plan-word'],
+  // must FAIL: peer review round 3 (k/m counts, installs, longer word counts, setup phrasing, plan names)
+  ['FAIL', 'site', '10K downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', '1k+ downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Used by 1k+ believers', 'social-proof'],
+  ['FAIL', 'site', 'Join 1K+ users', 'social-proof'],
+  ['FAIL', 'site', '2M users', 'social-proof'],
+  ['FAIL', 'stat', { value: '1K+', label: 'Installs' }, 'social-proof-downloads'],
+  ['FAIL', 'stat', { value: 5000, suffix: '+', label: 'Installs' }, 'social-proof-downloads'],
+  ['FAIL', 'stat', { value: 1000, suffix: '+', label: 'Installs' }, 'social-proof-downloads'],
+  ['FAIL', 'tsx', "{ value: 5000, suffix: '+', label: 'Installs' }", 'social-proof-downloads'],
+  ['FAIL', 'site', '5,000 installs', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Over 5,000 installs', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Installed 5,000 times', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Installed 1,000+ times', 'social-proof-downloads'],
+  ['FAIL', 'site', '1,000+ installs', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Thousands of installs', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Join twenty thousand believers', 'social-proof'],
+  ['FAIL', 'site', 'Over two hundred thousand downloads', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Hundreds of thousands of users', 'social-proof'],
+  ['FAIL', 'site', 'Join twenty-five thousand believers', 'social-proof'],
+  ['FAIL', 'site', 'Over two hundred users', 'social-proof'],
+  ['FAIL', 'site', 'QuranWall installs in seconds.', 'setup-time'],
+  ['FAIL', 'site', 'Done in 2 minutes with QuranWall.', 'setup-time'],
+  ['FAIL', 'site', 'Ready in 30 seconds.', 'setup-time'],
+  ['FAIL', 'stat', { value: 5, label: 'Seconds to start' }, 'setup-time'],
+  ['FAIL', 'stat', { value: 3, label: 'Taps to get going' }, 'setup-time'],
+  ['FAIL', 'site', 'Premium Membership', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Membership', 'premium-name'],
+  ['FAIL', 'site', 'Upgrade to QuranWall Pro', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall Plus plan', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall Premium', 'premium-plan-word'],
   // must PASS
+  ['PASS', 'site', 'Install QuranWall, then choose your ayah.'],
+  ['PASS', 'site', 'After you install it, open QuranWall.'],
+  ['PASS', 'site', 'Your Lock Screen keeps the ayah you chose until you pick another one in QuranWall, which takes a few taps.'],
+  ['PASS', 'site', 'Turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour.'],
+  ['PASS', 'site', "Tap Done when you're finished."],
+  ['PASS', 'site', 'Pro tip: pin the widget first.'],
+  ['PASS', 'site', 'Search all 114 surahs.'],
+  ['PASS', 'site', 'Twenty-four hours a day'],
+  ['PASS', 'site', 'in 10 languages'],
+  ['PASS', 'site', 'Step 2 installs the widget.'],
   ['PASS', 'site', 'QuranWall is free to download, with an in-app subscription.', null, 'public/llms.txt'],
   ['PASS', 'site', 'Downloaded 1,000+ times'],
   ['PASS', 'site', 'Downloaded 1000+ times'],
