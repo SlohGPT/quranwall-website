@@ -152,3 +152,53 @@ The FaithWall session ("SEO strategy and blog traffic") relayed Karol's request 
   - links to the three money posts in its body
 - **No MobileApplication** on `/features`.
 - **IndexNow:** accepted the 14 changed pages plus `llms.txt` and `pricing.md`.
+
+## Night: the conversion and measurement layer (FaithWall brief, part 2)
+The FaithWall session sent part 2: port its install-card and fact-gate commit (`b73c084` on faithwall.app) to QuranWall. It came with the instruction to finish part 1 first: the home-page links, the phone CTA order and Request Indexing.
+
+- **Part 1 leftovers:**
+  - The home links and the phone CTA order already shipped in `961cfdc`.
+  - Request Indexing: retried once on the first money post, and Google still answered "quota exceeded". By then that post had moved from unknown to "discovered", so Google is finding the pages on its own. The TODO stays for 2026-11-17 or later.
+- **Built (`26a756a`):**
+  - `src/data/facts.json`, one source for product facts: store name, iOS minimum, the install line, and the rating with `show: false` because the listing has only two ratings. The home schema reads it.
+  - Campaign tokens are a fixed list capped at 30 characters (Apple's limit):
+    - new `qw-web-blog-mid`, `qw-web-blog-end` and `qw-web-blog-sticky`
+    - new `qw-web-smart-banner` (the Smart App Banner now carries pt and ct) and `qw-web-handoff`
+  - Apple's official badge everywhere, with Apple's credit line in the footer. The two home-made badge images were removed.
+  - Install cards on all 8 posts:
+    - one mid card, placed by FaithWall's four rules
+    - the end card, built from the post's own CTA
+    - a desktop QR code plus Copy link, using Apple's short link (checked: it 301s to the listing with pt and ct kept, and the QR decodes to exactly that URL)
+    - a phone sticky bar that hides over cards and the footer
+    - on Android, a "made for iPhone" line and no sticky bar
+  - Post typography: 17 px on phones and 18 px on desktop, with paragraphs and lists the same size, and a measure of about 68 characters.
+  - Gates:
+    - `scripts/lint-facts.mjs`: `--diff`, `--dist`, `--prompts` and `--all`
+    - `scripts/check-facts.mjs`: compares the live listing with `facts.json`, and may rewrite only `rating.*`
+    - IndexNow `--changed` and `--dry-run`
+    - `gsc-inspect` turns API errors into ERR rows and exits 1 when every row fails
+  - Three posts said "attach your QuranWall lock screen to an iOS Focus mode". They now describe linking a Lock Screen to a Focus as the iOS 16 feature it is.
+- **Machine:**
+  - The merge bot treats a lint-facts FAIL (`--diff` and `--dist`) as blocking and may derive IndexNow URLs with `--changed`.
+  - The refresh runs `check-facts`, then `lint-facts --all` and `--prompts`, and skips the indexing comparison when inspection fails.
+  - The autopilot lints its own diff.
+  - The ship date and token list are recorded privately in `~/.claude/quranwall-gsc/`. There's no control group, because there were no impressions to compare.
+- **Decided, where it differs from the brief:**
+  - The link base keeps the slug the repo `CLAUDE.md` documents (`quran-verse-lock-screen`). Apple 301s it to the current slug (`quran-widget-quranwall`) and keeps pt and ct. Switching means changing `CLAUDE.md`, which is Karol's call.
+  - The in-body blog token stays `qw-web-blog` rather than `qw-web-blog-body`. It keeps the history, and `CLAUDE.md` and the blog skill name it.
+  - QuranWall posts have no illustrations, so the hero photo counts as the illustration for mid-card rule (a). Otherwise no post would get a card.
+  - The end card drops the price line when the post's own CTA already says both "free to download" and "subscription". FaithWall's rule would have printed the subscription half twice.
+  - The measure is set in rem, because a literal `68ch` in this font fills the whole column.
+- **Verified:**
+  - typecheck clean; build 16/16
+  - `lint-facts` `--dist`, `--diff`, `--prompts` and `--all`: 0 FAIL; `check-facts`: no change
+  - headless screenshots at 390x664 (CDP device emulation) and 1440x900 of home, a post and `/features`, with no console errors
+  - Copy link puts the handoff URL on the clipboard, and the fallback input works
+  - Live after the deploy: home, `/features` and a post carry the Smart App Banner token and the official badge; the post has its mid and end cards; the QR and badge files answer 200; `/nope` answers 404
+  - IndexNow: accepted the full sitemap.
+  - Indexing has improved since the morning (URL Inspection: a few more pages indexed, most still unknown). Monday's refresh tracks it.
+- **Open:**
+  - Request Indexing, 2026-11-17 or later
+  - Karol's first Campaigns read around 2026-12-16, including whether `qw-web-smart-banner` shows up at all
+  - the contact email
+  - the slug and push lines in `CLAUDE.md`
