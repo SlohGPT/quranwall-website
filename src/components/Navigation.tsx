@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { featureNav } from '../data/featureNav';
+import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
-const APP_STORE_URL = 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080';
+const APP_STORE_URL = appStoreUrl(CAMPAIGNS.nav);
 
 export default function Navigation() {
   const [hasScrolled, setHasScrolled] = useState(false);

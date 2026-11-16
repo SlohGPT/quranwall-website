@@ -24,3 +24,6 @@ dist-ssr
 .env.*
 !.env.example
 .vercel
+
+# Local Search Console dumps (public repo: never commit raw GSC numbers)
+gsc-data*.json

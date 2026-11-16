@@ -1,35 +1,26 @@
 # QuranWall
 
-> QuranWall is a free iOS app that transforms the iPhone lock screen into a daily source of Quran, prayer, and Muslim inspiration. It uses the iOS wallpaper system and Focus modes (iOS 16+) to surface Quran verses every time you pick up your phone.
+> QuranWall is an iOS app, free to download with optional in-app subscription plans, that transforms the iPhone lock screen into a daily source of Quran, prayer, and Muslim inspiration. It uses the iOS wallpaper system and Focus modes (iOS 16+) to surface Quran verses every time you pick up your phone.
 
 ## Key facts
 
 - **What it is**: iOS app for daily Quran verses on the iPhone lock screen
-- **Platform**: iOS 16.0 and later
+- **Platform**: iPhone (iOS 15.0 or later per the App Store listing; lock screen widgets and per-screen wallpapers need iOS 16)
 - **Price**: Free download with optional premium plans
-- **App Store**: https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080
+- **App Store**: https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-llms&mt=8
 - **Website**: https://quranwall.com
 - **Author / Founder**: Karol Billik
 - **Built by**: karchi. (https://www.karchi.xyz/)
 - **Contact**: iosnotewall@gmail.com
-- **Minimum iOS**: 16.0
-- **Pricing**: Free download. Premium plans typically $1.99/month or $8.99/year (one-tier upgrade, no enterprise/teams plan). The exact price is shown in the App Store at checkout in your local currency and may vary by region and over time.
+- **Minimum iOS**: 15.0 (App Store listing)
+- **Pricing**: Free to download, with in-app subscription plans (weekly and yearly billing periods in the App Store listing). Prices and any free-trial or introductory offer are shown in the App Store before you pay, in your local currency, and change over time, so this file states none.
 
 ## Pricing
 
-- Free
-  - Daily Quran verse on the lock screen (wallpaper or widget)
-  - Curated verse packs and rotating verses
-  - iOS Focus mode integration
-- Premium, $1.99/month
-  - All free features
-  - Unlimited verse packs and customization
-  - Future updates included
-- Premium, $8.99/year (best value, equivalent to ~$0.75/month)
-  - Same as monthly, paid annually
-  - All future updates included
+- Download: free
+- Premium: auto-renewing in-app subscription plans, weekly and yearly billing periods (per the App Store listing)
 
-Prices above are the typical US-store amounts. The exact price, billing period, and any free-trial offer are shown in the App Store at checkout in your local currency and may vary by region and over time. Payment processing is handled by RevenueCat; QuranWall does not store card details.
+QuranWall states no prices here. The App Store shows the exact price, billing period and any free-trial or introductory offer before you pay, in your local currency, and these vary by region and over time. Payment processing is handled by RevenueCat; QuranWall does not store card details.
 
 ## How it works
 
@@ -54,4 +45,4 @@ QuranWall delivers Quran to the most-seen surface on a smartphone, the lock scre
 
 ## Last updated
 
-2026-06-19
+2026-11-16

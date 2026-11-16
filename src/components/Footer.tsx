@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
+import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
 const footerLinks = {
   about: [
     { name: 'Features', href: '/features' },
-    { name: 'Download', href: 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080' },
+    { name: 'Download', href: appStoreUrl(CAMPAIGNS.footer) },
     { name: 'Pricing', href: '/#pricing' },
     { name: 'Support', href: '/support' },
   ],
@@ -56,7 +57,7 @@ export default function Footer() {
             </p>
 
             <div className="mt-6">
-              <AppStoreButton href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" />
+              <AppStoreButton href={appStoreUrl(CAMPAIGNS.footer)} />
             </div>
           </div>
 

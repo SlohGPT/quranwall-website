@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
 const plans = [
   {
@@ -89,7 +90,7 @@ export default function Pricing() {
               </ul>
 
               <a
-                href="https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080"
+                href={appStoreUrl(CAMPAIGNS.pricing)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`block w-full py-4 text-center font-bold rounded-xl transition-all duration-200 ${plan.featured

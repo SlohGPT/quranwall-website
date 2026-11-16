@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "updated": "2026-11-16",
+  "note": "Seed list for the first citation audit (queue p13), built 2026-11-16 by hand from web search and direct page reads (WebFetch) for SEO-STRATEGY.md section 8: roundups and listicles of Quran, Islamic and Muslim apps for iPhone. Qualitative only (public repo). quranwall_present was judged from the page read, not a raw-HTML grep; none of the pages mentions QuranWall or any Quran Lock Screen / widget app. No contact has been made, no email or form was sent. Dropped after checking, so the next audit does not repeat the work: halalop.com (the roundup URL 301-redirects to a mitamina.com contact page), productivemuslim.com (the iPhone-apps article is from 2010), technicalustad.com/best-islamic-apps (2022, no update date), igeeksblog.com best azan apps page (HTTP 410), macmyths.com 10-best-quran-apps (the sister NoteWall audit found its own pages say positions are paid), techcabal.com and appshunter.io (HTTP 403 to automated reads; unverified), theculturetrip.com (read timed out; unverified), ar-pay.com (a gift-card vendor's blog). Search results also showed roundups published by app vendors ranking their own products (qissahapp.com, niyatapp.com, muslimnow.app, qurangate.app, fiveprayer.app): not read, not pitch targets. Re-run and refresh this file each time a citation-audit item executes; feeds p14 and p15 (outreach-prep).",
+  "core_query_set": [
+    "best quran app for iphone 2026",
+    "best muslim apps for iphone",
+    "quran lock screen widget",
+    "quran verse on iphone lock screen",
+    "best dhikr app iphone",
+    "best ramadan apps 2026"
+  ],
+  "targets": [
+    {
+      "query": "best quran app for iphone 2026",
+      "url": "https://dralirajabi.com/best-quran-apps-2026/",
+      "site": "dralirajabi.com",
+      "type": "editorial",
+      "tier": 1,
+      "quranwall_present": false,
+      "contact_route": "Contact Us page, a comment form under the article, and a WhatsApp 'Ask a Question' link on the page. No explicit app-submission or tips form is visible.",
+      "angle": "'The 10 Best Quran Apps in 2026: Tested & Compared' (published 2026-01-01, updated 2026-08-08) covers ten reading, hifz and study apps and a 'New & Notable' list; none is a Lock Screen or widget app. Pitch the missing category (a verse on the Lock Screen you see every time you pick up the phone) with a reviewer offer code and the plain note that QuranWall is not a reading or memorisation tool.",
+      "nofollow_note": "Unverified.",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. Not independent of commercial interests: the site is operated by Dr Ali Rajabi, who sells a memorisation course, and a reply in the comments refers to 'our own application' (not among the ten reviewed). The page states no app paid for placement. Pitch only for editorial evaluation, never for a paid slot."
+    },
+    {
+      "query": "best muslim apps for iphone",
+      "url": "https://ioshacker.com/apps/best-azan-and-prayer-times-apps-for-iphone",
+      "site": "ioshacker.com",
+      "type": "editorial",
+      "tier": 2,
+      "quranwall_present": false,
+      "contact_route": "Site Contact page (ioshacker.com/contact) and a Tips page (ioshacker.com/tips), both linked from the page footer/navigation. No explicit review-request invitation.",
+      "angle": "'Best Azan And Prayer Times Apps For iPhone In 2026' (published and last updated 2026-02-19, bylined) lists six prayer-time apps and no Quran verse or Lock Screen app. This is an adjacent page, so the angle is the site rather than the page: an iOS-tips outlet that covers Lock Screen apps could take a short note on a Quran verse widget; use the Tips page, one message.",
+      "nofollow_note": "Unverified. The page carries an affiliate disclosure (iOSHacker may receive a commission on purchases).",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. Independent, current-year page. The roundup itself is about prayer times, a job QuranWall does not do; do not ask to be added to it. Pitch for a separate mention or a future Quran/widget piece."
+    },
+    {
+      "query": "best quran apps for iphone",
+      "url": "https://laptops251.com/10-best-quran-apps-for-iphone",
+      "site": "laptops251.com",
+      "type": "editorial",
+      "tier": 3,
+      "quranwall_present": false,
+      "contact_route": "Footer links to 'Contact' and 'Get listed'; no tips route in the article body; comment form on the page.",
+      "angle": "'10 Best Quran Apps for iPhone' (published 2026-02-27, no article-level update date) covers twelve apps (Quran Majeed, Quran.com, Muslim Pro, iQuran, Quran Explorer, Ayah, Al Quran Tafsir & by Word, Quran Hive, Tarteel, Quran for Kids, Tajweed Quran, Quran Companion); none is a Lock Screen or widget app.",
+      "nofollow_note": "Unverified. Likely affiliate/sponsored (see notes).",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. Publisher (Yorker Media) appears funded by affiliate links, sponsored posts and paid placements, and 'Get listed' suggests paid inclusion. Do not pay for a listing; pitch only if a free editorial route exists. Low priority."
+    },
+    {
+      "query": "best ramadan apps 2026",
+      "url": "https://sandytimes.ae/articles/3885/best-ramadan-apps--digital-tools-for-muslims-in-2026",
+      "site": "sandytimes.ae",
+      "type": "editorial",
+      "tier": 3,
+      "quranwall_present": false,
+      "contact_route": "Footer: 'Contact us', 'Work with us' and 'Creative Bureau' links. No specific pitch or submission page is labelled.",
+      "angle": "Seasonal. 'Best Ramadan Apps & Digital Tools For Muslims In 2026' (The Sandy Times, published 2026-01-02, bylined) covers Muslim Pro, Athan, Tarteel, Ayah, Quran.com, Deen and Miraj Stories; no Lock Screen or widget app. Pitch a short note for the 2027 edition in December/January (queue p15), once the Ramadan 2027 start date is confirmed.",
+      "nofollow_note": "Unverified.",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. No sponsored label on the article, but the footer's 'Work with us' / 'Creative Bureau' links suggest a commercial services arm: decline any paid-placement offer."
+    },
+    {
+      "query": "best apps for ramadan",
+      "url": "https://gtaf.org/blog/best-apps-for-ramadan-for-android-and-ios",
+      "site": "gtaf.org",
+      "type": "editorial",
+      "tier": 3,
+      "quranwall_present": false,
+      "contact_route": "'Contact Us', 'Support Center' and 'Give Feedback' pages linked from the page; newsletter signup.",
+      "angle": "'13 Best Apps for Ramadan for Android and iOS in 2027' (Greentech Apps Foundation, published 2026-11-03) lists Al Quran (Tafsir & by Word), Tarteel, Quran Majeed, Quran.com, Pillars and others; no Lock Screen or widget Quran app.",
+      "nofollow_note": "Unverified.",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. GTAF is a UK charity that publishes its own Islamic apps (including a Quran app), so this is a competitor's content page: monitoring only, a pitch is unlikely to be taken and should not be a priority."
+    },
+    {
+      "query": "best islamic apps every muslim should have",
+      "url": "https://themuslimvibe.com/western-muslim-culture/10-apps-that-every-muslim-should-have",
+      "site": "themuslimvibe.com",
+      "type": "editorial",
+      "tier": 3,
+      "quranwall_present": false,
+      "contact_route": "The page says 'To add your app to this article with a link, get in touch' (links to an advertise page); a general 'Submit an Article' link is in the navigation.",
+      "angle": "The listing on this URL is the 2021/2022 'Best Islamic Apps That Every Muslim Needs To Download [2022]' and is dated; it names Quran Hero, Athan, Pillars, Qur'an Companion and others, with no Lock Screen app.",
+      "nofollow_note": "Unverified.",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch (published 2021-09-15, titled 2022, no update date). Paid placement is offered ('get in touch' via the advertise page), so it is not purely editorial: do not pay. Monitoring only unless the site publishes a current-year list."
+    },
+    {
+      "query": "best quran apps 2026",
+      "url": "https://www.getnafs.com/blog/quran-apps-comparison-2026/",
+      "site": "getnafs.com",
+      "type": "vendor-blog",
+      "tier": 3,
+      "quranwall_present": false,
+      "contact_route": "Contact (/contact/) and Support (/support/) pages in the footer.",
+      "angle": "Do not pitch. 'Best Quran Apps in 2026: A Detailed Comparison' (Nafs Team, 2026-02-14) compares Quran.com, Tarteel, Muslim Pro, iQuran, Ayah and Al-Quran by Greentech Apps and promotes the publisher's own app (Nafs) in the closing sections.",
+      "nofollow_note": "n/a",
+      "last_checked": "2026-11-16",
+      "notes": "Read directly via WebFetch. Recorded so the next citation audit does not re-evaluate it: a vendor's own ranking page that does not cover Lock Screen apps."
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrumbs';
 import AppStoreButton from './AppStoreButton';
+import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
 export interface CompareRow {
   feature: string;
@@ -32,7 +33,7 @@ export interface CompareConfig {
   ctaDescription: string;
 }
 
-const APP_STORE_URL = 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080';
+const APP_STORE_URL = appStoreUrl(CAMPAIGNS.compare);
 
 function formatDate(iso: string): string {
   if (!iso) return '';

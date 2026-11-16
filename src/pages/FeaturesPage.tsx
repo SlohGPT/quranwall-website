@@ -5,13 +5,14 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import FinalCTA from '../components/FinalCTA';
 import { featureNav } from '../data/featureNav';
+import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
 const DESC =
   'Everything QuranWall does: a fresh Quran verse on your iPhone lock screen every day, themed verse packs, native iOS widgets and Focus modes, your own duas, and complete privacy.';
 
-const APP_STORE = 'https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080';
+const APP_STORE = appStoreUrl(CAMPAIGNS.features);
 
 // Icon per feature id (kept here so the shared data file stays free of JSX).
 const ICONS: Record<string, LucideIcon> = {

@@ -11,7 +11,7 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 
 ## Project facts (don't re-derive these)
 
-- **App Store URL:** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080`
+- **App Store URL (blog link, with install attribution):** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8` — always use this exact `qw-web-blog` form in every post (CTA `buttonUrl` and any inline App Store link). Never the bare URL. Other page types are built in code by `src/lib/app-store.ts`; blog JSON is static, so the literal string goes in.
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
 - **Pricing:** Free to download. Premium ≈ $1.99/mo or $8.99/yr unlocks unlimited verse packs + customization. Never quote a hard price as fixed — say "shown in the App Store at checkout in your local currency."
@@ -30,6 +30,7 @@ After running this skill end-to-end:
 1. A new file `src/data/posts/{slug}.json` exists, ~800–1100 words, validates as JSON, follows the section template below.
 2. A hero image is set: either a downloaded Unsplash photo at `public/blog-thumbnails/{slug}.jpg` with attribution recorded in `meta.imageAttribution`, **or** the fallback `/og-image.png` if no Unsplash key is configured (see Step 3).
 3. The new post is inserted at **index 0** of `src/data/blogPosts.json`.
+   Also set `"blocked": true, "used_by": "{slug}"` on the keyword's entry in `src/data/seo-keywords.json` (add the entry first if the keyword came from the user), in the same commit.
 4. `public/sitemap.xml` is regenerated (`npm run generate-sitemap`).
 5. The work is committed and pushed (the Vercel deploy trigger), then the new URL is submitted to IndexNow.
 6. You report back the slug, cluster, word count, and photo credit in the exact final-report format (Step 10).
@@ -39,13 +40,13 @@ After running this skill end-to-end:
 ### Step 1 — Pick the keyword
 
 Read both files:
-- `src/data/seo-keywords.json` — the keyword bank (`[{keyword, cluster}, ...]`).
+- `src/data/seo-keywords.json` — the keyword bank (`[{keyword, cluster}, ...]`; entries already used or ruled out carry `"blocked": true`, with `used_by` = the post slug or a `reason`). **Never pick a `blocked` keyword.** The SEO autopilot (see `SEO-STRATEGY.md`) shares this bank, so the flags are how the manual daily post and the machine avoid each other.
 - `src/data/blogPosts.json` — what already exists.
 
 If the user gave you a keyword in their message (e.g. "make a blog about dhikr reminders"), use that and find the closest matching cluster.
 
 Otherwise:
-1. Compute the slug for every keyword: `keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')`. Filter out any keyword whose slug already exists in the registry **or** in `src/data/posts/`.
+1. Compute the slug for every keyword: `keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')`. Filter out any keyword that is `blocked`, and any whose slug already exists in the registry **or** in `src/data/posts/`.
 2. Count how many posts exist per cluster. Prefer a keyword whose cluster currently has the **fewest** published posts — keeps cluster sizes balanced. (Exception: if the user explicitly wants a comparison/"best apps" piece, pick from `muslim-app-comparisons` regardless.)
 3. Inside the chosen cluster, prefer the most evergreen / highest-intent keyword (a "best X 2026" or "how to..." beats a vague phrase).
 
@@ -178,7 +179,7 @@ Create `src/data/posts/{slug}.json` matching this exact shape (reference [src/da
   `{ "type": "verse", "reference": "Quran 13:28", "text": "...those who have believed and whose hearts are assured by the remembrance of Allah. Unquestionably, by the remembrance of Allah hearts are assured." }`
 - **Section-type diversity** — use at least 6 of: `callout`, `heading`, `paragraph`, `tip`, `stat`, `steps`, `list`, `highlight`, `important`, `verse`. Don't use only paragraphs. (Valid callout icons: `zap`, `lightbulb`, `book`, `alert`, `sparkles`.)
 - **Internal links** — 2–3 markdown links to other posts inside `paragraph` text, format `[anchor](/blog/{other-slug})`. If no other suitable post exists, link `[QuranWall](/)` once instead. **No `/{cluster}` or `/compare` links.**
-- **Final section** must be `{ "type": "cta", "title": "...", "description": "...", "buttonText": "Download QuranWall", "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080" }`.
+- **Final section** must be `{ "type": "cta", "title": "...", "description": "...", "buttonText": "Download QuranWall", "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8" }` (the `qw-web-blog` attributed URL from Project facts, not the bare App Store URL).
 - **`meta.date`** = today as "Month DD, YYYY". **`meta.datePublished`** and **`meta.dateModified`** = today as "YYYY-MM-DD".
 - **`meta.readTime`** = `Math.ceil(wordCount / 200) + " min read"`.
 
@@ -214,7 +215,7 @@ Run this checklist on your generated JSON **before** writing it:
 - [ ] No `[link]`, `TODO`, `lorem`, `...`, or other placeholders.
 - [ ] Exact keyword in title + first paragraph + 3–5 bolds.
 - [ ] First section is the Quick Answer callout (`icon: "zap"`).
-- [ ] Last section is the App Store CTA with the right URL.
+- [ ] Last section is the App Store CTA with the exact `qw-web-blog` URL (`?pt=128303795&ct=qw-web-blog&mt=8`).
 - [ ] At least one `verse` block with a correct surah:ayah reference.
 - [ ] At least one cited statistic with the source named.
 - [ ] Word count 800–1100.
@@ -264,7 +265,7 @@ This rewrites `public/sitemap.xml` from `blogPosts.json` so the new URL is inclu
 Commit and push at the end — that's the Vercel deploy trigger. Stage exactly what changed (drop the thumbnail line in Mode A):
 
 ```bash
-git add src/data/posts/{slug}.json src/data/blogPosts.json public/sitemap.xml "public/blog-thumbnails/{slug}.jpg"
+git add src/data/posts/{slug}.json src/data/blogPosts.json src/data/seo-keywords.json public/sitemap.xml "public/blog-thumbnails/{slug}.jpg"
 git commit -m "$(cat <<'EOF'
 blog: {title}
 
