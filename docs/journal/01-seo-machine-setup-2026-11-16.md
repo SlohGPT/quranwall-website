@@ -319,3 +319,30 @@ The ASO session asked whether quranwall.com's traffic or App Store clicks change
   - In its own numbers, Web referrer and App referrer move as mirror images. The spike and the drop may be attribution shifting (for example, links opened from the ChatGPT app's in-app browser), not demand. It can test this with daily source breakdowns.
   - The drop starts the day after App Store Connect data reportedly stops pending Apple's agreement, so those days should be re-pulled before they're read.
 - **Changed:** nothing in the repo besides this note.
+
+## Late night: FaithWall round-2 verification (`a34c536`)
+FaithWall checked round 2 at `030c8f5` and asked for five lint gaps to be closed, one TODO line to be fixed, the optional clause breaks, and self-test cases. Then it wanted the commit hash.
+
+- **Built (`a34c536`):**
+  - `setup-time` and `setup-60s` now allow an object between "set" and "up" ("Set it up in under a minute").
+  - `social-proof` catches counts written in words ("Over a thousand downloads", "A million users worldwide").
+  - `social-proof-downloads`: any download count other than `facts.downloadsFloor` fails, so "1,000+ downloads" no longer slips through as a new claim.
+    - **Decided:** "<floor> downloads" is allowed beside "Downloaded <floor> times". It says the same thing, and it only passes with the floor itself.
+  - `premium-plan-word` catches "QuranWall+ Premium" and a capitalised "Premium Plan/Subscription/Tier".
+  - Stat labels:
+    - "Minutes to get started" and its variants fail.
+    - A Downloads stat is checked against the floor.
+  - The per-clause NEG check now also breaks at ", but", ", yet", ", while" and ", although".
+  - `npm run lint-facts -- --self-test` runs 63 cases for these rules.
+  - TODO-KAROL: the Terms of Use line is rewritten. That fixes a comma splice and drops the stale "or Shortcut".
+- **Coordination:** the homepage session merged `design/homepage-v2` into main in this same checkout while these edits were in the working tree. Its merge (`1eb4f88`, with the new `pricing-mention` rule) kept the edits intact.
+  - `a34c536` sits on top of that merge.
+  - Pushing waits for the homepage session, because its merge was still unpushed.
+- **Verified on merged main plus these edits:**
+  - typecheck passes; build 16/16
+  - `--self-test`: 63/63
+  - `--all`: 0 FAIL / 4 WARN (the grandfathered p5 strings)
+  - `--dist`: 0 FAIL / 4 WARN
+  - `--prompts` and `--diff origin/main --worktree`: 0 FAIL
+  - with the date forced to 2026-11-23, `--all` fails exactly those four strings
+  - `check-facts` unchanged
