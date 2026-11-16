@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { CSSProperties } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { SHOWCASE_VERSES, type ShowcaseVerse } from '../../data/showcaseVerses';
 import Wallpaper, { type WallpaperVariant } from './Wallpaper';
 import { referenceOf } from './QuranWidget';
@@ -8,12 +8,19 @@ import { useLayers } from './utils';
 type Props = {
   verse?: ShowcaseVerse;
   wallpaper?: WallpaperVariant;
-  /** Colour of the Arabic and the reference line (the app's gold by default). */
+  /**
+   * Which text the wallpaper carries. The app renders ONE edition per ayah (WallpaperRenderer: verse, optional
+   * transliteration, reference), never Arabic and a translation together.
+   */
+  edition?: Edition;
+  /** Text colour (the user picks one in the app). Default: gold for Arabic, white for a translation. */
   accent?: string;
   /** Translation face: Lora serif (default) or the page sans. */
   serif?: boolean;
   className?: string;
 };
+
+export type Edition = 'arabic' | 'translation';
 
 const GOLD = '#E3C46B';
 const shadow = '0 0.25cqw 1.4cqw rgba(0,0,0,0.4)';
@@ -41,9 +48,10 @@ export function StatusBarIcons({ color = '#fff' }: { color?: string }) {
   );
 }
 
-/** The phone Lock Screen exactly as the app sets it: clock, then the ayah under it. */
-export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', accent = GOLD, serif = true, className = '' }: Props) {
-  const verseLayers = useLayers(verse);
+/** The phone Lock Screen as the app sets it: clock, then one text of the ayah (Arabic or a translation) and its reference. */
+export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', edition = 'translation', accent, serif = true, className = '' }: Props) {
+  const text = useMemo(() => ({ verse, edition, accent }), [verse, edition, accent]);
+  const verseLayers = useLayers(text);
   const wallLayers = useLayers(wallpaper);
 
   const textStyle: CSSProperties = { textShadow: shadow };
@@ -101,14 +109,18 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
               transition={{ duration: 0.9, ease: 'easeInOut' }}
               aria-hidden={latest ? undefined : true}
             >
-              <p lang="ar" dir="rtl" className="font-quran" style={{ fontSize: '7.8cqw', lineHeight: 1.75, color: accent }}>
-                {l.value.arabic}
-              </p>
-              <p className={`${serif ? 'font-serif' : 'font-sans'} font-medium`} style={{ marginTop: '2cqw', fontSize: '4.2cqw', lineHeight: 1.42, color: 'rgba(255,255,255,0.96)' }}>
-                {l.value.translation}
-              </p>
-              <p className="font-semibold uppercase" style={{ marginTop: '4cqw', fontSize: '3cqw', letterSpacing: '0.2em', color: accent }}>
-                {referenceOf(l.value)}
+              {l.value.edition === 'arabic' ? (
+                <p lang="ar" dir="rtl" className="font-quran" style={{ fontSize: '8.4cqw', lineHeight: 1.75, color: l.value.accent ?? GOLD }}>
+                  {l.value.verse.arabic}
+                </p>
+              ) : (
+                <p className={`${serif ? 'font-serif' : 'font-sans'} font-medium`} style={{ fontSize: '5.6cqw', lineHeight: 1.4, color: l.value.accent ?? 'rgba(255,255,255,0.96)' }}>
+                  {l.value.verse.translation}
+                </p>
+              )}
+              {/* the app draws the reference in the text colour at 78 % */}
+              <p className="font-semibold" style={{ marginTop: '4cqw', fontSize: '4.4cqw', color: l.value.accent ?? (l.value.edition === 'arabic' ? GOLD : '#fff'), opacity: 0.78 }}>
+                {referenceOf(l.value.verse)}
               </p>
             </motion.div>
           );

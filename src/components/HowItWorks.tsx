@@ -4,17 +4,17 @@ const steps = [
   {
     number: '01',
     title: 'Download',
-    description: 'Get QuranWall from the App Store. The download is free, with an in-app subscription.',
+    description: 'Get QuranWall from the App Store.',
   },
   {
     number: '02',
-    title: 'Personalize',
-    description: 'Pick a translation, a background (a preset or your own photo), and your font and colours.',
+    title: 'Choose your ayah',
+    description: 'Search all 114 surahs and pick an ayah, in Arabic or a translation. Edit the text and pick a font, colour and background.',
   },
   {
     number: '03',
-    title: 'Transform',
-    description: 'An ayah appears on your Lock Screen wallpaper and Home Screen widget.',
+    title: 'Make It Mine',
+    description: 'Tap Make It Mine and the Shortcuts app sets it as your Lock Screen wallpaper. Change it whenever you like.',
   },
 ];
 

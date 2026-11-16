@@ -83,7 +83,7 @@
       "type": "steps",
       "items": [
         "**Fajr alarm:** In Clock, create a labeled alarm (*Fajr*) on your local prayer time. Enable **Sleep > Full Schedule** if you use Bedtime — waking at the same window trains your body.",
-        "**Lock-screen Quran:** Download QuranWall from the App Store (free to download, with an in-app subscription), choose your translation language and colours, and add the lock-screen widget. You see an ayah before any app badge.",
+        "**Lock-screen Quran:** Download QuranWall from the App Store, choose your translation language and colours, and add the lock-screen widget. You see an ayah before any app badge.",
         "**Morning Focus mode:** In Settings > Focus, create a **Morning** Focus that silences non-essential apps from Fajr until you finish adhkar. Attach your QuranWall lock screen to it so a verse greets you at that hour (Focus lock screens need iOS 16 or later) — the full walkthrough is in our [Quran Focus mode guide](/blog/quran-focus-mode-iphone).",
         "**Timed adhkar nudge:** Add one daily Reminder in the Reminders app — *Morning adhkar after Fajr* — set to repeat daily. Details on layering reminders live in [how to set dhikr reminders on iPhone](/blog/how-to-set-dhikr-reminders-iphone)."
       ]
@@ -127,13 +127,9 @@
       ]
     },
     {
-      "type": "paragraph",
-      "text": "QuranWall is free to download, with an in-app subscription; the App Store listing shows what is offered before you pay."
-    },
-    {
       "type": "cta",
       "title": "Start tomorrow's Fajr with Quran on the lock screen",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, Arabic beside a translation, with a new ayah each day. Free to download, with an in-app subscription.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, Arabic beside a translation, with a new ayah each day.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

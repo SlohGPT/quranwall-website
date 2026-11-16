@@ -11,7 +11,7 @@ import AppStoreButton from '../components/AppStoreButton';
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
 const DESC =
-  'Everything QuranWall does: an ayah on your iPhone Lock Screen wallpaper and Home Screen widget, Arabic beside a translation in 10 languages, your own background, font and colours, no ads, and it works offline.';
+  'Everything QuranWall does: the ayah you choose as your iPhone Lock Screen wallpaper, a Home Screen and Lock Screen widget, Arabic or a translation in 10 languages, your own background, font and colours, and no ads.';
 
 const APP_STORE = appStoreUrl(CAMPAIGNS.features);
 

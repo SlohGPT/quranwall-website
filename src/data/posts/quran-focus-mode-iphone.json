@@ -48,7 +48,7 @@
       "type": "list",
       "items": [
         "An iPhone on **iOS 16 or later** (per-Focus lock screens arrived in iOS 16).",
-        "A Quran verse lock screen — [QuranWall](/) puts an ayah on your Lock Screen wallpaper and Home Screen widget (free to download, with an in-app subscription).",
+        "A Quran verse lock screen — [QuranWall](/) puts an ayah on your Lock Screen wallpaper and Home Screen widget.",
         "A little time to create the Focus and set its schedule."
       ]
     },
@@ -157,15 +157,6 @@
       "text": "Only what you tell it to. You choose which people and apps can break through, so family or emergency contacts can still reach you while everything else stays quiet."
     },
     {
-      "type": "heading",
-      "level": 3,
-      "text": "Do I need a paid app for this?"
-    },
-    {
-      "type": "paragraph",
-      "text": "Focus modes themselves cost nothing; they are built into iOS. You only need a Quran lock screen to attach. QuranWall is free to download, with an in-app subscription, and its App Store listing shows what is offered before you pay."
-    },
-    {
       "type": "callout",
       "icon": "sparkles",
       "title": "The short version",
@@ -174,7 +165,7 @@
     {
       "type": "cta",
       "title": "Set your Quiet Time lock screen",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, ready to attach to your Focus. Free to download, with an in-app subscription.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, ready to attach to your Focus.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

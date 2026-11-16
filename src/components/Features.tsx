@@ -60,11 +60,11 @@ function LockScreenArt() {
       />
       <div
         role="img"
-        aria-label="The top of an iPhone Lock Screen with the clock and an ayah in Arabic with its translation"
+        aria-label="The top of an iPhone Lock Screen with the clock and Ash-Sharh 6 in the Saheeh International translation"
         className="absolute left-1/2 top-[160px] z-10 w-[250px] -translate-x-1/2 sm:w-[270px] md:left-auto md:right-[7%] md:top-[44px] md:translate-x-0 lg:left-1/2 lg:right-auto lg:top-[215px] lg:w-[300px] lg:-translate-x-1/2"
       >
         <PhoneFrame>
-          <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper="night" />
+          <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper="night" edition="translation" />
         </PhoneFrame>
       </div>
     </>
@@ -76,7 +76,7 @@ function WidgetArt() {
   return (
     <div
       role="img"
-      aria-label="The QuranWall widget on an iPhone Home Screen, in two sizes"
+      aria-label="The QuranWall widget on an iPhone Home Screen, in a medium and a small size, each showing one ayah and its reference"
       className="relative flex flex-wrap items-center justify-center gap-3 overflow-hidden rounded-2xl border border-white/[0.08] p-4"
     >
       <Wallpaper variant="dusk" />
@@ -115,35 +115,42 @@ function LanguagesArt() {
 
   useEffect(() => {
     if (hover || reduced) return;
-    const t = setInterval(() => setActive((i) => (i + 1) % VERSE_94_6_TRANSLATIONS.length), 3600);
+    const t = setInterval(() => setActive((i) => (i + 1) % (VERSE_94_6_TRANSLATIONS.length + 1)), 3600);
     return () => clearInterval(t);
   }, [hover, reduced]);
 
-  const activeLanguage = LANGUAGE_OF[VERSE_94_6_TRANSLATIONS[active].language];
   const v = SHOWCASE_VERSES[0];
+  const ref = referenceOf(v);
+  const choices = [
+    { key: 'ar', lang: 'ar', dir: 'rtl', language: 'Arabic', name: 'Uthmani', text: v.arabic, arabic: true },
+    ...VERSE_94_6_TRANSLATIONS.map((t) => ({ key: t.lang, lang: t.lang, dir: t.dir, language: t.language, name: t.name, text: t.text, arabic: false })),
+  ];
+  const activeLanguage = choices[active].arabic ? 'Arabic' : LANGUAGE_OF[choices[active].language];
 
   return (
     <div className="flex flex-col gap-4" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <div className="text-center">
-        <p lang="ar" dir="rtl" className="font-quran text-[30px] leading-[2] text-brand-light sm:text-[34px]">
-          {v.arabic}
-        </p>
-        <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-light/80">{referenceOf(v)}</p>
-      </div>
-
-      <div className="grid min-h-[92px] rounded-2xl border border-white/[0.08] bg-black/20 px-4 py-3.5">
-        {VERSE_94_6_TRANSLATIONS.map((t, i) => {
+      <div className="grid min-h-[132px] rounded-2xl border border-white/[0.08] bg-black/20 px-4 py-4">
+        {choices.map((t, i) => {
           const on = i === active;
           return (
             <div
-              key={t.lang}
+              key={t.key}
               aria-hidden={on ? undefined : true}
               className="col-start-1 row-start-1 flex flex-col items-center justify-center gap-2 text-center transition-[opacity,transform] duration-500 ease-out"
               style={{ opacity: on ? 1 : 0, transform: on ? 'translateY(0)' : 'translateY(5px)' }}
             >
-              <p lang={t.lang} dir={t.dir} className="font-serif text-[15px] font-medium leading-snug text-white sm:text-base">
+              <p
+                lang={t.lang}
+                dir={t.dir}
+                className={
+                  t.arabic
+                    ? 'font-quran text-[30px] leading-[2] text-brand-light sm:text-[34px]'
+                    : 'font-serif text-[15px] font-medium leading-snug text-white sm:text-base'
+                }
+              >
                 {t.text}
               </p>
+              <p className="text-[12px] font-semibold text-brand-light/80">{ref}</p>
               <p className="flex items-center gap-2 text-[11px] text-white/50">
                 <span lang={t.lang} dir={t.dir} className="font-semibold text-brand-light">{t.language}</span>
                 <span aria-hidden="true">·</span>
@@ -154,7 +161,7 @@ function LanguagesArt() {
         })}
       </div>
 
-      <ul className="flex flex-wrap justify-center gap-1.5" aria-label="The ten languages in the app">
+      <ul className="flex flex-wrap justify-center gap-1.5" aria-label="The ten languages in the app: Arabic and nine translation languages">
         {APP_LANGUAGES.map((name) => {
           const on = name === activeLanguage;
           return (
@@ -174,40 +181,30 @@ function LanguagesArt() {
 }
 
 /* 4. Search ----------------------------------------------------------------------- */
-const SEARCH_RESULTS = [
-  { n: 1, name: 'Al-Fatihah', ayat: 7 },
-  { n: 2, name: 'Al-Baqarah', ayat: 286 },
-  { n: 18, name: 'Al-Kahf', ayat: 110 },
-];
+const SEARCH_PLACEHOLDER = "Search ayahs or reference (e.g. 'mercy', 'Al-Baqarah 255')";
+const SEARCH_RESULTS = [SHOWCASE_VERSES[0], SHOWCASE_VERSES[3]];
 
 function SearchArt() {
   return (
     <div
       role="img"
-      aria-label="A search field with the query Al- and the surahs Al-Fatihah, Al-Baqarah and Al-Kahf listed with their ayah counts"
+      aria-label="The search field of the QuranWall Choose Your Ayah screen, with ayah results showing a reference and one text each: Ash-Sharh 6 and At-Talaq 3"
       className="flex flex-col gap-3"
     >
       <div className="flex items-center gap-2.5 rounded-xl border border-white/[0.12] bg-black/25 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
         <Search size={16} className="shrink-0 text-white/50" />
-        <span className="flex items-center text-sm text-white">
-          Al-
-          <span className="ml-px inline-block h-4 w-px animate-pulse bg-brand" />
-        </span>
-        <span className="ml-auto rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-semibold text-brand-light">114 surahs</span>
+        <span className="min-w-0 flex-1 truncate text-sm text-white/50">{SEARCH_PLACEHOLDER}</span>
       </div>
       <ul className="flex flex-col gap-1.5">
-        {SEARCH_RESULTS.map((r, i) => (
+        {SEARCH_RESULTS.map((v, i) => (
           <li
-            key={r.n}
-            className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 ${
+            key={v.key}
+            className={`rounded-xl border px-3 py-2.5 ${
               i === 0 ? 'border-brand/30 bg-brand/[0.07]' : 'border-white/[0.06] bg-white/[0.03]'
             }`}
           >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand/15 text-[13px] font-bold tabular-nums text-brand-light">
-              {r.n}
-            </span>
-            <span className="text-sm font-semibold text-white">{r.name}</span>
-            <span className="ml-auto text-xs tabular-nums text-white/45">{r.ayat} ayat</span>
+            <p className="text-[12px] font-semibold text-brand-light">{referenceOf(v)}</p>
+            <p className="mt-1 text-[13px] leading-snug text-white/80">{v.translation}</p>
           </li>
         ))}
       </ul>
@@ -217,9 +214,9 @@ function SearchArt() {
 
 /* 5. Customiser -------------------------------------------------------------------- */
 const BACKGROUNDS: { id: WallpaperVariant; label: string }[] = [
-  { id: 'night', label: 'Night' },
-  { id: 'emerald', label: 'Emerald' },
-  { id: 'dusk', label: 'Dusk' },
+  { id: 'night', label: 'Dark' },
+  { id: 'emerald', label: 'Green' },
+  { id: 'dusk', label: 'Violet' },
   { id: 'photo', label: 'Your photo' },
 ];
 const FONTS = [
@@ -246,11 +243,11 @@ function CustomiserArt() {
     <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8">
       <div
         role="img"
-        aria-label="Preview of a Lock Screen with the chosen background, font and colours"
+        aria-label="Preview of a Lock Screen showing Ash-Sharh 6 in the Saheeh International translation, with an example background, font and colour"
         className="relative aspect-[3/4] w-[190px] shrink-0 overflow-hidden rounded-2xl border border-white/[0.14] shadow-[0_20px_40px_-16px_rgba(0,0,0,0.7)]"
       >
         <div className="absolute left-0 top-0 w-full" style={{ aspectRatio: '1 / 2.17' }}>
-          <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper={bg} accent={accent} serif={font === 'serif'} />
+          <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper={bg} edition="translation" accent={accent} serif={font === 'serif'} />
         </div>
       </div>
 
@@ -264,7 +261,7 @@ function CustomiserArt() {
                 <button
                   key={b.id}
                   type="button"
-                  aria-label={`Background: ${b.label}`}
+                  aria-label={`Example background ${BACKGROUNDS.indexOf(b) + 1}`}
                   aria-pressed={on}
                   onClick={() => setBg(b.id)}
                   className="group/sw flex flex-col items-center gap-1.5 focus:outline-none"
@@ -322,7 +319,7 @@ function CustomiserArt() {
                   <button
                     key={c.id}
                     type="button"
-                    aria-label={`Colour: ${c.label}`}
+                    aria-label={`Example text colour ${COLOURS.indexOf(c) + 1}`}
                     aria-pressed={on}
                     onClick={() => setColour(c.id)}
                     className="grid h-11 w-11 place-items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
@@ -349,7 +346,7 @@ function OfflineArt() {
   return (
     <div
       role="img"
-      aria-label="Airplane mode switched on and Wi-Fi off, with a QuranWall ayah still showing, and a No ads badge"
+      aria-label="Airplane mode switched on and Wi-Fi off, with a QuranWall widget still showing one ayah, and a No ads badge"
       className="flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">
@@ -417,20 +414,20 @@ export default function Features() {
           >
             <Tile
               title="The Quran on your Lock Screen"
-              description="An ayah on your iPhone Lock Screen wallpaper, with the Arabic beside a translation."
+              description="The ayah you choose, as your iPhone Lock Screen wallpaper, in Arabic or a translation."
               className="min-h-[540px] md:col-span-2 md:min-h-[480px] lg:row-span-2 lg:min-h-[620px]"
               backdrop={<LockScreenArt />}
             />
 
             <Tile
               title="A Home Screen widget"
-              description="The same ayah on your Home Screen too, Arabic beside a translation."
+              description="Add the widget to your Home Screen or Lock Screen. Turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour."
               className="lg:col-span-2"
             >
               <WidgetArt />
             </Tile>
 
-            <Tile title="Ten languages" description="Choose a translation in one of 10 languages." className="lg:col-span-2">
+            <Tile title="Ten languages" description="Read it in Arabic or a translation: 10 languages." className="lg:col-span-2">
               <LanguagesArt />
             </Tile>
 
@@ -440,13 +437,13 @@ export default function Features() {
 
             <Tile
               title="Your background, font and colours"
-              description="Choose a preset background or use your own photo, then pick the font and colours you like."
+              description="Pick a gradient, a photo from the gallery or your own photo, then choose the font and text colour you like."
               className="md:col-span-2 lg:col-span-2"
             >
               <CustomiserArt />
             </Tile>
 
-            <Tile title="No ads. Works offline." description="QuranWall shows no ads, and it works offline.">
+            <Tile title="No ads. Offline browsing." description="QuranWall shows no ads. Browse and search all 114 surahs offline.">
               <OfflineArt />
             </Tile>
           </motion.div>

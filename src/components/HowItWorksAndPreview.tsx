@@ -1,62 +1,47 @@
+import type { ReactNode } from 'react';
 import Reveal from './ui/Reveal';
 import SectionHeading from './ui/SectionHeading';
 import StarPattern from './ui/StarPattern';
 import { glassCardClass } from './ui/GlassCard';
+import { LockScreen, PhoneFrame, QuranWidget, Wallpaper } from './mockup';
+import { AppStoreScreen, ChooseAyahScreen, ReviewScreen } from './mockup/AppScreens';
+import { SHOWCASE_VERSES } from '../data/showcaseVerses';
 
-const steps = [
+// The four beats of the real app flow. Each one is shown as a coded mini screen of the app.
+const steps: { number: string; title: string; description: string; label: string; screen: ReactNode }[] = [
     {
         number: '01',
-        title: 'Download',
-        description: 'Get QuranWall from the App Store. The download is free, with an in-app subscription.',
+        title: 'Get QuranWall',
+        description: 'Get QuranWall from the App Store. The first time, the app walks you through adding the QuranWall shortcut to Apple\'s Shortcuts app. You do this once.',
+        label: 'An illustration of the QuranWall App Store page, listing the app as Quran Widget: QuranWall',
+        screen: <AppStoreScreen />,
     },
     {
         number: '02',
-        title: 'Personalize',
-        description: 'Pick a translation, a background (a preset or your own photo), and your font and colours.',
+        title: 'Choose your ayah',
+        description: 'Search all 114 surahs by surah, ayah or keyword, then read it in Arabic or in a translation.',
+        label: 'The QuranWall "Choose Your Ayah" screen with the Search tab open and Ash-Sharh 6 selected',
+        screen: <ChooseAyahScreen />,
     },
     {
         number: '03',
-        title: 'Transform',
-        description: 'An ayah appears on your Lock Screen wallpaper and Home Screen widget.',
+        title: 'Make it yours',
+        description: 'Edit the text, pick a font and a colour, check the preview, then tap Make It Mine.',
+        label: 'The QuranWall review screen with the ayah text, styling options and the Make It Mine button',
+        screen: <ReviewScreen />,
+    },
+    {
+        number: '04',
+        title: 'It\'s on your Lock Screen',
+        description: 'The Shortcuts app sets it as your Lock Screen wallpaper and brings you back to QuranWall. Change it whenever you like.',
+        label: 'An iPhone Lock Screen showing Quran 94:6 in English under the clock',
+        screen: <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper="night" edition="translation" />,
     },
 ];
 
-// The verses keep their exact text and references. `tone` only picks a drawn background that echoes the
-// app's wallpapers (indigo night, emerald, dusk, plum); there are no photos.
-const screenshots = [
-    {
-        id: 1,
-        title: 'Lock Screen Quran',
-        tone: 'from-[#241a52] via-[#1b1445] to-[#120d30]',
-        glow: 'rgba(120,110,255,0.22)',
-        quote: '"Indeed, with hardship [will be] ease."',
-        sub: 'Quran 94:6 (Sahih International)'
-    },
-    {
-        id: 2,
-        title: 'Beautiful Wallpapers',
-        tone: 'from-[#0f4a3d] via-[#0b3a31] to-[#082820]',
-        glow: 'rgba(52,211,153,0.18)',
-        quote: '"Unquestionably, by the remembrance of Allah hearts are assured."',
-        sub: 'Quran 13:28 (Sahih International)'
-    },
-    {
-        id: 3,
-        title: 'Nature & Faith',
-        tone: 'from-[#6b3a2a] via-[#4a2a45] to-[#2a1c4a]',
-        glow: 'rgba(251,191,36,0.20)',
-        quote: '"And when you have decided, then rely upon Allah."',
-        sub: 'Quran 3:159 (Sahih International)'
-    },
-    {
-        id: 4,
-        title: 'Peaceful Moments',
-        tone: 'from-[#2c1c58] via-[#2a1850] to-[#1a1038]',
-        glow: 'rgba(217,185,104,0.18)',
-        quote: '"Allah does not charge a soul except [with that within] its capacity."',
-        sub: 'Quran 2:286 (Sahih International)'
-    },
-];
+const WIDGET_TITLE = 'Add the widget';
+const WIDGET_TEXT =
+    'Add the QuranWall widget to your Home Screen or Lock Screen. It shows your ayah, and with auto-rotate on it brings a new one every day, every 8 hours or every hour.';
 
 export default function HowItWorksAndPreview() {
     return (
@@ -66,72 +51,65 @@ export default function HowItWorksAndPreview() {
             <StarPattern opacity={0.025} fade="right" />
 
             <div className="container-main relative z-10">
-                <div className="grid items-start gap-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+                <SectionHeading eyebrow="How It Works" title="From the App Store" muted="to your Lock Screen">
+                    Here is what happens in the app, screen by screen.
+                </SectionHeading>
 
-                    {/* LEFT COLUMN: How It Works */}
-                    <div>
-                        <SectionHeading eyebrow="How It Works" title="From the App Store" muted="to your Lock Screen" />
+                {/* Storyboard: four columns from lg, a swipeable row of cards below that (the row bleeds to the screen edge). */}
+                <ol
+                    className="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-6 [scroll-padding-inline:1rem] [scrollbar-width:none] sm:-mx-6 sm:px-6 sm:[scroll-padding-inline:1.5rem] lg:mx-0 lg:mt-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
+                    aria-label="How QuranWall works, step by step"
+                >
+                    {steps.map((step, i) => (
+                        <li key={step.number} className="w-[72vw] max-w-[270px] flex-none snap-center lg:w-auto lg:max-w-none">
+                            <Reveal delay={i * 0.1} y={16}>
+                                <div className="flex items-center gap-3">
+                                    <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-brand/40 bg-surface-elevated text-base font-bold tracking-wide text-brand shadow-[0_0_20px_rgba(217,185,104,0.15)]">
+                                        {step.number}
+                                    </span>
+                                    <span
+                                        aria-hidden="true"
+                                        className={`h-px flex-1 bg-gradient-to-r from-brand/50 to-transparent ${i === steps.length - 1 ? 'opacity-0' : ''}`}
+                                    />
+                                </div>
 
-                        <ol className="relative mt-12 space-y-10 sm:mt-14">
-                            {/* progression line behind the number badges */}
-                            <div aria-hidden="true" className="absolute bottom-6 left-[27px] top-6 w-px bg-gradient-to-b from-brand/60 via-brand/20 to-transparent" />
+                                <div role="img" aria-label={step.label} className="mx-auto mt-6 w-full max-w-[232px]">
+                                    <PhoneFrame>{step.screen}</PhoneFrame>
+                                </div>
 
-                            {steps.map((step, i) => (
-                                <li key={step.number}>
-                                    <Reveal delay={i * 0.12} y={16} className="group relative flex items-start gap-5 sm:gap-6">
-                                        <div className="relative z-10 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-brand/40 bg-surface-elevated shadow-[0_0_0_6px_#2C1C58,0_0_24px_rgba(217,185,104,0.15)] transition-colors duration-300 group-hover:border-brand">
-                                            <span className="text-lg font-bold tracking-wide text-brand">{step.number}</span>
-                                        </div>
-                                        <div className="pt-1">
-                                            <h3 className="mb-1.5 text-xl font-bold text-white sm:text-2xl">{step.title}</h3>
-                                            <p className="max-w-sm text-base leading-relaxed text-white/60 sm:text-lg">{step.description}</p>
-                                        </div>
-                                    </Reveal>
-                                </li>
-                            ))}
-                        </ol>
+                                <h3 className="mt-7 text-xl font-bold text-white sm:text-[22px]">{step.title}</h3>
+                                <p className="mt-2 text-base leading-relaxed text-white/60">{step.description}</p>
+                            </Reveal>
+                        </li>
+                    ))}
+                </ol>
+
+                {/* The widget: what can change by itself after setup */}
+                <Reveal className="mt-10 lg:mt-16" y={16}>
+                    <div className={`${glassCardClass} grid items-center gap-8 overflow-hidden p-6 sm:p-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-12 lg:p-10`}>
+                        <div>
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand">Then</p>
+                            <h3 className="text-2xl font-bold text-white sm:text-3xl">{WIDGET_TITLE}</h3>
+                            <p className="mt-3 max-w-md text-base leading-relaxed text-white/60 sm:text-lg">{WIDGET_TEXT}</p>
+                        </div>
+
+                        <div
+                            role="img"
+                            aria-label="The QuranWall widget on a Home Screen, in a medium and a small size, each showing a Quran ayah and its reference"
+                            className="relative mx-auto w-full max-w-[500px] overflow-hidden rounded-[28px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                        >
+                            <Wallpaper variant="emerald" />
+                            <div className="relative flex items-stretch gap-[3%] px-[5%] py-[6%]">
+                                <div className="w-[64%] flex-none">
+                                    <QuranWidget size="medium" verse={SHOWCASE_VERSES[1]} />
+                                </div>
+                                <div className="w-[30%] flex-none">
+                                    <QuranWidget size="small" verse={SHOWCASE_VERSES[3]} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    {/* RIGHT COLUMN: Preview, verses styled like the app's Lock Screen text */}
-                    <div>
-                        <Reveal>
-                            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand">Preview</p>
-                            <h3 className="mb-8 text-2xl font-bold text-white sm:text-3xl">See it in action</h3>
-                        </Reveal>
-
-                        <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-                            {screenshots.map((shot, i) => (
-                                <li key={shot.id} className={i % 2 === 1 ? 'sm:translate-y-8' : ''}>
-                                    <Reveal delay={i * 0.1}>
-                                        <figure
-                                            className={`${glassCardClass} group relative flex min-h-[15rem] flex-col justify-between overflow-hidden bg-gradient-to-b ${shot.tone} p-6 transition duration-300 hover:-translate-y-0.5 hover:border-brand/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:min-h-[18rem] sm:p-7`}
-                                        >
-                                            <div
-                                                aria-hidden="true"
-                                                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full"
-                                                style={{ background: `radial-gradient(closest-side, ${shot.glow}, transparent)` }}
-                                            />
-                                            <figcaption className="relative text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">
-                                                {shot.title}
-                                            </figcaption>
-                                            <blockquote className="relative my-6">
-                                                <p className="font-serif text-lg font-medium leading-relaxed text-white sm:text-xl">
-                                                    {shot.quote}
-                                                </p>
-                                                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-light">
-                                                    {shot.sub}
-                                                </p>
-                                            </blockquote>
-                                        </figure>
-                                    </Reveal>
-                                </li>
-                            ))}
-                        </ul>
-                        {/* room for the staggered second column */}
-                        <div aria-hidden="true" className="hidden h-8 sm:block" />
-                    </div>
-
-                </div>
+                </Reveal>
             </div>
         </section>
     );

@@ -22,7 +22,7 @@ export interface AppFeature {
 export const featureNav: AppFeature[] = [
   {
     id: 'daily-verses',
-    label: 'Daily Verses',
+    label: 'Your Ayah',
     eyebrow: 'An ayah on the screen you check most',
     title: 'See the Quran, not just your notifications',
     description:
@@ -30,16 +30,16 @@ export const featureNav: AppFeature[] = [
     points: [
       'An ayah on your Lock Screen wallpaper',
       'The same ayah on a Home Screen widget',
-      'Uthmani Arabic beside a translation',
+      'Uthmani Arabic or a translation',
     ],
   },
   {
     id: 'translations',
     label: 'Arabic and Translation',
     eyebrow: 'Read it in your language',
-    title: 'Arabic beside a translation in 10 languages',
+    title: 'Arabic or a translation in 10 languages',
     description:
-      'Each ayah appears in Uthmani Arabic with a translation next to it, and you can search all 114 surahs to find the ayah you want.',
+      'Read each ayah in Uthmani Arabic or in a translation, and you can search all 114 surahs to find the ayah you want.',
     points: [
       'Translations in 10 languages',
       'All 114 surahs searchable by surah, ayah or keyword',
@@ -52,11 +52,11 @@ export const featureNav: AppFeature[] = [
     eyebrow: 'Made for iPhone',
     title: 'A Lock Screen wallpaper and a Home Screen widget',
     description:
-      'QuranWall is an iPhone app that works with the Lock Screen wallpaper and Home Screen widget Apple provides. It needs iOS 15.0 or later.',
+      'QuranWall is an iPhone app that sets your Lock Screen wallpaper through Apple\'s Shortcuts app and adds a widget for the Home Screen and Lock Screen. It needs iOS 15.0 or later.',
     points: [
       'Lock Screen wallpaper with your ayah',
-      'Home Screen widget',
-      'Works offline',
+      'Widget for the Home Screen and Lock Screen',
+      'Browse and search all 114 surahs offline',
     ],
   },
   {
@@ -76,13 +76,12 @@ export const featureNav: AppFeature[] = [
     id: 'no-ads',
     label: 'No Ads',
     eyebrow: 'No noise',
-    title: 'No ads, and it works offline',
+    title: 'No ads, and browsing works offline',
     description:
-      'QuranWall shows no ads. It is free to download, with an in-app subscription, and the App Store shows the price before you subscribe.',
+      'QuranWall shows no ads. Browsing, search and the widget work offline.',
     points: [
       'No ads',
-      'Works offline',
-      'Free to download, with an in-app subscription',
+      'Browse and search all 114 surahs offline',
     ],
   },
 ];

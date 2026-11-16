@@ -6,15 +6,14 @@ import Features from '../components/Features';
 import HowItWorksAndPreview from '../components/HowItWorksAndPreview';
 import TestimonialsAndFAQ from '../components/TestimonialsAndFAQ';
 import FinalCTA from '../components/FinalCTA';
-import Pricing from '../components/Pricing';
 import ExploreMore from '../components/ExploreMore';
 import { faqPageSchema } from '../data/faqs';
 import Footer from '../components/Footer';
 import facts from '../data/facts.json';
 
-const HOME_TITLE = 'QuranWall: Daily Quran Verses on Your iPhone Lock Screen';
+const HOME_TITLE = 'QuranWall: Quran Verse on Your iPhone Lock Screen';
 const HOME_DESC =
-  'Put an ayah of the Quran on your iPhone Lock Screen and Home Screen widget, Arabic beside a translation in 10 languages. Free to download, with an in-app subscription.';
+  'Choose any ayah of the Quran and set it as your iPhone Lock Screen wallpaper, in Arabic or a translation in 10 languages. Add the widget to your Home Screen. No ads.';
 
 
 // HowTo schema targets "how to put Quran on iPhone lock screen" style queries,
@@ -24,28 +23,42 @@ const howToSchema = {
   '@type': 'HowTo',
   name: 'How to put a Quran ayah on your iPhone Lock Screen',
   description:
-    'Set up QuranWall to show an ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget.',
+    'Choose an ayah in QuranWall and set it as your iPhone Lock Screen wallpaper, then add the widget.',
   tool: [{ '@type': 'HowToTool', name: `iPhone running ${facts.minIOSText}` }],
   step: [
     {
       '@type': 'HowToStep',
       position: 1,
-      name: 'Download QuranWall',
-      text: 'Download QuranWall from the App Store. The download is free, with an in-app subscription.',
+      name: 'Get QuranWall',
+      text: 'Get QuranWall from the App Store. The first time, the app walks you through adding the QuranWall shortcut to Apple\'s Shortcuts app. You do this once.',
       url: 'https://quranwall.com/#how-it-works',
     },
     {
       '@type': 'HowToStep',
       position: 2,
-      name: 'Choose your translation and look',
-      text: 'Pick a translation (10 languages are available), a preset background or your own photo, and your font and colours.',
+      name: 'Choose your ayah',
+      text: 'Search all 114 surahs by surah, ayah or keyword, then read it in Arabic or in a translation.',
       url: 'https://quranwall.com/#how-it-works',
     },
     {
       '@type': 'HowToStep',
       position: 3,
-      name: 'See the ayah on your Lock Screen',
-      text: 'QuranWall shows the ayah, Uthmani Arabic beside the translation, on your Lock Screen wallpaper and Home Screen widget.',
+      name: 'Make it yours',
+      text: 'Edit the text, pick a font and a colour, check the preview, then tap Make It Mine.',
+      url: 'https://quranwall.com/#how-it-works',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'It\'s on your Lock Screen',
+      text: 'The Shortcuts app sets it as your Lock Screen wallpaper and brings you back to QuranWall. Change it whenever you like.',
+      url: 'https://quranwall.com/#how-it-works',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Add the widget',
+      text: 'Add the QuranWall widget to your Home Screen or Lock Screen. It shows your ayah, and with auto-rotate on it brings a new one every day, every 8 hours or every hour.',
       url: 'https://quranwall.com/#how-it-works',
     },
   ],
@@ -61,7 +74,7 @@ const appSchema = {
   operatingSystem: facts.minIOSText,
   applicationCategory: 'LifestyleApplication',
   description:
-    'QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation in 10 languages.',
+    'QuranWall is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget, in Arabic or a translation in 10 languages.',
   url: facts.storeUrl,
   installUrl: facts.storeUrl,
   downloadUrl: facts.storeUrl,
@@ -69,7 +82,6 @@ const appSchema = {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
-    description: facts.installLine,
   },
   screenshot: [1, 2, 3, 4, 5].map((n) => `https://quranwall.com/assets/slideshow/slide${n}.webp`),
   author: {
@@ -93,11 +105,11 @@ export default function Home() {
                 <meta property="og:image" content="https://quranwall.com/og-image.png" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:image:alt" content="QuranWall: Daily Quran Verses on Your iPhone Lock Screen" />
+                <meta property="og:image:alt" content="QuranWall: Quran Verse on Your iPhone Lock Screen" />
                 <meta name="twitter:title" content={HOME_TITLE} />
                 <meta name="twitter:description" content={HOME_DESC} />
                 <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
-                <meta name="twitter:image:alt" content="QuranWall: Daily Quran Verses on Your iPhone Lock Screen" />
+                <meta name="twitter:image:alt" content="QuranWall: Quran Verse on Your iPhone Lock Screen" />
                 <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
                 <script type="application/ld+json">{JSON.stringify(faqPageSchema)}</script>
                 <script type="application/ld+json">{JSON.stringify(appSchema)}</script>
@@ -110,7 +122,6 @@ export default function Home() {
             <TestimonialsAndFAQ />
             <ExploreMore />
             <FinalCTA />
-            <Pricing />
             <Footer />
         </div>
     );

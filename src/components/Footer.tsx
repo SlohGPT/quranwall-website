@@ -9,7 +9,6 @@ const footerLinks = {
   about: [
     { name: 'Features', href: '/features' },
     { name: 'Download', href: appStoreUrl(CAMPAIGNS.footer) },
-    { name: 'Pricing', href: '/#pricing' },
     { name: 'Support', href: '/support' },
   ],
   resources: [

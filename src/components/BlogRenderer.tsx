@@ -241,20 +241,13 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'cta':
               if (isPost) {
-                // The post's own closing copy, as an install card. Most posts already say "free to download";
-                // then the card adds only the subscription half of the install line, or nothing when the copy
-                // already names the subscription too (the line would only repeat it).
-                const ctaCopy = `${section.title} ${section.description}`;
-                const saysFree = /free to download/i.test(ctaCopy);
-                const saysSubscription = /subscription/i.test(ctaCopy);
+                // The post's own closing copy, as an install card (no price line: no pricing on the website).
                 return (
                   <AppNudge
                     placement="end"
                     campaign={CAMPAIGNS.blogEnd}
                     title={section.title}
                     description={section.description}
-                    subscriptionOnly={saysFree}
-                    omitPriceLine={saysFree && saysSubscription}
                     className="my-10"
                   />
                 );

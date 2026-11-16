@@ -6,6 +6,7 @@ import Wallpaper, { type WallpaperVariant } from './Wallpaper';
 type Props = {
   verse?: ShowcaseVerse;
   wallpaper?: WallpaperVariant;
+  edition?: 'arabic' | 'translation';
   className?: string;
 };
 
@@ -51,7 +52,7 @@ function AppIcon({ i, label = true }: { i: number; label?: boolean }) {
 }
 
 /** A Home Screen with the medium QuranWall widget on top, neutral app icons and a dock. */
-export default function HomeScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', className = '' }: Props) {
+export default function HomeScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', edition = 'translation', className = '' }: Props) {
   return (
     <div className={`absolute inset-0 overflow-hidden text-white ${className}`} style={{ containerType: 'inline-size' }}>
       <Wallpaper variant={wallpaper} />
@@ -63,7 +64,7 @@ export default function HomeScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
       </div>
 
       <div className="absolute" style={{ top: '20cqw', left: '6.5cqw', right: '6.5cqw' }}>
-        <QuranWidget size="medium" verse={verse} />
+        <QuranWidget size="medium" verse={verse} edition={edition} />
       </div>
 
       <div

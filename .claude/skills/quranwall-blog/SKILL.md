@@ -5,7 +5,7 @@ description: Write one full SEO blog post for quranwall.com end-to-end. Use this
 
 # QuranWall Daily Blog Skill
 
-You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA selling an **iPhone app that places a Quran ayah on the iPhone Lock Screen wallpaper and Home Screen widget** (free to download, with an in-app subscription). Read this whole file before starting. Run every step in order — do not skip.
+You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA selling an **iPhone app that places a Quran ayah on the iPhone Lock Screen wallpaper and Home Screen widget**. Read this whole file before starting. Run every step in order — do not skip.
 
 **The whole point of this blog:** every post is helpful content that *also advertises QuranWall*. On informational posts the sell is soft; on any "best apps / alternatives / vs" post, **QuranWall is THE recommendation — listed first, ranked highest, never one option among many.** See the Conversion Doctrine in Step 4.
 
@@ -14,7 +14,7 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 - **App Store URL (blog link, with install attribution):** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8` — always use this exact `qw-web-blog` form in every post (CTA `buttonUrl` and any inline App Store link). Never the bare URL. Other page types are built in code by `src/lib/app-store.ts`; blog JSON is static, so the literal string goes in. The renderer rebuilds inline App Store links with `qw-web-blog` and does not render `buttonUrl` (the end install card links with `qw-web-blog-end`), so a wrong query string can't leak, but keep writing the exact form.
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
-- **Pricing:** Free to download, with an in-app subscription. Never state a price, plan name or trial length, and never call it "free" on its own or "a free app": say the App Store shows the price before you subscribe.
+- **Pricing: none on the website at all.** Karol 2026-11-16: "we don't need to mention the pricing on the website, at all in my opinion. Like, let people download the app and then they will see and they will convert themselves." Pages, posts, CTAs and install cards never mention price, "free", "free to download", subscription, trial or plans; the App Store shows it. (Other apps' pricing in a roundup may be stated when true on their live listing.) The only exceptions are the machine files `public/llms.txt` and `public/pricing.md`, which are not written by this skill.
 - **Confirmed features (live App Store listing, 2026-11-16):** Uthmani Arabic beside a translation, 10 languages; Lock Screen wallpaper and Home Screen widget; your own background, font and colours (a preset or your own photo); all 114 surahs searchable by surah, ayah or keyword; no ads; works offline.
 - **Not confirmed, so never claim until TODO-KAROL.md records Karol confirming them:** verse packs or any named pack, installing through iOS Focus modes, "Premium" or "unlimited" unlocks, duas, a "60-second setup", "no account". You may still write about seasons of life (hardship, grief, sabr, tawakkul) as topics.
 - **Requires:** iOS 15.0 or later (the live listing's minimum).
@@ -137,7 +137,7 @@ Every post includes a friction-reveal section (any heading: "Where this gets har
 #### CTA copy variation (don't reuse one boilerplate)
 
 Vary the final CTA title + description by post type. Examples:
-- **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Free to download. Arabic beside a translation in 10 languages, on your Lock Screen and Home Screen widget."`
+- **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Arabic beside a translation in 10 languages, on your Lock Screen and Home Screen widget."`
 - **How-to:** title `"Pick an ayah, set it once"` / description `"QuranWall puts it on your Lock Screen wallpaper and Home Screen widget. No ads, works offline."`
 - **Friction-resolution:** title `"Stop screenshotting verses"` / description `"QuranWall designs the ayah for the Lock Screen: your background, font and colours, Arabic beside a translation."`
 
