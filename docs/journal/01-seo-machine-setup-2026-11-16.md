@@ -265,3 +265,40 @@ The FaithWall session checked the night's work and sent a list of fixes, plus la
   - p5 on 2026-11-23
   - p18 from 2026-12-15
   - Karol's calls on translation rights, the Saheeh edition, the in-app Tanzil credit and the `CLAUDE.md` lines
+
+## Last round: FaithWall's review of the verification fixes (`2cf47e8`)
+FaithWall checked `3640fca`, `dde8b62` and `eb98fa8` in a scratch clone, against the live site and the listing. It confirmed the copy fixes ("114 Surahs, all searchable" is backed by the listing) and accepted the five choices above. It found one wrong live page and four lint gaps.
+
+- **Correction to the round above:** my report said the closing CTA no longer gives a user count. Only its headline lost the count. "Join 1,000+ believers" under it is still live on `/` and `/features`, along with the Hero's "Trusted by 1,000+ believers" and the SocialProof 1,000+ and 92% stats. That is the documented state until p5 on 2026-11-23. p5's notes now name all four places.
+- **EULA:** section 1 described NoteWall: goals, notes, habits and reminders, an iOS Shortcut, and "optional premium features". The product description now states the listing's facts:
+  - an ayah on the Lock Screen wallpaper and a Home Screen widget
+  - Uthmani Arabic beside a translation in one of 10 languages
+  - a new ayah each day or a pinned one
+  - the user's own background, font and colours, or their own photo
+  - search of all 114 surahs
+  - offline use, no ads
+  - an in-app subscription
+
+  The legal clauses are untouched. Legal substance (the trial and lifetime clauses in Terms) stays with Karol.
+- **Lint** (`scripts/lint-facts.mjs`, a subagent built it, reviewed here):
+  - **social-proof:** fails user counts, "trusted by N", "join N" and stats labelled with users.
+  - **social-proof-downloads:** only "Downloaded <downloadsFloor> times" passes. `downloadsFloor` is a new field in `facts.json`, a lower bound from App Store Connect.
+  - **Grandfather list:** the four live p5 strings are a WARN until 2026-11-23 and a FAIL from then, tested with `LINT_FACTS_TODAY`.
+  - **setup-time:** now also catches "sets up", "setup takes a minute", "ready in", "get started in", "up and running in" and setup-time stat labels.
+  - **NEG/DENY:** on site content it applies only to the clause that holds the match, so "Never miss a verse: set up in 60 seconds" fails. Prompts, skills and the queue keep whole-sentence NEG.
+  - **premium-plan-word:** fails "QuranWall Premium", "upgrade to / go / get Premium" and "Premium needs / requires / costs …".
+  - Every probe the reviewer listed now fails, and the must-pass probes pass.
+- **Queue and docs:**
+  - p3 and p14 use the install line.
+  - p5's reason is reworded so it doesn't trip the new rule after the grandfather date.
+  - TODO-KAROL now suggests changing `CLAUDE.md` line 21 as well ("Premium is an in-app subscription"), and quotes the install line in the six-questions item.
+  - The autopilot and merge-bot prompts now say that on product facts, `facts.json` and the lint win over `CLAUDE.md`.
+  - The merge bot's journal step now also keeps App Store Connect and RevenueCat numbers out of the repo.
+- **Accepted as is:** the `/Users` path in old history (`946925a`, `961cfdc`); HEAD is clean. The contact email question was already in TODO-KAROL.
+- **Verified:**
+  - typecheck, and build 16/16
+  - `lint-facts` `--all` 0 FAIL / 4 WARN and `--dist` 0 FAIL / 5 WARN (the grandfathered p5 strings only)
+  - `--prompts` and `--diff`: 0 FAIL
+  - `check-facts`: unchanged
+  - with the date forced to 2026-11-23, `--all` fails exactly the four live strings
+- **Live:** `/eula` shows the new section 1, without the NoteWall lines, and its HIPAA clause is unchanged. IndexNow pinged `/eula`.
