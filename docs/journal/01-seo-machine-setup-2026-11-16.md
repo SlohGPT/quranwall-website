@@ -346,3 +346,11 @@ FaithWall checked round 2 at `030c8f5` and asked for five lint gaps to be closed
   - `--prompts` and `--diff origin/main --worktree`: 0 FAIL
   - with the date forced to 2026-11-23, `--all` fails exactly those four strings
   - `check-facts` unchanged
+- **Pushed (homepage session):** `a34c536` and `ce0f3f6` went out with the homepage-v2 merge. origin/main is `6c7f69c`, and that session ran every gate on it, `--self-test` included. The live home page shows the new hero.
+
+## Night: the ASO session's answer on the web-referrer spike
+The ASO session tested the reclassification idea from the note above, and a second agent recomputed it independently. Its counts stay in its private files.
+- **Result:** from about 10-24, for three weeks, the same demand reached the App Store by a different route. Web referrer rose while App referrer (mostly the ChatGPT app) fell, their sum held, and App Store search stayed flat. So there was no extra demand, and the site played no visible part.
+- **It wasn't a simple relabel:** most of the web gain was downloads with no product-page view. Apple hides most referring domains below its display threshold, so the route itself can't be seen.
+- **For this site:** the Web referrer line in App Store Connect can't show whether quranwall.com works. The `ct=qw-web-*` campaign tokens added on 2026-11-16 are the measure. Apple lists a token only after it passes a threshold, so expect days or weeks with nothing showing.
+- **Changed:** this note, and the memory pointer.
