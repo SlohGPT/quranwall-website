@@ -63,3 +63,23 @@ Karol asked whether this repo has the same automatic SEO routines as the FaithWa
 - **Karol:** the site's contact address is NoteWall's (`iosnotewall@gmail.com`). Keep it or replace it.
 - **Karol:** set the permission mode on the three new tasks in the app. They were created without a saved mode, so a run may pause to ask.
 - **Karol:** first monthly review of the `qw-web-*` campaigns in App Store Connect, around 2026-12-16.
+
+## Later the same day: Search Console and Bing
+Karol approved the Search Console grant ("Yes, add it", then "Yes, do all of it") and added "Same thing with webmasters tools. Don't forget about that."
+
+- **Found:** quranwall.com wasn't in Search Console at all, in any property form. That was the real cause of the 403, not a missing grant.
+- **Search Console, done in Karol's Chrome:**
+  - added the Domain property `sc-domain:quranwall.com`
+  - verified it with a `google-site-verification` TXT record on the root of quranwall.com at Porkbun. Nothing else in DNS changed, and the site still resolves to Vercel.
+  - added `karchi@karchi-indexing.iam.gserviceaccount.com` as a Restricted user
+  - submitted `https://quranwall.com/sitemap.xml`. Right after submission it showed "couldn't fetch", which is normal for a new property. The live sitemap answers 200 with 16 URLs.
+- **Bing Webmaster Tools:** quranwall.com was already added and verified in Karol's account. Its reports were still processing (Bing says up to 48 hours) and no sitemap had been submitted. Submitted `https://quranwall.com/sitemap.xml`; it's accepted and processing.
+- **Verified:** `npm run gsc-dump` now authenticates and returns data, with no rows yet. Google backfills a new property's data within a day or two, so Monday's refresh (2026-11-23) is the first run with data. That run sets the baseline.
+- **Decided:** the TXT record has to stay in DNS. `TODO-KAROL.md` says so in place of the grant item. The Bing question there is closed.
+- **Open now:**
+  - the product-fact and social-proof answers, before 2026-11-23
+  - approval of the blog-skill wording
+  - the contact email
+  - Request Indexing for the money pages, now possible
+  - the permission mode on the three tasks
+  - the monthly `qw-web-*` review, around 2026-12-16
