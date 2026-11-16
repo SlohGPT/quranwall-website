@@ -10,9 +10,11 @@
  *                               `git diff <base>...HEAD -U0`; --worktree adds uncommitted and untracked work
  *   --dist [dir]                check the built site (default dist/): App Store links, JSON-LD, NUL bytes,
  *                               404, sitemap, Smart App Banner, public/llms.txt + public/pricing.md vs facts.json
+ *                               plus the visible text of every built page (same prose rules) and the email check
  *   --prompts [files...]        lint ~/.claude/scheduled-tasks/quranwall-* /SKILL.md (read-only) and
  *                               .claude/skills/quranwall-blog/SKILL.md, plus any extra files given
  *   --all                       lint every source file (src, index.html, public/*.txt|md, .claude/skills/**)
+ *                               and check that every email address equals facts.contactEmail
  *
  * Exit code 1 on any FAIL. WARN never fails.
  *
@@ -48,11 +50,15 @@ const CAMPAIGN_TOKENS = Object.values(CAMPAIGNS);
 // ---------------------------------------------------------------- text rules
 
 const BRAND = String.raw`Quran ?Wall`;
-// A clause about the app, without crossing a sentence, comma, semicolon, colon, dash or bracket (keeps a
+// A clause about the app, without crossing a sentence, comma, semicolon, colon, dash, bar (title separator) or bracket (keeps a
 // competitor's feature in "Muslim Pro has qibla, while QuranWall ..." from being read as ours).
-const CL = String.raw`[^.,;:—–()]`;
-// Local negation inside a sentence: a sentence that denies a feature is the opposite of a claim.
-const DENY = /\b(?:no|not|never|without|lacks?|doesn'?t|does not|isn'?t|is not|aren'?t|can'?t|cannot|won'?t|n'?t|only|rather than|instead of|unlike|except)\b/i;
+const CL = String.raw`[^.,;:—–()|]`;
+// A number as digits or a small number word (setup-time rule).
+const NUM = String.raw`(?:\d+(?:\.\d+)?|one|two|three|four|five|ten|fifteen|twenty|thirty|sixty)`;
+// Local negation inside a sentence: a sentence that denies a feature is the opposite of a claim. Real negations
+// only. "only", "unlike", "except", "instead of", "rather than" are NOT negations ("QuranWall is the only app with
+// tafsir on your lock screen" is an invented claim), and "not only" is an addition, not a denial.
+const DENY = /\b(?:no|not(?!\s+only\b)|never|without|lacks?|has no|(?:don|doesn|didn|isn|aren|wasn|weren|won|can|couldn|hasn|haven)'?t|do not|does not|did not|cannot|not confirmed)\b/i;
 
 // Each rule: [id, regex, unused, allow?]. `allow` rescues a sentence that matches it.
 const rules = [
@@ -68,12 +74,19 @@ const rules = [
   // NOT CONFIRMED: verse packs or any named pack.
   ['verse-packs', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:packs?|bundles?|collections? of (?:verses|ayat|ayahs))\\b`, 'i'), null],
   ['verse-packs-bare', /\b(?:verse|ayah|ayat|surah|themed|wallpaper|theme|dua|dhikr|starter|bonus) packs?\b/i, null],
-  // NOT CONFIRMED: "Premium" or "unlimited" unlocks. "Premium is an in-app subscription" is a stated fact.
+  // NOT CONFIRMED: "Premium" unlocks or "unlimited" anything. The listing never says "Premium" at all.
   ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
+  // NOT CONFIRMED: the name "Premium". The listing's in-app purchases are called QuranWall+ Weekly / Yearly;
+  // write "an in-app subscription" instead. Case-sensitive on purpose ("premium" as an adjective is fine).
+  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:subscription|plan)\b|\bPremium\s+(?:subscription|plan|tier|version)\b/, null],
   // NOT CONFIRMED: duas inside QuranWall.
   ['duas', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:du'?as?|du'?aa|supplications?|adhkar|adhkaar)\\b|\\b(?:personal|custom|your own|saved|favou?rite)\\s+(?:du'?as?|du'?aa|supplications?)\\b`, 'i'), null, /\b(?:read|reading|recit\w+|write|writing|praying|pray|make|making|about|topic|post|guide|article)\b/i],
   // NOT CONFIRMED: a "60-second setup".
   ['setup-60s', /\b(?:60|sixty)[- ]?seconds?\b[^.]{0,30}\b(?:set[- ]?up|install\w*|ready|get started|to set)\b|\b(?:set[- ]?up|setting up|install\w*|ready|get started)\b[^.]{0,30}\b(?:in|within|under|just|takes?)\s+(?:about\s+|only\s+|just\s+)?(?:60|sixty)[- ]?seconds?\b|\b(?:a|one|1)[- ]minute\s+set[- ]?up\b/i, null],
+  // NOT CONFIRMED: any stated setup time ("Seconds to set up", "2-minute setup", "Set up in under 2 minutes",
+  // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
+  // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
+  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b(?:set[- ]?up|setting up|install\\w*)\\b[^.]{0,30}\\b(?:in|within|under|just|takes?|takes about|less than)\\s+(?:about\\s+|only\\s+|just\\s+|less than\\s+|under\\s+)?${NUM}\\s?(?:seconds?|secs?|minutes?|mins?|s)\\b|\\b(?:under|within|less than|in just|in only)\\s+${NUM}\\s?(?:minutes?|mins?|seconds?|secs?)\\b[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b(?:set[- ]?up|setting up|install\\w*)\\b[^.]{0,30}\\b(?:under|within|less than)\\s+${NUM}\\s?(?:minutes?|mins?)\\b`, 'i'), null],
   // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
   ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
   // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
@@ -97,7 +110,7 @@ const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', '
 // A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
 // claim through a bare phrase, so the bare-phrase rules skip it.
 const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
-const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'verse-packs-bare', 'free-app-bare']);
+const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'verse-packs-bare', 'free-app-bare']);
 
 /** Lint one piece of text. Pushes { id, s } into `out`. */
 function lintText(text, out) {
@@ -111,6 +124,14 @@ function lintText(text, out) {
       out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
     }
   }
+}
+
+/** "60s Seconds to set up ..." for {value|number: 60, suffix: 's', label: '...'} (post stat blocks and TSX-like data). */
+function statText(node) {
+  const n = node.number ?? node.value;
+  if (typeof node.label !== 'string' || !(typeof n === 'number' || typeof n === 'string')) return null;
+  const suffix = typeof node.suffix === 'string' ? node.suffix : '';
+  return `${n}${suffix} ${node.label}`;
 }
 
 /** Walk a parsed JSON value, linting every prose string. */
@@ -128,6 +149,14 @@ function walkJson(node, loc, file, out) {
   if (node && typeof node === 'object') {
     // seo-priorities.json: only pending items are future copy; done/closed items are history.
     if (file.endsWith('seo-priorities.json') && 'status' in node && node.status !== 'pending') return;
+    // A stat is split over fields ({number|value, suffix, label}); lint the rendered text too, and the label
+    // alone is linted by the loop below.
+    const stat = statText(node);
+    if (stat) {
+      const found = [];
+      lintText(stat, found);
+      for (const h of found) out.push({ ...h, loc: `${loc} (stat)` });
+    }
     for (const k of Object.keys(node)) {
       if (k.startsWith('_')) continue;
       if (SKIPKEYS.has(k)) continue;
@@ -247,6 +276,46 @@ function addedRanges(base, worktree) {
     }
   }
   return map;
+}
+
+// ---------------------------------------------------------------- email consistency
+
+/**
+ * Every email address in the site must be facts.contactEmail. Third-party addresses are allowed by DOMAIN only
+ * (never by full address, so a typo of our own address cannot hide here):
+ *   inforegulator.org.za  the South African Information Regulator, named in the legal pages (POPIA/PAIA).
+ */
+const EMAIL_DOMAIN_ALLOW = ['inforegulator.org.za'];
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
+const FILE_TLD = /\.(?:png|jpe?g|gif|webp|avif|svg|ico|css|js|mjs|json|tsx?|woff2?|map)$/i;
+
+function checkEmailText(txt, where) {
+  const own = String(facts.contactEmail || '').toLowerCase();
+  if (!own) { fail('email-consistency', where, 'facts.json has no contactEmail'); return; }
+  for (const m of txt.matchAll(EMAIL_RE)) {
+    const e = m[0].toLowerCase();
+    if (FILE_TLD.test(e)) continue; // icon@2x.png and the like
+    if (e === own) continue;
+    const domain = e.slice(e.indexOf('@') + 1);
+    if (EMAIL_DOMAIN_ALLOW.some((d) => domain === d || domain.endsWith('.' + d))) continue;
+    const line = txt.slice(0, m.index).split('\n').length;
+    fail('email-consistency', `${where} L${line}`, `${m[0]} is not facts.contactEmail (${facts.contactEmail})`);
+  }
+}
+
+let sourceEmailsChecked = false;
+function checkSourceEmails() {
+  if (sourceEmailsChecked) return;
+  sourceEmailsChecked = true;
+  const files = [
+    join(ROOT, 'index.html'),
+    join(ROOT, 'public/llms.txt'),
+    join(ROOT, 'public/pricing.md'),
+    ...walk(join(ROOT, 'src')).filter((f) => /\.tsx?$/.test(f) || (/\.json$/.test(f) && rel(f).startsWith('src/data/'))),
+  ];
+  for (const abs of files) {
+    if (existsSync(abs)) checkEmailText(readFileSync(abs, 'utf8'), rel(abs));
+  }
 }
 
 // ---------------------------------------------------------------- reporting
@@ -374,6 +443,19 @@ function checkMachineFiles() {
   }
 }
 
+/** Built HTML to lines of visible text. Tags become a space (so adjacent stat elements concatenate); closing
+ *  block tags end a line so unrelated paragraphs do not run into one sentence. */
+function htmlToText(html) {
+  return html
+    .replace(/<(script|style|noscript|template)\b[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<\/(?:title|p|li|h[1-6]|section|article|header|footer|nav|tr|ul|ol|blockquote|details|summary|figcaption)>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&(?:#x27|#39|apos);/g, "'")
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+    .split('\n').map((l) => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n');
+}
+
 function runDist(distArg) {
   const DIST = resolve(distArg || join(ROOT, 'dist'));
   const dl = (abs) => 'dist/' + relative(DIST, abs).split(sep).join('/');
@@ -391,6 +473,13 @@ function runDist(distArg) {
     // NUL bytes: React 18.3.1 writeStringChunk bug, stripped in prerender.mjs.
     if (buf.includes(0)) fail('dist-nul', r, 'contains NUL bytes');
     const html = buf.toString('utf8');
+
+    // Visible text: the same prose rules as the sources, on tag-stripped text (a stat reads "60s Seconds to ...")
+    // and the email check on the raw HTML (mailto: links, JSON-LD).
+    const found = [];
+    for (const line of htmlToText(html).split('\n')) lintText(line, found);
+    for (const h of found) fail(h.id, r, h.s);
+    checkEmailText(html, r);
 
     // App Store links (anchors only; structured data keeps the plain listing URL on purpose)
     for (const m of html.matchAll(/<a\b[^>]*?\bhref=(?:"([^"]*)"|'([^']*)')/gi)) {
@@ -470,6 +559,7 @@ function runDist(distArg) {
   }
 
   checkMachineFiles();
+  checkSourceEmails();
 
   console.log(`dist: ${htmlFiles.length} html files, ${linkCount} App Store links, ${apps.length} MobileApplication node(s), ${sitemapCount} sitemap URLs, campaigns ${CAMPAIGN_TOKENS.length}`);
 }
@@ -492,7 +582,7 @@ const valuesAfter = (name) => {
   return out;
 };
 
-if (flag('--all')) runText(allFiles(), null);
+if (flag('--all')) { runText(allFiles(), null); checkSourceEmails(); }
 
 if (flag('--diff')) {
   const base = valueOf('--diff');

@@ -37,7 +37,9 @@ export type BlogSection =
   | { type: 'highlight'; content: string }
   | { type: 'important'; content: string }
   | { type: 'verse'; reference: string; text: string }
-  | { type: 'cta'; title: string; description: string; buttonText: string; buttonUrl: string };
+  // buttonText and buttonUrl are not rendered: the end card and the guide-page button build their App Store URL
+  // in code (src/lib/app-store.ts). Older posts still carry them; new posts may leave them out.
+  | { type: 'cta'; title: string; description: string; buttonText?: string; buttonUrl?: string };
 
 export interface BlogPost {
   meta: BlogPostMeta;

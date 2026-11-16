@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Zap, Lightbulb, BookOpen, AlertCircle, Sparkles } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
-import { CAMPAIGNS } from '../lib/app-store';
+import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
 import type { BlogSection } from '../types/blog';
 
 /**
@@ -42,8 +42,11 @@ function Markdown({ text }: { text: string }) {
               </Link>
             );
           }
+          // An in-body link to this app on the App Store gets the in-body token (qw-web-blog), built in code,
+          // whatever query string the post JSON carries.
+          const outHref = href.includes('apps.apple.com') && href.includes(`id${APP_STORE_ID}`) ? appStoreUrl(CAMPAIGNS.blog) : href;
           return (
-            <a href={href} target="_blank" rel="noopener noreferrer" className="text-brand hover:text-brand-light underline underline-offset-2">
+            <a href={outHref} target="_blank" rel="noopener noreferrer" className="text-brand hover:text-brand-light underline underline-offset-2">
               {children}
             </a>
           );
@@ -265,7 +268,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
                   <h3 className="text-2xl md:text-3xl font-black text-white mb-3">{section.title}</h3>
                   <p className="text-white/80 mb-6 max-w-xl mx-auto">{section.description}</p>
                   <div className="flex justify-center">
-                    <AppStoreButton href={section.buttonUrl} theme="light" />
+                    <AppStoreButton href={appStoreUrl(CAMPAIGNS.pillar)} theme="light" />
                   </div>
                 </div>
               );

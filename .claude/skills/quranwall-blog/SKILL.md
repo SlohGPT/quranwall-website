@@ -11,7 +11,7 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 
 ## Project facts (don't re-derive these)
 
-- **App Store URL (blog link, with install attribution):** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8` — always use this exact `qw-web-blog` form in every post (CTA `buttonUrl` and any inline App Store link). Never the bare URL. Other page types are built in code by `src/lib/app-store.ts`; blog JSON is static, so the literal string goes in.
+- **App Store URL (blog link, with install attribution):** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8` — always use this exact `qw-web-blog` form in every post (CTA `buttonUrl` and any inline App Store link). Never the bare URL. Other page types are built in code by `src/lib/app-store.ts`; blog JSON is static, so the literal string goes in. The renderer rebuilds inline App Store links with `qw-web-blog` and does not render `buttonUrl` (the end install card links with `qw-web-blog-end`), so a wrong query string can't leak, but keep writing the exact form.
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
 - **Pricing:** Free to download, with an in-app subscription. Never state a price, plan name or trial length, and never call it "free" on its own or "a free app": say the App Store shows the price before you subscribe.

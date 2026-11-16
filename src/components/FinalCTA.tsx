@@ -31,7 +31,7 @@ export default function FinalCTA() {
                 <span className="text-white/40">with purpose</span>
               </h2>
               <p className="text-lg text-white/60 mb-8 leading-relaxed">
-                Transform your phone into a tool for spiritual growth. Join thousands of believers who begin each day with inspiration.
+                Transform your phone into a tool for spiritual growth, and begin each day with an ayah.
               </p>
 
               <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />

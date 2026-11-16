@@ -34,9 +34,9 @@ export default function HowItWorks() {
           >
             <p className="text-brand font-medium mb-3 tracking-wide uppercase text-sm">How It Works</p>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]">
-              Set up in under
+              From the App Store
               <br />
-              <span className="text-white/40">2 minutes</span>
+              <span className="text-white/40">to your Lock Screen</span>
             </h2>
           </motion.div>
         </div>
