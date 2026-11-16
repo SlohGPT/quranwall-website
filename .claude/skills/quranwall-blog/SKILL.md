@@ -5,7 +5,7 @@ description: Write one full SEO blog post for quranwall.com end-to-end. Use this
 
 # QuranWall Daily Blog Skill
 
-You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA selling a **free iOS app that puts a daily Quran verse on the iPhone lock screen** (wallpaper or widget, via iOS Focus modes). Read this whole file before starting. Run every step in order — do not skip.
+You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA selling an **iPhone app that places a Quran ayah on the iPhone Lock Screen wallpaper and Home Screen widget** (free to download, with an in-app subscription). Read this whole file before starting. Run every step in order — do not skip.
 
 **The whole point of this blog:** every post is helpful content that *also advertises QuranWall*. On informational posts the sell is soft; on any "best apps / alternatives / vs" post, **QuranWall is THE recommendation — listed first, ranked highest, never one option among many.** See the Conversion Doctrine in Step 4.
 
@@ -14,9 +14,10 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 - **App Store URL (blog link, with install attribution):** `https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8` — always use this exact `qw-web-blog` form in every post (CTA `buttonUrl` and any inline App Store link). Never the bare URL. Other page types are built in code by `src/lib/app-store.ts`; blog JSON is static, so the literal string goes in.
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
-- **Pricing:** Free to download. Premium ≈ $1.99/mo or $8.99/yr unlocks unlimited verse packs + customization. Never quote a hard price as fixed — say "shown in the App Store at checkout in your local currency."
-- **Verse packs (themes):** Anxiety, Patience, Gratitude, Mercy (use these names; you may reference seasons of life like hardship, grief, sabr, tawakkul).
-- **Requires:** iOS 16 or later (lock-screen widgets + per-screen wallpapers arrived in iOS 16).
+- **Pricing:** Free to download, with an in-app subscription. Never state a price, plan name or trial length, and never call it "free" on its own or "a free app": say the App Store shows the price before you subscribe.
+- **Confirmed features (live App Store listing, 2026-11-16):** Uthmani Arabic beside a translation, 10 languages; Lock Screen wallpaper and Home Screen widget; your own background, font and colours (a preset or your own photo); all 114 surahs searchable by surah, ayah or keyword; no ads; works offline.
+- **Not confirmed, so never claim until TODO-KAROL.md records Karol confirming them:** verse packs or any named pack, installing through iOS Focus modes, "Premium" or "unlimited" unlocks, duas, a "60-second setup", "no account". You may still write about seasons of life (hardship, grief, sabr, tawakkul) as topics.
+- **Requires:** iOS 15.0 or later (the live listing's minimum).
 - **The 5 clusters** (must match `src/types/blog.ts` exactly):
   - `daily-quran-lock-screen`
   - `dua-and-dhikr-iphone`
@@ -58,7 +59,7 @@ Sketch (don't write yet):
 - **Target reader**: one sentence — who searches this keyword and why.
 - **Angle**: a specific point of view, not "ultimate guide".
 - **Outline**: 5–7 H2 sections, each moving the reader forward.
-- **Semantic keyword sidebar**: 8–12 related terms to weave in naturally. Examples for "daily ayah wallpaper iphone": *Quran*, *ayah*, *surah*, *lock screen widget*, *iOS 16 wallpaper*, *Focus mode*, *Sahih International*, *dhikr*, *reminder*, *Ayatul Kursi*, *Ramadan*.
+- **Semantic keyword sidebar**: 8–12 related terms to weave in naturally. Examples for "daily ayah wallpaper iphone": *Quran*, *ayah*, *surah*, *lock screen widget*, *lock screen wallpaper*, *home screen widget*, *Sahih International*, *dhikr*, *reminder*, *Ayatul Kursi*, *Ramadan*.
 - **Internal links**: pick 2–3 existing post slugs from `blogPosts.json` to link by keyword overlap. If the only other post is the seed, link to the **homepage `/`** instead. **Do NOT link to `/{cluster}` topic-hub URLs or `/compare/...` URLs — those pages are not routed yet and would 404.** Internal links must be relative paths that start with `/` (e.g. `/blog/other-slug`, `/`, `/about/karol-billik`).
 
 ### Step 3 — Hero photo (optional Unsplash, graceful fallback)
@@ -122,26 +123,23 @@ The blog exists to drive App Store downloads, not just to rank. Every post earns
 
 Every post includes a friction-reveal section (any heading: "Where this gets hard", "The part nobody tells you", "Why doing it by hand breaks down"). 1–2 paragraphs on what trips up the reader without QuranWall. Pick the 1–2 that fit — don't list all:
 
-- **Curation effort.** Picking the right ayah for today's state of mind means you already know the Quran well. QuranWall solves the chicken-and-egg with themed packs (Anxiety, Patience, Gratitude, Mercy).
-- **Rotation dies by week 2.** Manually changing your wallpaper is a habit that fades. QuranWall rotates automatically through your chosen pack.
+- **Curation effort.** Picking the right ayah for today's state of mind means you already know the Quran well. QuranWall puts all 114 surahs a search away, by surah, ayah or keyword.
 - **Saved screenshots look ugly.** A reading-app screenshot saved as wallpaper isn't designed for the lock-screen surface. QuranWall designs *for* that surface.
-- **No Focus-mode integration.** Most apps make an image you save by hand. QuranWall installs the wallpaper directly via iOS Focus modes — no Camera Roll spam.
-- **Random verse ≠ a spiritual diet.** Verse-of-the-day apps surface unrelated ayat. QuranWall lets you stay on one season's theme.
+- **Random verse ≠ a spiritual diet.** Verse-of-the-day apps surface unrelated ayat. With QuranWall you choose the ayah that speaks to where you are.
 
 #### QuranWall positioning wedges (pick the one that fits)
 
-- **Surface specificity:** "The only app designed *for* the iPhone lock-screen surface, not adapted to it."
-- **The 144 problem:** "You check your phone ~144 times a day. QuranWall makes the Quran one of those touches — without you opening anything."
-- **Zero curation:** "Themed packs picked for seasons of life. You don't have to know which ayah you need — the pack does."
-- **iOS-native:** "Focus-mode integration. The wallpaper installs itself. No Camera Roll wallpaper-juggling."
+- **Surface specificity:** "Designed *for* the iPhone Lock Screen and Home Screen widget, not adapted to them." (Never "the only app".)
+- **The pickup problem:** "You pick up your phone again and again every day. QuranWall makes the Quran one of those touches, without you opening anything." (If you give a number, cite a current named source in the text.)
+- **Private and respectful:** "No ads interrupting your worship, and it works fully offline."
 - **The missing piece:** "Quran.com is for reading. Tarteel is for memorizing. Muslim Pro is for prayer times. QuranWall is for *seeing* — the daily-exposure piece every Muslim's phone is missing."
 
 #### CTA copy variation (don't reuse one boilerplate)
 
 Vary the final CTA title + description by post type. Examples:
-- **High-intent:** title `"Get QuranWall — free, 60 seconds, no account"` / description `"The piece every Muslim's phone is missing: the Quran on the lock screen you already check 144 times a day."`
-- **How-to:** title `"Skip the setup — let QuranWall do it"` / description `"Free. Installs the verse wallpaper automatically via iOS Focus modes. No screenshots, no manual rotation."`
-- **Friction-resolution:** title `"Stop choosing the verse yourself"` / description `"QuranWall ships themed packs for seasons of life — Anxiety, Patience, Gratitude, Mercy. Pick one, install in 60 seconds."`
+- **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Free to download. Arabic beside a translation in 10 languages, on your Lock Screen and Home Screen widget."`
+- **How-to:** title `"Pick an ayah, set it once"` / description `"QuranWall puts it on your Lock Screen wallpaper and Home Screen widget. No ads, works offline."`
+- **Friction-resolution:** title `"Stop screenshotting verses"` / description `"QuranWall designs the ayah for the Lock Screen: your background, font and colours, Arabic beside a translation."`
 
 Never ship a generic "Download QuranWall" title alone.
 
@@ -174,7 +172,7 @@ Create `src/data/posts/{slug}.json` matching this exact shape (reference [src/da
 - **Exact-match keyword** appears in: `meta.title`, the first `paragraph` (within the first 100 words), and bolded with `**...**` 3–5 times in the body.
 - **First content section MUST be** a Quick-Answer callout — snippet bait, a 1–3 sentence direct answer:
   `{ "type": "callout", "icon": "zap", "title": "Quick Answer", "content": "..." }`
-- **One cited statistic** — real, attributable, source named in-text (e.g. *"~144 phone pickups a day, per Reviews.org's 2026 phone-habits report."*). Use 2026 stats. Don't fabricate.
+- **One cited statistic** — real, attributable, source named in-text (e.g. a 2026 phone-pickup figure with the report named in the sentence; check the number at the source the same day). Use 2026 stats. Don't fabricate.
 - **One `verse` block** — a real Quran ayah in a reputable English translation (Sahih International preferred), with the surah:ayah reference. Treat the Quran with reverence; the English is a translation of the meaning, never altered. Format:
   `{ "type": "verse", "reference": "Quran 13:28", "text": "...those who have believed and whose hearts are assured by the remembrance of Allah. Unquestionably, by the remembrance of Allah hearts are assured." }`
 - **Section-type diversity** — use at least 6 of: `callout`, `heading`, `paragraph`, `tip`, `stat`, `steps`, `list`, `highlight`, `important`, `verse`. Don't use only paragraphs. (Valid callout icons: `zap`, `lightbulb`, `book`, `alert`, `sparkles`.)
