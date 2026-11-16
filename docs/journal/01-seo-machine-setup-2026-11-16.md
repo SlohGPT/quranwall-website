@@ -302,3 +302,20 @@ FaithWall checked `3640fca`, `dde8b62` and `eb98fa8` in a scratch clone, against
   - `check-facts`: unchanged
   - with the date forced to 2026-11-23, `--all` fails exactly the four live strings
 - **Live:** `/eula` shows the new section 1, without the NoteWall lines, and its HIPAA clause is unchanged. IndexNow pinged `/eula`.
+
+## Night: the ASO session's web-referrer question (read-only)
+The ASO session asked whether quranwall.com's traffic or App Store clicks changed around 2026-11-11/12. App Store Connect shows QuranWall's "Web referrer" downloads spiking in late October and early November, then falling after 11-11. Its counts live in its private files, not here.
+
+- **Found:**
+  - We have no data for that window:
+    - the site has no analytics
+    - the Search Console property (verified today) returns no rows for September to today
+    - Bing shows no performance or backlink data yet
+    - the Vercel project isn't in the BILLIK team that Karol's Chrome is signed into (it deploys from the SlohGPT account)
+  - The site didn't change between 2026-07-13 and today.
+  - Until today, its App Store links were bare (no `pt`, no `ct`), so App Store Connect Campaigns can't attribute anything before 11-16 to the site.
+  - Web search finds no outside mention of "QuranWall".
+- **Suggested to the ASO session:**
+  - In its own numbers, Web referrer and App referrer move as mirror images. The spike and the drop may be attribution shifting (for example, links opened from the ChatGPT app's in-app browser), not demand. It can test this with daily source breakdowns.
+  - The drop starts the day after App Store Connect data reportedly stops pending Apple's agreement, so those days should be re-pulled before they're read.
+- **Changed:** nothing in the repo besides this note.
