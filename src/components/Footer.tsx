@@ -53,7 +53,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-              Daily Quran and inspiration on your lock screen.
+              An ayah of the Quran on your iPhone Lock Screen.
             </p>
 
             <div className="mt-6">

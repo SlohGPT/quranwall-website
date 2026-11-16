@@ -62,9 +62,13 @@ async function prerender() {
       const { html: appHtml, helmet } = await render(route);
       const helmetTags = helmetToString(helmet);
 
+      // React 18.3.1's stream writer can flush its whole 2048-byte buffer when a
+      // multi-byte char (Arabic, em dash) straddles a chunk, emitting unused NUL
+      // bytes. Real content never contains NUL, so strip them before every write.
       const finalHtml = template
         .replace('</head>', `${helmetTags}\n</head>`)
-        .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+        .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
+        .replace(/\0/g, '');
 
       const outDir = route === '/' ? distDir : join(distDir, route.slice(1));
       mkdirSync(outDir, { recursive: true });
@@ -77,6 +81,29 @@ async function prerender() {
       console.error(`  ✗ ${route}: ${err.message}`);
       if (err.stack) console.error(err.stack);
     }
+  }
+
+  // dist/404.html: Vercel serves it with status 404 for any path with no file.
+  // Rendered from the NotFound route; data-not-found tells main.tsx to client-render.
+  try {
+    const { html: appHtml, helmet } = await render('/__not-found__');
+    // Helmet emits `<meta data-rh="true" name="robots" ...>`; swap it for the plain tag.
+    const helmetTags = helmetToString(helmet).replace(/<meta [^>]*name="robots"[^>]*>/g, '');
+    const notFoundHtml = template
+      // Drop the site-wide "index, follow" default so only the noindex tag remains.
+      .replace(/<meta name="robots" content="index, follow[^"]*"\s*\/?>\s*/, '')
+      .replace('</head>', `${helmetTags}\n<meta name="robots" content="noindex" />\n</head>`)
+      .replace('<div id="root"></div>', `<div id="root" data-not-found="1">${appHtml}</div>`)
+      .replace(/\0/g, '');
+    if (!notFoundHtml.includes('data-not-found="1"') || !notFoundHtml.includes('<meta name="robots" content="noindex"')) {
+      throw new Error('404 page missing data-not-found or noindex meta');
+    }
+    writeFileSync(join(distDir, '404.html'), notFoundHtml);
+    console.log(`  ✓ /404.html (${(notFoundHtml.length / 1024).toFixed(1)}KB)`);
+  } catch (err) {
+    failed += 1;
+    console.error(`  ✗ /404.html: ${err.message}`);
+    if (err.stack) console.error(err.stack);
   }
 
   console.log(`\nPrerender complete: ${succeeded} succeeded, ${failed} failed (of ${routes.length}).`);

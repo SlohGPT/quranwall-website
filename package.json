@@ -9,6 +9,7 @@
     "generate-sitemap": "node scripts/generate-sitemap.mjs",
     "indexnow": "node scripts/submit-indexnow.mjs",
     "gsc-dump": "node scripts/gsc-dump.mjs",
+    "gsc-inspect": "node scripts/gsc-inspect.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"

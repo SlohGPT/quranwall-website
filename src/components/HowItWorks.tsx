@@ -4,17 +4,17 @@ const steps = [
   {
     number: '01',
     title: 'Download',
-    description: 'Get QuranWall free from the App Store. No sign-up or account needed.',
+    description: 'Get QuranWall from the App Store. The download is free, with an in-app subscription.',
   },
   {
     number: '02',
     title: 'Personalize',
-    description: 'Add your favorite verses, prayers, or daily affirmations.',
+    description: 'Pick a translation, a background (a preset or your own photo), and your font and colours.',
   },
   {
     number: '03',
     title: 'Transform',
-    description: 'Your lock screen becomes a daily source of faith and peace.',
+    description: 'An ayah appears on your Lock Screen wallpaper and Home Screen widget.',
   },
 ];
 

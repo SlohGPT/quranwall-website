@@ -71,7 +71,7 @@ export default function EULA() {
                     <p>Furthermore, it is used to:</p>
                     <ul>
                         <li>Generate wallpapers through an integrated iOS Shortcut;</li>
-                        <li>Provide optional premium features such as advanced templates, unlimited wallpapers, and automation tools;</li>
+                        <li>Provide optional premium features through an in-app subscription;</li>
                         <li>Save user preferences and design settings for easier reuse; and</li>
                         <li>Offer motivational and organizational tools that support consistency and habit building.</li>
                     </ul>

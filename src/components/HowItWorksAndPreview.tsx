@@ -5,17 +5,17 @@ const steps = [
     {
         number: '01',
         title: 'Download',
-        description: 'Get QuranWall free from the App Store. No sign-up or account needed.',
+        description: 'Get QuranWall from the App Store. The download is free, with an in-app subscription.',
     },
     {
         number: '02',
         title: 'Personalize',
-        description: 'Add your favorite verses, duas, or daily reminders.',
+        description: 'Pick a translation, a background (a preset or your own photo), and your font and colours.',
     },
     {
         number: '03',
         title: 'Transform',
-        description: 'Your lock screen becomes a daily source of faith and peace.',
+        description: 'An ayah appears on your Lock Screen wallpaper and Home Screen widget.',
     },
 ];
 
@@ -24,29 +24,29 @@ const screenshots = [
         id: 1,
         title: 'Lock Screen Quran',
         image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"Indeed, with hardship comes ease."',
-        sub: 'Quran 94:6'
+        quote: '"Indeed, with hardship [will be] ease."',
+        sub: 'Quran 94:6 (Sahih International)'
     },
     {
         id: 2,
         title: 'Beautiful Wallpapers',
         image: 'https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"In the remembrance of Allah do hearts find rest."',
-        sub: 'Quran 13:28'
+        quote: '"Unquestionably, by the remembrance of Allah hearts are assured."',
+        sub: 'Quran 13:28 (Sahih International)'
     },
     {
         id: 3,
         title: 'Nature & Faith',
         image: 'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"And put your trust in Allah."',
-        sub: 'Quran 3:159'
+        quote: '"And when you have decided, then rely upon Allah."',
+        sub: 'Quran 3:159 (Sahih International)'
     },
     {
         id: 4,
         title: 'Peaceful Moments',
         image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg?auto=compress&cs=tinysrgb&w=400',
-        quote: '"Allah does not burden a soul beyond what it can bear."',
-        sub: 'Quran 2:286'
+        quote: '"Allah does not charge a soul except [with that within] its capacity."',
+        sub: 'Quran 2:286 (Sahih International)'
     },
 ];
 

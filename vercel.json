@@ -33,11 +33,5 @@
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!assets|favicon|icon-app|robots|sitemap|manifest|og-image|blog-thumbnails|llms\\.txt|pricing\\.md|[0-9a-f]{32}\\.txt).*)",
-      "destination": "/index.html"
-    }
   ]
 }

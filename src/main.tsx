@@ -17,7 +17,10 @@ const tree = (
   </StrictMode>
 );
 
-if (container.hasChildNodes()) {
+// dist/404.html is prerendered from the NotFound route but served for any
+// unknown URL (e.g. /blog/<typo>), so its markup may not match the route the
+// browser resolves. Render fresh instead of hydrating.
+if (container.hasChildNodes() && !container.hasAttribute('data-not-found')) {
   hydrateRoot(container, tree);
 } else {
   createRoot(container).render(tree);

@@ -1,43 +1,38 @@
 # QuranWall
 
-> QuranWall is an iOS app, free to download with optional in-app subscription plans, that transforms the iPhone lock screen into a daily source of Quran, prayer, and Muslim inspiration. It uses the iOS wallpaper system and Focus modes (iOS 16+) to surface Quran verses every time you pick up your phone.
+> QuranWall (App Store title "Quran Widget: QuranWall") is an iPhone app that puts an ayah of the Quran on the Lock Screen wallpaper and a Home Screen widget, with the Uthmani Arabic beside a translation. It is free to download, with an in-app subscription.
 
 ## Key facts
 
-- **What it is**: iOS app for daily Quran verses on the iPhone lock screen
-- **Platform**: iPhone (iOS 15.0 or later per the App Store listing; lock screen widgets and per-screen wallpapers need iOS 16)
-- **Price**: Free download with optional premium plans
+- **What it is**: an iPhone app that shows an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget
+- **Platform**: iPhone, iOS 15.0 or later (App Store listing)
+- **Price**: free to download, with an in-app subscription. The App Store shows the price before you subscribe.
 - **App Store**: https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-llms&mt=8
 - **Website**: https://quranwall.com
 - **Author / Founder**: Karol Billik
 - **Built by**: karchi. (https://www.karchi.xyz/)
 - **Contact**: iosnotewall@gmail.com
-- **Minimum iOS**: 15.0 (App Store listing)
-- **Pricing**: Free to download, with in-app subscription plans (weekly and yearly billing periods in the App Store listing). Prices and any free-trial or introductory offer are shown in the App Store before you pay, in your local currency, and change over time, so this file states none.
 
 ## Pricing
 
-- Download: free
-- Premium: auto-renewing in-app subscription plans, weekly and yearly billing periods (per the App Store listing)
+The download is free, with an in-app subscription. QuranWall states no prices here: the App Store shows the exact price and billing period before you subscribe, in your local currency, and these vary by region and over time. Purchases are processed through the App Store.
 
-QuranWall states no prices here. The App Store shows the exact price, billing period and any free-trial or introductory offer before you pay, in your local currency, and these vary by region and over time. Payment processing is handled by RevenueCat; QuranWall does not store card details.
+## What it does
 
-## How it works
+- Puts an ayah on the iPhone Lock Screen wallpaper and on a Home Screen widget
+- Shows Uthmani Arabic beside a translation, in 10 languages
+- Lets you choose your own background (a preset or your own photo), font and colours
+- All 114 surahs are searchable by surah, ayah or keyword
+- No ads, and it works offline
 
-QuranWall delivers Quran to the most-seen surface on a smartphone, the lock screen, through two complementary methods:
-1. **Wallpapers**: A curated rotating set of verse-styled wallpapers, automatically installed via iOS Focus modes.
-2. **Widgets**: Native iOS widgets that display a fresh verse on the lock screen each day, with packs organized by theme (Anxiety, Patience, Gratitude, Mercy, etc.).
+## What it does not do
 
-## What makes it different
-
-- **Single-purpose**: Most Muslim apps try to do everything. QuranWall does one thing, Quran on the lock screen, and does it well.
-- **Frictionless setup**: A 60-second onboarding installs the lock screen automatically; no manual wallpaper export.
-- **Focus mode integration**: Pairs with iOS Focus to make Quiet Time a one-tap retreat from notifications.
-- **Designed for daily reach**: Uses spaced repetition through rotating verses rather than asking users to remember to open another app.
+No audio recitation, tafsir, hifz tools, prayer times or qibla. There is no AI feature, no Android app and no web app.
 
 ## Key pages
 
 - Homepage: https://quranwall.com/
+- Features: https://quranwall.com/features
 - Blog index: https://quranwall.com/blog
 - Privacy Policy: https://quranwall.com/privacy-policy
 - Terms of Use: https://quranwall.com/terms-of-use

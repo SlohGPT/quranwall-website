@@ -8,6 +8,25 @@ const avatars = [
   '/assets/avatars/avatar-3.jpg',
 ];
 
+// Phone/tablet App Store row (below the desktop breakpoint). On phones it sits in the
+// text column, above the demo video; on tablets it stays under the video.
+function MobileCtas({ className }: { className: string }) {
+  return (
+    <div className={className}>
+      <AppStoreButton className="h-[56px] shrink-0" href={appStoreUrl(CAMPAIGNS.home)} />
+      <a
+        href={appStoreUrl(CAMPAIGNS.home)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex shrink-0 items-center justify-center gap-2 px-6 h-[56px] text-base font-bold whitespace-nowrap text-brand-ink bg-brand rounded-2xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5"
+      >
+        Get Started
+        <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
+      </a>
+    </div>
+  );
+}
+
 export default function Hero() {
   return (
     <section className="relative min-h-screen bg-surface overflow-hidden">
@@ -48,6 +67,9 @@ export default function Hero() {
               Meet QuranWall, the app that transforms your iPhone lock screen into a daily moment with the Quran.
             </p>
 
+            {/* Phones (below md): App Store row above the demo video */}
+            <MobileCtas className="flex md:hidden flex-row flex-wrap gap-3 justify-center items-center w-full animate-fade-up-d4" />
+
             {/* Desktop buttons - hidden on mobile */}
             <div className="hidden lg:flex flex-row gap-4 justify-start items-center animate-fade-up-d4">
               <AppStoreButton size="lg" href={appStoreUrl(CAMPAIGNS.home)} />
@@ -85,19 +107,8 @@ export default function Hero() {
                 </video>
               </div>
 
-              {/* Mobile buttons - below video, side by side (stack on very narrow screens) */}
-              <div className="flex lg:hidden flex-row flex-wrap gap-3 justify-center items-center w-full mt-4 animate-fade-up-d6">
-                <AppStoreButton className="h-[56px] shrink-0" href={appStoreUrl(CAMPAIGNS.home)} />
-                <a
-                  href={appStoreUrl(CAMPAIGNS.home)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex shrink-0 items-center justify-center gap-2 px-6 h-[56px] text-base font-bold whitespace-nowrap text-brand-ink bg-brand rounded-2xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5"
-                >
-                  Get Started
-                  <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
-                </a>
-              </div>
+              {/* Tablets (md to lg): App Store row stays below the video */}
+              <MobileCtas className="hidden md:flex lg:hidden flex-row flex-wrap gap-3 justify-center items-center w-full mt-4 animate-fade-up-d6" />
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 {
-  "name": "QuranWall - Daily Quran on Your Lock Screen",
+  "name": "QuranWall - Quran on Your Lock Screen",
   "short_name": "QuranWall",
-  "description": "Transform your iPhone lock screen with daily Quran verses, duas, and inspiration.",
+  "description": "An ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1E1338",

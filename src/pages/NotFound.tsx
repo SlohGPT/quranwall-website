@@ -9,7 +9,7 @@ export default function NotFound() {
             <Helmet>
                 <title>Page Not Found | QuranWall</title>
                 <meta name="description" content="The page you're looking for doesn't exist. Return to QuranWall to transform your lock screen with daily Quran." />
-                <meta name="robots" content="noindex, follow" />
+                <meta name="robots" content="noindex" />
             </Helmet>
             <Navigation />
             <main className="container-main pt-32 pb-16 flex flex-col items-center justify-center min-h-[60vh] text-center">

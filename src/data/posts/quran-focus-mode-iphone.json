@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "How to Set Up a Quran Focus Mode on Your iPhone",
-    "description": "Use an iOS Focus mode to turn prayer and quiet time into a calm, distraction-free moment with the Quran on your iPhone. A step-by-step setup for iOS 16 and later.",
+    "description": "Use an iOS Focus mode to turn prayer and quiet time into a calm, distraction-free moment with the Quran on your iPhone. A step-by-step setup using Focus lock screens (iOS 16 or later).",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-19",
+    "dateModified": "2026-11-16",
     "readTime": "7 min read",
     "image": "/og-image.png",
     "keywords": [
@@ -19,7 +19,7 @@
   "sections": [
     {
       "type": "paragraph",
-      "text": "To set up a Quran Focus mode on your iPhone, create a custom Focus in Settings, give it a lock screen with a Quran verse wallpaper or widget, then schedule it for the times you want to slow down, such as before each prayer or first thing in the morning. When the Focus turns on, your phone quiets its notifications and the Quran fills the screen. You need iOS 16 or later, and the whole setup takes a few minutes."
+      "text": "To set up a Quran Focus mode on your iPhone, create a custom Focus in Settings, give it a lock screen with a Quran verse wallpaper or widget, then schedule it for the times you want to slow down, such as before each prayer or first thing in the morning. When the Focus turns on, your phone quiets its notifications and the Quran fills the screen. Focus lock screens need iOS 16 or later."
     },
     {
       "type": "heading",
@@ -36,8 +36,8 @@
     },
     {
       "type": "verse",
-      "reference": "Quran 13:28",
-      "text": "Unquestionably, by the remembrance of Allah hearts are assured."
+      "reference": "Quran 13:28 (Sahih International)",
+      "text": "Those who have believed and whose hearts are assured by the remembrance of Allah. Unquestionably, by the remembrance of Allah hearts are assured."
     },
     {
       "type": "heading",
@@ -48,8 +48,8 @@
       "type": "list",
       "items": [
         "An iPhone on **iOS 16 or later** (per-Focus lock screens arrived in iOS 16).",
-        "A Quran verse lock screen, the fastest way is the free [QuranWall](/) wallpaper or widget.",
-        "A few minutes to create the Focus and set its schedule."
+        "A Quran verse lock screen — [QuranWall](/) puts an ayah on your Lock Screen wallpaper and Home Screen widget (free to download, with an in-app subscription).",
+        "A little time to create the Focus and set its schedule."
       ]
     },
     {
@@ -163,7 +163,7 @@
     },
     {
       "type": "paragraph",
-      "text": "No. Focus modes are built into iOS for free. You only need a Quran lock screen to attach, and QuranWall provides that free as well, with the daily verse included."
+      "text": "Focus modes themselves cost nothing; they are built into iOS. You only need a Quran lock screen to attach. QuranWall is free to download, with an in-app subscription, and its App Store listing shows what is offered before you pay."
     },
     {
       "type": "callout",
@@ -173,8 +173,8 @@
     },
     {
       "type": "cta",
-      "title": "Set your Quiet Time lock screen in 60 seconds",
-      "description": "QuranWall gives you the Quran verse wallpaper and widget to attach to your Focus. Free on the App Store, no account needed.",
+      "title": "Set your Quiet Time lock screen",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, ready to attach to your Focus. Free to download, with an in-app subscription.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

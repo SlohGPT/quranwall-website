@@ -1,24 +1,37 @@
-// Shared FAQ data. Rendered by components/FAQ.tsx and used to build the
-// FAQPage structured data on pages/Support.tsx, so the two stay in sync.
+// Single FAQ source. The visible FAQ (components/FAQ.tsx, components/TestimonialsAndFAQ.tsx)
+// and every FAQPage JSON-LD (pages/Home.tsx, pages/Support.tsx) are generated from this array,
+// so they can never drift. Facts follow the live App Store listing: no price, no plan names,
+// nothing about what the free download includes.
 export const faqs = [
   {
     question: 'What is QuranWall?',
-    answer: "QuranWall is a free iOS app that displays daily Quran verses on your iPhone lock screen using wallpapers and widgets. It requires iOS 16.0 or later.",
+    answer: "QuranWall is an iPhone app that puts an ayah of the Quran on your Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation. It needs iOS 15.0 or later.",
   },
   {
     question: 'How does QuranWall work?',
-    answer: "QuranWall installs a Quran wallpaper or rotating verse widget on your iPhone lock screen using iOS Focus modes. You pick a verse pack, Anxiety, Patience, Gratitude, Mercy, and QuranWall surfaces a fresh verse each day. Setup takes about 60 seconds.",
+    answer: "Pick a translation (10 languages), a preset background or your own photo, and your font and colours. QuranWall then shows the ayah, Uthmani Arabic beside the translation, on your Lock Screen wallpaper and Home Screen widget. All 114 surahs are searchable.",
   },
   {
     question: 'Is QuranWall free?',
-    answer: "Yes. QuranWall is free to download and includes the core daily verse and lock-screen widgets. Optional premium plans unlock unlimited verse packs and customization, the price, billing period, and any free trial are shown in the App Store at checkout, in your local currency.",
+    answer: "The download is free, with an in-app subscription. The App Store shows the price and billing period before you subscribe.",
   },
   {
     question: 'Which iPhones does QuranWall work on?',
-    answer: "QuranWall supports iPhones running iOS 16.0 or later. It uses iOS lock-screen widgets and Focus modes, both available on all compatible iPhone models from iPhone XS onward.",
+    answer: "QuranWall works on iPhones running iOS 15.0 or later.",
   },
   {
-    question: 'Is my data private?',
-    answer: "Yes. QuranWall does not require an account and your verse selections stay on your device. Payment data, if you upgrade to a premium plan, is handled by RevenueCat, QuranWall never sees your card details.",
+    question: 'Does QuranWall show ads or need internet?',
+    answer: "QuranWall shows no ads and works offline.",
   },
 ];
+
+/** FAQPage structured data built from the same array as the visible FAQ. */
+export const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};

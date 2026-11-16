@@ -10,17 +10,17 @@ import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
 const DESC =
-  'Everything QuranWall does: a fresh Quran verse on your iPhone lock screen every day, themed verse packs, native iOS widgets and Focus modes, your own duas, and complete privacy.';
+  'Everything QuranWall does: an ayah on your iPhone Lock Screen wallpaper and Home Screen widget, Arabic beside a translation in 10 languages, your own background, font and colours, no ads, and it works offline.';
 
 const APP_STORE = appStoreUrl(CAMPAIGNS.features);
 
 // Icon per feature id (kept here so the shared data file stays free of JSX).
 const ICONS: Record<string, LucideIcon> = {
   'daily-verses': Sparkles,
-  'verse-packs': BookOpen,
+  translations: BookOpen,
   widgets: Smartphone,
-  duas: Heart,
-  privacy: ShieldCheck,
+  customise: Heart,
+  'no-ads': ShieldCheck,
 };
 
 const itemListSchema = {
@@ -72,7 +72,7 @@ export default function FeaturesPage() {
                 <span className="text-white/40">full of Quran</span>
               </h1>
               <p className="mt-6 text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
-                QuranWall turns the most-seen surface on your phone into a daily moment with Allah.
+                QuranWall puts an ayah of the Quran on the most-seen surface of your iPhone.
                 Here is everything it does, and why each piece exists.
               </p>
               <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -82,7 +82,7 @@ export default function FeaturesPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-7 py-3.5 bg-white text-surface text-lg font-semibold rounded-full hover:bg-white/90 transition-colors"
                 >
-                  Download free
+                  Download on the App Store
                 </a>
                 <a
                   href="#daily-verses"

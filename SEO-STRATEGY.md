@@ -1,8 +1,32 @@
-# QuranWall SEO Strategy — v1 (2026-11-16)
+# QuranWall SEO Strategy — v1 (2026-11-16), v3 re-aim 2026-11-16 (numbered to match FaithWall's v3; QuranWall had no v2)
 
 **Who reads this:** the autonomous daily content agent, the merge gate, the weekly refresh task, and Karol. This file sets direction; `src/data/seo-priorities.json` sets the day-to-day work order. This repo is public — describe search performance qualitatively and never paste raw Search Console clicks, impressions, or CTR numbers into this file, commit messages, queue notes or post content. Positions described in words ("bottom of page 1", "mid page 1") are fine.
 
-**What this version is:** the first strategy for quranwall.com, ported from the NoteWall and FaithWall SEO machines and re-aimed at a Quran-on-the-Lock-Screen app. It is built from the site inventory, the live App Store listing and live SERP, competitor and Google-autocomplete research done on 2026-11-16. **There is no Search Console baseline yet:** the service account has no access to `sc-domain:quranwall.com` (TODO-KAROL.md, top item). Until the first successful `npm run gsc-dump`, nothing in this file or the queue is ranked on clicks or impressions, and nothing here claims the site is gaining or losing traffic. The first weekly refresh after access is granted establishes the baseline and re-ranks the queue.
+**What this version is:** the first strategy for quranwall.com, ported from the NoteWall and FaithWall SEO machines and re-aimed at a Quran-on-the-Lock-Screen app. It is built from the site inventory, the live App Store listing and live SERP, competitor and Google-autocomplete research done on 2026-11-16. **There is no Search Console baseline yet:** (v3: access was granted on 2026-11-16 and Google is backfilling; the 2026-11-23 refresh is the first with data and sets the baseline). Until the first successful `npm run gsc-dump`, nothing in this file or the queue is ranked on clicks or impressions, and nothing here claims the site is gaining or losing traffic. The first weekly refresh after access is granted establishes the baseline and re-ranks the queue.
+
+**What changed in v3 (2026-11-16, same day, after the FaithWall cross-site review).** Where an older section below says otherwise, v3 wins.
+- **Discovery is the real problem, not ranking.** On 2026-11-16 URL Inspection showed only the home page indexed; the rest of the sitemap was either "discovered, not indexed" or unknown to Google. Google read the sitemap without errors. The fixes go first, all on-site:
+  - unknown URLs return a real 404 (a prerendered `404.html` with noindex; the catch-all rewrite that answered 200 is gone)
+  - the prerender strips NUL bytes (React 18 can emit them when Arabic straddles a stream chunk)
+  - the home page links /features and the three money posts in its body, not only in nav and footer
+  - every new post gets day-one in-body links (§4 rule 8)
+  - Request Indexing, once, from 2026-11-17, for /features and the three money posts (Karol's account). Read the outcome at day 14 (2026-12-01) and day 28 (2026-12-15) from the Monday `npm run gsc-inspect` run. Never repeat the request.
+- **The listing wins, site-wide, now.** The 2026-11-16 manual pass rewrote every product-fact claim the live listing doesn't support. That covers the site, the posts, `llms.txt`, `pricing.md` and the blog skill (the skill's edits wait for Karol's OK in TODO-KAROL.md). It superseded queue items p1–p4, p6 and p7.
+  - Structured data: Organization and WebSite stay site-wide.
+  - A single MobileApplication node sits on Home only, with "iOS 15.0 or later" and an offer of price 0 described as free to download with an in-app subscription.
+  - There is no aggregateRating, on purpose: Google bars ratings copied from another site, and the cost is Software App rich-result eligibility. Don't add one.
+  - Social proof (p5) keeps its 2026-11-23 grace window.
+- **Outreach is RETIRED.** Karol, relayed by the FaithWall session: "we will not get other websites to link us". That retires:
+  - Play 5 and §8
+  - the `outreach-prep` and `citation-audit` item types (p13–p15 are closed)
+  - the reviewer offer code
+  - the §8 monitoring pass
+
+  When no queue item is eligible, the daily run does nothing. The brand query stays as measurement only.
+- **New posts only through the demand test** in §5. A new post needs evidence of demand, no page of ours already ranking for it, product fit, and an information-gain line written before drafting.
+- **Ramadan readiness, on-site (p17).** Refresh the money posts and the home page for Ramadan intent, and have them indexed by mid-January 2027. Ramadan 2027 is expected to begin around 8 February 2027; it depends on the moon sighting, so check the date in January.
+- **Languages: English only for now.** Re-decide around February 2027, once the English pages are indexed. A Turkish version would need a licensed, named Turkish translation and a human reviewer. Turkey is QuranWall's largest install market, so this is a real later option, not a no.
+
 
 ---
 
@@ -53,7 +77,7 @@ Queue p1–p7 fix what the site gets wrong: verse accuracy and translation namin
 ### Play 4 — Answer-first passages for AI answers and snippets
 The home page and /features get one quotable, listing-backed positioning passage each (p11). This is the cheap way to be citable for "quran widget iphone" while the off-site layer is built.
 
-### Play 5 — Brand and off-site layer (§8)
+### Play 5 — Brand and off-site layer (§8) (RETIRED 2026-11-16, v3)
 The brand query "quranwall" is the KPI; every placement and review feeds it. The agent researches and drafts; Karol sends.
 
 ## 4. Internal Linking Doctrine
@@ -67,12 +91,19 @@ The brand query "quranwall" is the KPI; every placement and review feeds it. The
 4. Money pages are never dead ends: every post ends with the CTA block and links onward; the home page links the money posts (p10).
 5. Pillar and money-page links go in the first half of the body for how-to posts. Never inside a Quick Answer, the first paragraph or the CTA block.
 6. One canonical URL per query. No redirects exist yet; if one is added, never link the redirected slug.
+8. **(v3) Day-one links.** Every new post gets in-body contextual links from at least two already-indexed pages in the same commit, within the rule 3 cap. On a site Google barely crawls, a post nobody links to stays unknown.
 7. Baseline on 2026-11-16 (in-body inbound links between posts): best-dhikr-app-for-iphone, best-muslim-app-for-iphone-2026 and quran-reading-plan-app-iphone have none; best-islamic-lock-screen-app-iphone has one; the home page links no post. p10 fixes that.
 
 ## 5. Content Standards
 
 - **Depth doctrine: consolidate and deepen before creating.** Before any new URL, ask whether an existing page should own the intent. The site has 8 posts; the queue deepens and corrects them before adding URLs.
 - **Cadence: the daily run produces work, not necessarily a URL.** New posts at most 2 per week machine-wide (Karol's manual daily post counts; see §9) and only when the queue holds nothing ranked higher. Most days go to correctness fixes, depth-passes, refreshes, internal links and off-site drafts.
+- **(v3, 2026-11-16) The demand test replaces the cadence rule above for new posts.** A new post ships only if all four of these hold, and the item records each one qualitatively:
+  - **(a) Evidence of demand.** Our own Search Console data, Google autocomplete or a recurring forum question (Reddit counts) shows people search the phrase. Autocomplete proves demand, never volume: at most 15 requests per run, 1.5 seconds apart, stopping at the first error. Never write or invent a search volume.
+  - **(b) No page of ours already ranks for it.** Check blogPosts.json, the root pages and the refresh's data; extend the ranking page instead.
+  - **(c) Product fit.** The topic ends naturally at an ayah on the Lock Screen or Home Screen widget, which QuranWall makes.
+  - **(d) Information gain, named before drafting.** One line that names what the post adds that the current top results lack, and where it comes from. If no line can be written, drop the topic and note why.
+  - Day-one links (§4 rule 8) go in the same commit.
 - **Formats that win, in order:** dated ranked-list roundups with a comparison table; how-to posts for the Lock Screen; trust-building explainers (low sales temperature).
 - **Decision-page furniture** on every comparison/roundup: dated title, bolded Quick Answer naming QuranWall in sentence one, comparison table, visible FAQ block, visible updated date, bias-disclosure line ("QuranWall is our app, so it is ranked first; this is the honest case").
 - **Length:** the blog skill's 800–1,100 words for new posts; depth-passes may exceed it (depth = more real sub-questions answered, never padding).
@@ -95,15 +126,15 @@ The brand query "quranwall" is the KPI; every placement and review feeds it. The
 
 The daily agent works `src/data/seo-priorities.json` top-to-bottom. Contract:
 
-1. **Pick** the first `"status": "pending"` item whose `not_before` (if present) is not in the future; skip-but-don't-close items still inside their window. If none is eligible, run an §8 monitoring pass and report; do not write a post just because the queue is empty unless the §5 cadence cap (2 new posts this calendar week, counting Karol's manual post) is not hit and `seo-keywords.json` has an unblocked keyword that passes the §7 overlap check.
+1. **Pick** the first `"status": "pending"` item whose `not_before` (if present) is not in the future; skip-but-don't-close items still inside their window. If none is eligible, do nothing and report (v3: the §8 monitoring pass is retired); do not write a post just because the queue is empty unless the §5 cadence cap (2 new posts this calendar week, counting Karol's manual post) is not hit and `seo-keywords.json` has an unblocked keyword that passes the §7 overlap check.
 2. **Execute by type:**
    - `new-post` — full blog-skill flow (`.claude/skills/quranwall-blog/SKILL.md`) + §5 effort signals. The keyword is added to / marked in `seo-keywords.json` in the same commit; the SERP-overlap check (§7) comes first.
    - `refresh` — edit exactly the files named in notes. Bump visible updated date and `dateModified` (post JSON and `blogPosts.json`). No slug changes.
    - `depth-pass` — expand the named page toward the §5 standard: listed sub-queries, effort signals, passage-level AEO, updated tables and a visible FAQ. Word-cap exempt. Bump dates.
    - `ctr-fix` — title/meta/H1 per notes. Only on pages with large, legible, page-level demand in Search Console data; none exists yet, so none is queued.
    - `internal-links` — idempotent link edits per §4.
-   - `outreach-prep` — research and draft per §8 into `outreach/`, append a one-line pointer to TODO-KAROL.md. **The agent never sends anything, never creates accounts, never posts to communities.** Drafts are honest, specific, and disclose QuranWall is our app.
-   - `citation-audit` — web-research pass for the item's query set: who ranks/gets cited, where QuranWall is absent, what changed. Output: `outreach/targets.json` + summary in close-out notes. Qualitative only.
+   - (RETIRED 2026-11-16, v3) `outreach-prep` — research and draft per §8 into `outreach/`, append a one-line pointer to TODO-KAROL.md. **The agent never sends anything, never creates accounts, never posts to communities.** Drafts are honest, specific, and disclose QuranWall is our app.
+   - (RETIRED 2026-11-16, v3) `citation-audit` — web-research pass for the item's query set: who ranks/gets cited, where QuranWall is absent, what changed. Output: `outreach/targets.json` + summary in close-out notes. Qualitative only.
 3. **Verify:** JSON parses; `npm run typecheck` introduces no new errors vs main; `npm run build` succeeds (it regenerates `public/sitemap.xml`: if only `lastmod` dates changed for untouched pages, restore it with `git checkout -- public/sitemap.xml`); internal links resolve; no placeholder text; no 2024/2025 dates; grep for "free" (only "free to download" next to the subscription wording is allowed for QuranWall) and for `$` prices; every verse block checked against quran.com; every App Store link goes through `src/lib/app-store.ts` (code) or carries the exact `qw-web-blog` URL (post JSON).
 4. **Close out in the same commit:** `"status": "done"`, `"completed": "YYYY-MM-DD"`, a one-line `EXECUTED: ...` note (deviations included). Edit the queue programmatically: `JSON.stringify(obj, null, 2) + '\n'`.
 5. **Commit and push to a `claude/*` branch** (never main): `seo: {item id} — {short description}` (or `blog: {title}`). IndexNow submission happens after the merge gate confirms deploy: `npm run indexnow -- <url> ...`.
@@ -134,7 +165,9 @@ The daily agent works `src/data/seo-priorities.json` top-to-bottom. Contract:
 - **Never print, copy or commit `.env.local`.**
 - **Never use an App Store link that bypasses `src/lib/app-store.ts`** in code, or the exact `qw-web-blog` URL in post JSON. Leave `apps.apple.com/account/subscriptions` (Apple's own page) alone.
 
-## 8. Off-Site & Brand Layer
+## 8. Off-Site & Brand Layer (RETIRED 2026-11-16, v3)
+
+**Retired:** Karol has ruled out outreach ("we will not get other websites to link us"). This section is kept as history only. Nothing here is executed, queued or monitored.
 
 **Division of labor is absolute: the agent researches, drafts and monitors. Karol sends, signs up, posts and photographs.** Every draft lands in `outreach/` with a TODO-KAROL.md pointer.
 
@@ -197,7 +230,7 @@ New pages join this list in the same commit that ships them.
 **Priorities, in order:**
 1. **Correctness** (p1 verse accuracy and hadith sourcing, p2 the statistic, p3 and p4 free/plan claims, p5 social proof, p6 the uniqueness claim, p7 structured data).
 2. **Convert the install-intent pages** (p8 the product page, p11 home and /features, p9 and p12 the comparison pages), then **internal links** to the pages Google may not see (p10).
-3. **Off-site** (p13 audit → p14, p15 drafts), seasonal for Ramadan 2027.
+3. ~~Off-site~~ RETIRED (v3). In its place: **discovery** (the v3 fixes at the top: real 404, NUL fix, home in-body links, one Request Indexing), then **Ramadan readiness on-site** (p17).
 4. **New posts last** (p16), only with named-demand evidence and the §7 overlap check.
 5. **AI answers.** ChatGPT search leans on Bing's index: keep IndexNow pings on every published change (`npm run indexnow -- <urls>`), keep `robots.txt` open to AI bots, keep quotable facts near the top of money pages. Bing Webmaster Tools status is unconfirmed (TODO-KAROL.md).
 

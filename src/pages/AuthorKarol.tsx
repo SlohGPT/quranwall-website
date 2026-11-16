@@ -8,7 +8,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 const NAME = 'Karol Billik';
 const URL = 'https://quranwall.com/about/karol-billik';
 const DESC =
-  'Karol Billik is the founder of QuranWall, an iOS app that puts daily Quran verses on the iPhone lock screen. He writes about prayer rhythms, Quran habits, and using technology to grow in faith.';
+  'Karol Billik is the founder of QuranWall, an iPhone app that puts an ayah of the Quran on the Lock Screen and Home Screen. He writes about prayer rhythms, Quran habits, and using technology to grow in faith.';
 
 const personSchema = {
   '@context': 'https://schema.org',

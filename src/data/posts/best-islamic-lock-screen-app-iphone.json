@@ -4,7 +4,7 @@
     "description": "We ranked the best Islamic lock screen app for iPhone. QuranWall takes the top spot for a daily Quran verse, plus the apps worth keeping for reading and prayer.",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-19",
+    "dateModified": "2026-11-16",
     "readTime": "6 min read",
     "image": "/blog-thumbnails/best-islamic-lock-screen-app-iphone.jpg",
     "imageAttribution": {
@@ -27,17 +27,17 @@
       "type": "callout",
       "icon": "zap",
       "title": "Quick Answer",
-      "content": "The best Islamic lock screen app for iPhone is **QuranWall**. It's the only one built specifically for the lock-screen surface, showing a fresh Quran verse every day through a widget or wallpaper. It's free, sets up in about 60 seconds, and needs only iOS 16 or later."
+      "content": "The best Islamic lock screen app for iPhone is **QuranWall**. It is designed for the lock screen: it places an ayah on your Lock Screen wallpaper and Home Screen widget, Arabic beside a translation, with a new ayah each day. It is free to download, with an in-app subscription. QuranWall is our app, so it is ranked first here; this is the honest case."
     },
     {
       "type": "paragraph",
-      "text": "Most lists of Islamic apps point you to a reader or a prayer-times app and call it done. But if your real goal is to *see* the Quran without opening anything, you need a different kind of tool. This guide ranks the **best Islamic lock screen app for iPhone**, starting with the one that owns that exact job, then the apps worth keeping for reading, memorizing, and prayer times. Each is good at something. Only one lives on your lock screen."
+      "text": "Most lists of Islamic apps point you to a reader or a prayer-times app and call it done. But if your real goal is to *see* the Quran without opening anything, you need a different kind of tool. This guide ranks the **best Islamic lock screen app for iPhone**, starting with the one built for that job, then the apps worth keeping for reading, memorizing, and prayer times. Each is good at something. Other Quran widget apps exist too, so check the App Store listings and compare."
     },
     {
       "type": "stat",
-      "number": "144",
+      "number": "186",
       "label": "phone checks a day",
-      "description": "Americans pick up their phones around 144 times a day, per Reviews.org's 2026 phone-habits report. A verse on the lock screen turns those glances into small reminders."
+      "description": "Americans say they check their phones about 186 times a day, per Reviews.org's 2026 survey of about 1,000 US adults (self-reported). A verse on the lock screen turns those glances into small reminders."
     },
     {
       "type": "heading",
@@ -52,16 +52,16 @@
       "type": "list",
       "items": [
         "**Lives on the lock screen.** A real widget or wallpaper, not a notification you swipe away.",
-        "**Fresh and automatic.** A new verse rotates on its own, so the habit doesn't depend on willpower.",
+        "**Fresh and automatic.** A new verse each day, so the habit doesn't depend on willpower.",
         "**Built for the surface.** Designed to sit right under the clock, not a reading-app screenshot.",
-        "**Respects your privacy.** No account required; your choices stay on your device.",
-        "**Free to start.** You shouldn't have to pay to put the Quran in front of yourself."
+        "**Clear about what it costs.** The App Store listing shows what is free to download and what is an in-app subscription.",
+        "**No ads.** Nothing competing with the verse for your attention."
       ]
     },
     {
       "type": "verse",
-      "reference": "Quran 2:152",
-      "text": "So remember Me; I will remember you, and be grateful to Me and do not deny Me."
+      "reference": "Quran 2:152 (Sahih International)",
+      "text": "So remember Me; I will remember you. And be grateful to Me and do not deny Me."
     },
     {
       "type": "heading",
@@ -75,11 +75,11 @@
     },
     {
       "type": "paragraph",
-      "text": "**QuranWall** wins because it does the one thing the others don't: it puts a Quran verse on the surface you already see all day. Pick a themed pack for the season you're in — Anxiety, Patience, Gratitude, or Mercy — and it installs a verse wallpaper or widget that refreshes daily through iOS Focus modes. No screenshots, no manual rotation, no account."
+      "text": "**QuranWall** wins because it is built around one job: putting a Quran ayah on the surface you already see all day. It sets the ayah as your Lock Screen wallpaper and Home Screen widget, with the Uthmani Arabic beside a translation in your choice of 10 languages. You choose the background, font and colours — a preset or your own photo — and you can search all 114 surahs by surah, ayah or keyword. There are no ads, and it works offline."
     },
     {
       "type": "paragraph",
-      "text": "It's free to download, with optional premium for unlimited packs and customization (the price is shown in the App Store at checkout in your local currency). New to it? Start with the [iPhone lock-screen setup guide](/blog/quran-verse-iphone-lock-screen), or pair it with a [Quiet Time Focus mode](/blog/quran-focus-mode-iphone) so the verse appears around your prayer times."
+      "text": "It is free to download, with an in-app subscription; the App Store listing shows what is offered before you pay. New to it? Start with the [iPhone lock-screen setup guide](/blog/quran-verse-iphone-lock-screen), or pair it with a [Quiet Time Focus mode](/blog/quran-focus-mode-iphone) so your Quran lock screen appears around your prayer times."
     },
     {
       "type": "heading",
@@ -119,7 +119,7 @@
     },
     {
       "type": "highlight",
-      "content": "Notice the pattern. Muslim Pro is for prayer times. Quran.com and Tarteel are for reading and memorizing. Athan is for the adhan. None of them own the lock screen — the daily-exposure surface you check ~144 times a day. That is QuranWall's lane."
+      "content": "Notice the pattern. Muslim Pro is for prayer times. Quran.com and Tarteel are for reading and memorizing. Athan is for the adhan. QuranWall is for the daily-exposure surface you check all day: the lock screen. Other Quran widget apps exist, so compare listings before you choose."
     },
     {
       "type": "heading",
@@ -132,25 +132,26 @@
     },
     {
       "type": "paragraph",
-      "text": "**QuranWall** removes both problems. It designs for the lock-screen surface and rotates verses automatically through your chosen pack, installed via iOS Focus modes instead of filling your Camera Roll. The Quran shows up on its own, which is the whole point."
+      "text": "**QuranWall** removes both problems. It is designed for the lock-screen surface and shows a new ayah each day, so you are not exporting images into your Camera Roll or changing anything by hand. The Quran shows up on its own, which is the whole point."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "How to set it up in 60 seconds"
+      "text": "How to set it up"
     },
     {
       "type": "steps",
       "items": [
-        "Download **QuranWall** free from the App Store.",
-        "Open it and choose a verse pack that fits your season: Anxiety, Patience, Gratitude, or Mercy.",
-        "Add the QuranWall widget from the lock-screen editor, or install a verse wallpaper and attach it to a Focus mode.",
-        "Tap Done. A fresh verse now meets you every time you check your phone."
+        "Download **QuranWall** from the App Store. It is free to download, with an in-app subscription.",
+        "Open it and choose your translation language, background, font and colours.",
+        "Put the ayah on your Lock Screen wallpaper and add the QuranWall widget to your Home Screen.",
+        "Optional: add a lock-screen widget from the lock-screen editor, or attach your QuranWall lock screen to an iOS Focus mode.",
+        "A new verse now meets you every time you check your phone."
       ]
     },
     {
       "type": "important",
-      "content": "All of these apps need iOS 16 or later for lock-screen widgets and per-screen wallpapers. If yours is older, update in Settings > General > Software Update first."
+      "content": "QuranWall lists iOS 15.0 or later. Apple added Lock Screen widgets and per-Focus lock screens in iOS 16, so for those parts of this guide, update in Settings > General > Software Update first if your iPhone is older."
     },
     {
       "type": "heading",
@@ -160,11 +161,11 @@
     {
       "type": "heading",
       "level": 3,
-      "text": "Is the best Islamic lock screen app free?"
+      "text": "Is QuranWall free?"
     },
     {
       "type": "paragraph",
-      "text": "Yes. QuranWall is free to download and the daily verse is included. Optional premium unlocks unlimited packs and customization, with the exact price shown in the App Store at checkout in your local currency."
+      "text": "The download is free; Premium is a subscription, shown in the App Store before you pay."
     },
     {
       "type": "heading",
@@ -173,18 +174,18 @@
     },
     {
       "type": "paragraph",
-      "text": "It needs iOS 16 or later, where lock-screen widgets and per-screen wallpapers arrived. That covers iPhone XS and newer."
+      "text": "QuranWall lists iOS 15.0 or later in the App Store. Lock Screen widgets and per-Focus lock screens arrived in iOS 16, so the Focus-mode steps in this guide need iOS 16 or later."
     },
     {
       "type": "callout",
       "icon": "sparkles",
       "title": "The short version",
-      "content": "For reading, choose Quran.com. For prayer times, Muslim Pro. For memorizing, Tarteel. But for the **best Islamic lock screen app for iPhone** — a daily Quran verse on the surface you already check — QuranWall is the pick, free and set up in about a minute."
+      "content": "For reading, choose Quran.com. For prayer times, Muslim Pro. For memorizing, Tarteel. But for the **best Islamic lock screen app for iPhone** — a daily Quran ayah on the surface you already check — QuranWall is our pick."
     },
     {
       "type": "cta",
-      "title": "Get QuranWall — free, 60 seconds, no account",
-      "description": "The piece every Muslim's phone is missing: the Quran on the lock screen you already check ~144 times a day. Pick a pack, install in 60 seconds.",
+      "title": "Get QuranWall for your lock screen",
+      "description": "Put the Quran on the lock screen you already check all day: Arabic beside a translation, in your own colours. Free to download, with an in-app subscription.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

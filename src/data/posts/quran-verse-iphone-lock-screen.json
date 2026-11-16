@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "How to Put a Quran Verse on Your iPhone Lock Screen",
-    "description": "A step-by-step guide to showing a daily Quran verse on your iPhone lock screen using widgets, wallpapers, and iOS Focus modes. Works on iOS 16 and later.",
+    "description": "A step-by-step guide to showing a daily Quran verse on your iPhone lock screen using widgets, wallpapers, and iOS Focus modes. Lock Screen widgets need iOS 16 or later.",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-19",
+    "dateModified": "2026-11-16",
     "readTime": "6 min read",
     "image": "/og-image.png",
     "keywords": [
@@ -19,7 +19,7 @@
   "sections": [
     {
       "type": "paragraph",
-      "text": "To put a Quran verse on your iPhone lock screen, add a Quran lock-screen widget or set a verse wallpaper, then pair it with an iOS Focus mode so it appears automatically. You need an iPhone running iOS 16 or later. The whole thing takes about a minute. An app like [QuranWall](/) handles the setup for you, so you never have to export, crop, or re-set an image by hand."
+      "text": "To put a Quran verse on your iPhone lock screen, add a Quran lock-screen widget or set a verse wallpaper, then pair it with an iOS Focus mode so it appears automatically. You need an iPhone running iOS 16 or later for Lock Screen widgets and Focus lock screens. An app like [QuranWall](/) places the ayah for you, so you don't have to export, crop, or re-set an image by hand."
     },
     {
       "type": "heading",
@@ -32,7 +32,7 @@
     },
     {
       "type": "verse",
-      "reference": "Quran 51:55",
+      "reference": "Quran 51:55 (Sahih International)",
       "text": "And remind, for indeed, the reminder benefits the believers."
     },
     {
@@ -44,8 +44,8 @@
       "type": "list",
       "items": [
         "An iPhone running **iOS 16 or later** (lock-screen widgets and per-screen wallpapers arrived in iOS 16).",
-        "The free **QuranWall** app, for the automatic method, or a saved verse image if you want to do it by hand.",
-        "About **two minutes** of setup time."
+        "The **QuranWall** app (free to download, with an in-app subscription) for the automatic method, or a saved verse image if you want to do it by hand.",
+        "Access to your lock-screen editor: touch and hold your lock screen to open it."
       ]
     },
     {
@@ -60,8 +60,8 @@
     {
       "type": "steps",
       "items": [
-        "Download **QuranWall** free from the App Store and open it.",
-        "Choose a verse pack that fits where you are right now, such as **Anxiety**, **Patience**, **Gratitude**, or **Mercy**.",
+        "Download **QuranWall** from the App Store and open it.",
+        "Choose your translation language, background, font and colours.",
         "Touch and hold your lock screen, tap **Customize**, then select **Lock Screen**.",
         "Tap the widget area under the clock and add the **QuranWall** widget.",
         "Tap **Done**. A new verse now appears on your lock screen each day."
@@ -69,7 +69,7 @@
     },
     {
       "type": "tip",
-      "content": "Use the rectangular widget under the clock for full verses, or the inline widget above the clock for short reminders. You can keep both."
+      "content": "iOS offers inline lock-screen widgets above the clock and rectangular ones below it. Choose whichever shape QuranWall offers that suits the verse length you want to see."
     },
     {
       "type": "heading",
@@ -83,7 +83,7 @@
     {
       "type": "steps",
       "items": [
-        "In QuranWall, pick a verse wallpaper you like and tap to install it.",
+        "In QuranWall, set up the verse wallpaper you like.",
         "Open **Settings > Focus** and create a Focus such as **Quiet Time** or **Prayer**.",
         "Under that Focus, tap **Customize** on the lock screen and choose your QuranWall wallpaper.",
         "Give the Focus a schedule, for example your morning routine or the minutes before each prayer, so the verse appears on its own."
@@ -101,7 +101,7 @@
     {
       "type": "list",
       "items": [
-        "**Widget** is best for a fresh verse every day with almost no effort. It rotates on its own and stays out of your way.",
+        "**Widget** is best for a fresh verse every day with almost no effort. It shows a new ayah each day and stays out of your way.",
         "**Wallpaper with Focus** is best when you want a calmer phone at set times, with the verse taking the whole screen.",
         "**Both** works well too: run a verse wallpaper inside a Quiet Time Focus and keep the widget on your everyday lock screen."
       ]
@@ -117,7 +117,7 @@
         "Confirm your iPhone is on **iOS 16 or later** in Settings > General > Software Update.",
         "If a widget is blank, remove it and add it again from the lock-screen editor.",
         "If a wallpaper will not switch, check that the matching Focus is active and linked to that lock screen.",
-        "Give widgets a few seconds after setup. The first verse can take a moment to load."
+        "Confirm the widget is added to the lock screen you are actually using, not a different one."
       ]
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "type": "paragraph",
-      "text": "No. Since iOS 16, any app can add native lock-screen widgets and wallpapers. There is no jailbreak and no Shortcuts automation required."
+      "text": "No. Lock-screen widgets and wallpapers are built into iOS 16 and later, so no jailbreak is involved, and the steps above use no Shortcuts automation."
     },
     {
       "type": "heading",
@@ -141,7 +141,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Yes. QuranWall is free to download and the daily verse widget is included. Optional premium unlocks unlimited verse packs and customization, with the exact price shown in the App Store at checkout in your local currency."
+      "text": "The download is free; Premium is a subscription, shown in the App Store before you pay."
     },
     {
       "type": "heading",
@@ -150,7 +150,7 @@
     },
     {
       "type": "paragraph",
-      "text": "No. Lock-screen widgets and wallpapers use the same native iOS systems as Apple's own, so the battery impact is negligible."
+      "text": "Lock-screen widgets and wallpapers are standard iOS features, and iOS decides when a widget refreshes. A verse that changes once a day does not need frequent updates."
     },
     {
       "type": "heading",
@@ -159,13 +159,13 @@
     },
     {
       "type": "paragraph",
-      "text": "This guide is for iPhone on iOS 16 and later. iPad and Android handle lock screens differently and are not set up the same way."
+      "text": "This guide is for iPhone, and QuranWall is an iPhone app with no Android version. iPad handles lock screens differently, so these steps do not apply there."
     },
     {
       "type": "callout",
       "icon": "sparkles",
       "title": "The short version",
-      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** for a fresh verse every day, or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both work on iOS 16 or later and take about a minute to set up."
+      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** for a fresh verse every day, or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both need iOS 16 or later for the Lock Screen features."
     },
     {
       "type": "paragraph",
@@ -174,7 +174,7 @@
     {
       "type": "cta",
       "title": "Put the Quran on your lock screen today",
-      "description": "QuranWall sets up your daily verse in about 60 seconds. Free on the App Store, no account needed.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day. Free to download, with an in-app subscription.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

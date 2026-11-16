@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "How to Pick a Quran Reading Plan App for iPhone (and Actually Stick to It)",
-    "description": "Choosing a quran reading plan app iphone setup that survives past week two — how to pick a pace, track your streak, and keep it visible on iOS 16 and later.",
+    "description": "Choosing a quran reading plan app iphone setup that survives past week two — how to pick a pace, track your streak, and keep it visible on your iPhone.",
     "date": "July 02, 2026",
     "datePublished": "2026-07-02",
-    "dateModified": "2026-07-02",
+    "dateModified": "2026-11-16",
     "readTime": "6 min read",
     "image": "/blog-thumbnails/quran-reading-plan-app-iphone.jpg",
     "imageAttribution": {
@@ -84,11 +84,11 @@
     },
     {
       "type": "paragraph",
-      "text": "This is where **QuranWall** earns its place next to a reading-plan app rather than instead of one. It puts a rotating Quran verse on your lock screen — the one screen you check before opening any app — so the Quran is already in front of you before you've even decided whether today is a reading day. Pair it with a **Quiet Time Focus mode**, and the moment you sit down to read, your phone is already quiet and already pointed at the Quran. The full walkthrough is in our guide to [building a Quran Focus mode on iPhone](/blog/quran-focus-mode-iphone)."
+      "text": "This is where **QuranWall** earns its place next to a reading-plan app rather than instead of one. It puts an ayah of the Quran on your lock screen, with a new ayah each day — the one screen you check before opening any app — so the Quran is already in front of you before you've even decided whether today is a reading day. Pair it with a **Quiet Time Focus mode**, and the moment you sit down to read, your phone is already quiet and already pointed at the Quran. The full walkthrough is in our guide to [building a Quran Focus mode on iPhone](/blog/quran-focus-mode-iphone)."
     },
     {
       "type": "verse",
-      "reference": "Quran 17:106",
+      "reference": "Quran 17:106 (Sahih International)",
       "text": "And [it is] a Qur'an which We have separated [by intervals] that you might recite it to the people over a prolonged period. And We have sent it down progressively."
     },
     {
@@ -102,7 +102,7 @@
     },
     {
       "type": "paragraph",
-      "text": "New habits take a median of 66 days to become automatic, according to a University College London study on habit formation that's still the benchmark cited in 2026 productivity research — with some habits taking as long as eight months. Almost no **quran reading plan app iphone** setup gives itself two months of runway before judging itself a failure. The second trap is the all-or-nothing reset: miss three days, and it feels easier to restart the whole khatm from page one than to just pick up where you left off. Don't restart. A reading plan with a gap in it still finished more Quran than the one you deleted in week two."
+      "text": "New habits take a median of 66 days to become automatic, according to a University College London study on habit formation — with some habits taking as long as eight months. Almost no **quran reading plan app iphone** setup gives itself two months of runway before judging itself a failure. The second trap is the all-or-nothing reset: miss three days, and it feels easier to restart the whole khatm from page one than to just pick up where you left off. Don't restart. A reading plan with a gap in it still finished more Quran than the one you deleted in week two."
     },
     {
       "type": "heading",
@@ -133,7 +133,7 @@
     {
       "type": "cta",
       "title": "Stop choosing the reminder yourself",
-      "description": "QuranWall ships themed verse packs — Anxiety, Patience, Gratitude, Mercy — and rotates them on your lock screen automatically, so your reading plan has a daily cue that never asks to be remembered.",
+      "description": "QuranWall puts a new ayah on your lock screen each day, Arabic beside a translation, so your reading plan has a daily cue that never asks to be remembered. Free to download, with an in-app subscription.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

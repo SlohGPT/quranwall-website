@@ -5,44 +5,32 @@ import { Mail, LifeBuoy, BookOpen, ShieldCheck } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import FAQ from '../components/FAQ';
-import { faqs } from '../data/faqs';
+import { faqPageSchema } from '../data/faqs';
 
 const URL = 'https://quranwall.com/support';
 const TITLE = 'Support | QuranWall';
 const DESC =
-  'Need help with QuranWall? Email our team or browse answers to common questions about setup, verse packs, privacy, and billing.';
+  'Need help with QuranWall? Email our team or browse answers to common questions about setup, supported iPhones, and billing.';
 
 const SUPPORT_EMAIL = 'iosnotewall@gmail.com';
-
-// Mirrors the questions rendered by the <FAQ /> component below, so the
-// structured data matches the visible content.
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqs.map((f) => ({
-    '@type': 'Question',
-    name: f.question,
-    acceptedAnswer: { '@type': 'Answer', text: f.answer },
-  })),
-};
 
 const helpTopics = [
   {
     icon: BookOpen,
     title: 'Setting it up',
-    body: 'A step-by-step walk-through of installing the lock-screen widget and Focus mode.',
+    body: 'How QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget.',
     to: '/features#widgets',
   },
   {
     icon: LifeBuoy,
     title: 'Common questions',
-    body: 'Pricing, supported iPhones, how the daily verse works, and more.',
+    body: 'Pricing, supported iPhones, how QuranWall works, and more.',
     to: '#faq',
   },
   {
     icon: ShieldCheck,
     title: 'Your privacy',
-    body: 'What we store (almost nothing) and how billing is handled by Apple.',
+    body: 'How we handle information, and how billing is handled by Apple.',
     to: '/privacy-policy',
   },
 ];
@@ -62,7 +50,7 @@ export default function Support() {
         <meta name="twitter:title" content={TITLE} />
         <meta name="twitter:description" content={DESC} />
         <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqPageSchema)}</script>
       </Helmet>
       <Navigation />
 

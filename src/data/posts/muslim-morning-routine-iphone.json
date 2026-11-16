@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "Muslim Morning Routine on iPhone: A 2026 Setup That Actually Sticks",
-    "description": "Build a muslim morning routine iphone setup that sticks — Fajr, adhkar, Quran, and a calm lock screen before the day gets loud. Works on iOS 16 and later.",
+    "description": "Build a muslim morning routine iphone setup that sticks — Fajr, adhkar, Quran, and a calm lock screen before the day gets loud.",
     "date": "June 25, 2026",
     "datePublished": "2026-06-25",
-    "dateModified": "2026-06-25",
+    "dateModified": "2026-11-16",
     "readTime": "5 min read",
     "image": "/blog-thumbnails/muslim-morning-routine-iphone.jpg",
     "imageAttribution": {
@@ -40,12 +40,12 @@
     },
     {
       "type": "paragraph",
-      "text": "Barakah in the morning is not a productivity hack — it is a Sunnah worth protecting. The Prophet ﷺ asked Allah to bless his ummah in the early hours. Before work emails and group chats claim your attention, you have a narrow window where the phone is still yours. People pick up their phones around 144 times a day, per Reviews.org's 2026 phone-habits report. Win the first few pickups after Fajr and you have already chosen remembrance over reaction."
+      "text": "The early hours are more than a productivity hack — for many Muslims they are a time worth protecting. Before work emails and group chats claim your attention, you have a narrow window where the phone is still yours. Win the first few pickups after Fajr and you have already chosen remembrance over reaction."
     },
     {
       "type": "verse",
-      "reference": "Quran 17:78",
-      "text": "Establish prayer at the decline of the sun [from its meridian] until the darkness of the night and [also] the Quran at dawn. Indeed, the recitation at dawn is ever witnessed."
+      "reference": "Quran 17:78 (Sahih International)",
+      "text": "Establish prayer at the decline of the sun [from its meridian] until the darkness of the night and [also] the Qur'an of dawn. Indeed, the recitation of dawn is ever witnessed."
     },
     {
       "type": "heading",
@@ -60,14 +60,14 @@
       "type": "list",
       "items": [
         "**Wake and pray Fajr** — alarm, wudu, salah. Non-negotiable anchor.",
-        "**Morning adhkar** — even five minutes of the prescribed remembrances after Fajr.",
+        "**Morning adhkar** — even five minutes of the morning adhkar you already keep, after Fajr.",
         "**Quran touchpoint** — one ayah read slowly, or a short recitation you already know.",
         "**Calm transition** — ten to twenty minutes before opening work apps or social feeds."
       ]
     },
     {
       "type": "stat",
-      "value": "4 blocks",
+      "number": "4 blocks",
       "label": "Fajr, adhkar, Quran, calm transition — the whole routine fits in under 45 minutes"
     },
     {
@@ -83,8 +83,8 @@
       "type": "steps",
       "items": [
         "**Fajr alarm:** In Clock, create a labeled alarm (*Fajr*) on your local prayer time. Enable **Sleep > Full Schedule** if you use Bedtime — waking at the same window trains your body.",
-        "**Lock-screen Quran:** Download QuranWall free, pick a verse pack (Patience or Gratitude works well for mornings), and add the lock-screen widget. You see an ayah before any app badge.",
-        "**Morning Focus mode:** In Settings > Focus, create a **Morning** Focus that silences non-essential apps from Fajr until you finish adhkar. Pair it with a verse wallpaper via QuranWall's Focus integration — the full walkthrough is in our [Quran Focus mode guide](/blog/quran-focus-mode-iphone).",
+        "**Lock-screen Quran:** Download QuranWall from the App Store (free to download, with an in-app subscription), choose your translation language and colours, and add the lock-screen widget. You see an ayah before any app badge.",
+        "**Morning Focus mode:** In Settings > Focus, create a **Morning** Focus that silences non-essential apps from Fajr until you finish adhkar. Attach your QuranWall lock screen to it so a verse greets you at that hour (Focus lock screens need iOS 16 or later) — the full walkthrough is in our [Quran Focus mode guide](/blog/quran-focus-mode-iphone).",
         "**Timed adhkar nudge:** Add one daily Reminder in the Reminders app — *Morning adhkar after Fajr* — set to repeat daily. Details on layering reminders live in [how to set dhikr reminders on iPhone](/blog/how-to-set-dhikr-reminders-iphone)."
       ]
     },
@@ -99,7 +99,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Two things break almost every morning routine. The first is the **scroll trap**: you unlock for the alarm, see one notification, and twenty minutes vanish before adhkar. A Morning Focus mode closes that door. The second is **manual upkeep** — saving a Quran screenshot as wallpaper, changing it every few days, forgetting by week two. Reading-app screenshots were never designed for the lock-screen surface anyway; they clip awkwardly behind the clock and fade into wallpaper you stop noticing. QuranWall rotates verses automatically through themed packs, so the morning touchpoint stays fresh without you curating which ayah fits today's mood."
+      "text": "Two things break almost every morning routine. The first is the **scroll trap**: you unlock for the alarm, see one notification, and twenty minutes vanish before adhkar. A Morning Focus mode closes that door. The second is **manual upkeep** — saving a Quran screenshot as wallpaper, changing it every few days, forgetting by week two. Reading-app screenshots were never designed for the lock-screen surface anyway; they clip awkwardly behind the clock and fade into wallpaper you stop noticing. QuranWall shows a new ayah each day, so the morning touchpoint stays fresh without you curating which ayah fits today's mood."
     },
     {
       "type": "important",
@@ -123,17 +123,17 @@
       "items": [
         "**Keep work apps out of the morning Focus** — Slack can wait until after adhkar.",
         "**Prep the night before** — clothes laid out, water by the bed, phone already on the Morning Focus schedule.",
-        "**Review weekly, not daily** — Sunday evening, check whether the alarm time still matches Fajr and whether the verse pack still fits your season."
+        "**Review weekly, not daily** — Sunday evening, check whether the alarm time still matches Fajr and whether your lock screen still suits your season."
       ]
     },
     {
       "type": "paragraph",
-      "text": "Premium in QuranWall unlocks unlimited verse packs and customization — pricing is shown in the App Store at checkout in your local currency. The free tier is enough to run the whole morning lock-screen layer."
+      "text": "QuranWall is free to download, with an in-app subscription; the App Store listing shows what is offered before you pay."
     },
     {
       "type": "cta",
       "title": "Start tomorrow's Fajr with Quran on the lock screen",
-      "description": "Free. QuranWall installs a rotating verse via iOS Focus modes — no screenshots, no manual wallpaper swaps. Sixty seconds tonight, barakah on every unlock tomorrow.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, Arabic beside a translation, with a new ayah each day. Free to download, with an in-app subscription.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

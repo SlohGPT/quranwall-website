@@ -2,24 +2,24 @@ import { motion } from 'framer-motion';
 
 const features = [
   {
-    title: 'Fresh Verses Every Day',
-    description: 'Wake up to a new verse from the Quran on your lock screen. Tailored to your preferences and your journey.',
+    title: 'The Quran on Your Lock Screen',
+    description: 'An ayah on your iPhone Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation.',
     image: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800',
     large: true,
   },
   {
-    title: 'Your Duas, Your Way',
-    description: 'Add personal duas and reflections. See them every time you pick up your phone.',
+    title: 'Ten Languages, 114 Surahs',
+    description: 'Choose a translation in one of 10 languages, and search all 114 surahs by surah, ayah or keyword.',
     image: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    title: 'Stunning Backgrounds',
-    description: 'Choose from curated wallpapers or use your own photos. Every glance becomes a moment of peace.',
+    title: 'Your Background, Font and Colours',
+    description: 'Choose a preset background or use your own photo, then pick the font and colours you like.',
     image: 'https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    title: 'Your Data Stays Yours',
-    description: 'No accounts required. No tracking. Your duas and your journey stay completely private.',
+    title: 'No Ads, Works Offline',
+    description: 'QuranWall shows no ads, and it works offline.',
     image: 'https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
 ];
