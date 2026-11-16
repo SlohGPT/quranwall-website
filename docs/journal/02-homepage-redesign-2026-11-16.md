@@ -79,3 +79,42 @@ Karol: the round-2 hero was wrong, "we can't change the quote on the lock screen
 - **After merge:** update the autopilot, merge-bot and refresh prompts for the no-pricing doctrine (`lint-facts --prompts` must reach 0 FAIL) and tell the SEO session.
 - **For Karol (the app and its listing disagree):** the listing, ASO screenshots, `CLAUDE.md`, `SEO-STRATEGY.md`, the blog skill, `public/llms.txt` (Arabic "beside" a translation, "works offline", "No audio recitation") and many posts claim Arabic beside a translation, a new ayah each day and a pinned favourite. The app shows one edition per ayah, never changes the wallpaper by itself, and has no favourites. Until the doctrine changes the SEO machine keeps writing those claims. Also: iOS 15.0 on the listing vs iOS 16 for the shortcut; the read-along audio vs the "no audio" rule; JSON-LD price 0 if the app has a hard paywall; the stale "Update Wallpaper" hints in the app; the legal pages' app name "Daily Quran Verses on Your iPhone Lock Screen".
 - Social proof ("Trusted by 1,000+ believers", "Join 1,000+ believers", the SocialProof stats) is unchanged: queue item p5, FAIL from 2026-11-23.
+
+## Merge (2026-11-16, late night)
+
+### Asked
+Karol: "Yes, commit and merge".
+
+### Done
+- **Merge:** `1eb4f88`, `--no-ff` from `design/homepage-v2` (branch tip `25c2862`) into main at `030c8f5`, default identity. The three conflicts were resolved as in the dry run (`docs/README.md`, `scripts/lint-facts.mjs` with `relPath` inside main's `opts`, `seo-priorities.json`).
+- **SEO session overlap:** the SEO session was editing `scripts/lint-facts.mjs` and `TODO-KAROL.md` in the same checkout mid-merge. To avoid sweeping their edits into the merge, I staged my exact resolution blob and left theirs unstaged. They committed their round 3 on top (`a34c536`, `ce0f3f6`).
+- **Review before push:** an 8-agent review of the merged diff confirmed 8 findings, all fixed in `6c7f69c`:
+  - Arabic, Urdu and Persian editions now show the Arabic surah name in the reference, as the app does (`BibleBookNames.swift`). Each showcase verse has a `surahNameAr`, and the Amiri Quran subset was rebuilt for those glyphs. Every `font-quran` string is covered; the Urdu body text uses the serif font.
+  - The review sheet's nav row shows Cancel only (in the app, Done is a keyboard accessory).
+  - The Features Lock tile text no longer runs under the phone at 768–1023 px (checked in headless Chromium at 768/800/835/900/1023).
+  - The background swatches have labels, and the bento heading respects reduced motion.
+  - The hero demo no longer leaves both phones on the same ayah when it pauses between the front change and the back advance.
+  - Collapsed FAQ answers are `aria-hidden`, with the region role only when open.
+  - The 17:78 quote in `muslim-morning-routine-iphone` was made exact (Sahih International, checked on quran.com the same day).
+  - This hub's status line was stale.
+- **Scheduled-task prompts:** the autopilot, merge-bot and refresh prompts had told the machine to write "free to download, with an in-app subscription". Those sentences now carry the no-pricing wording, and refresh item b6 points to `SEO-STRATEGY.md` §1 (honest constraint 3).
+
+### Verified
+- **Gates on `6c7f69c`** in a clean worktree:
+  - typecheck ok;
+  - build 16/16, sitemap unchanged;
+  - `lint-facts --dist` and `--all`: 0 FAIL, 4 WARN (the p5 social-proof strings grandfathered until 2026-11-23);
+  - `--diff 030c8f5` 0/0, `--prompts` 0/0, `--self-test` 63/63;
+  - `check-facts` ok.
+- **Push:** pushed `030c8f5..6c7f69c` with the SlohGPT credential helper. Vercel served the new homepage about 45 s later:
+  - "Make It Mine" is present and no pricing strings remain;
+  - the 17:78 fix is live on the post;
+  - robots.txt still allows the AI bots.
+- **IndexNow:** `--all` returned 200 OK; shared components changed, so `--changed` asked for `--all`.
+- The SEO session was told the final SHA.
+
+### Open
+- **For Karol:**
+  - The listing/doctrine contradictions from round 3 are unchanged: "Arabic beside a translation", "new ayah each day", the pinned favourite, iOS 15 vs 16, read-along audio vs "no audio", JSON-LD price 0, and the legal pages' app name.
+  - Social proof p5 turns FAIL on 2026-11-23.
+- **Cleanup offered, not done:** the `design/homepage-v2` branch and worktree `../quranwall-website-home` are fully merged and can be removed when Karol says so.
