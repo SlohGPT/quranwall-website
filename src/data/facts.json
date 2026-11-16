@@ -1,5 +1,5 @@
 {
-  "_note": "Single source of product facts for the site, schema, llms.txt, lints and prompts. Public App Store data only. scripts/check-facts.mjs compares it with the live US listing; it may rewrite only rating.* and only when the 1-decimal value or rating.show flips (show = value >= 4.5 and count >= 20). A change in storeName or minIOS needs a human because copy depends on it. storeUrl keeps the slug the repo CLAUDE.md documents; Apple 301s it to the current slug (quran-widget-quranwall) and keeps pt and ct (checked 2026-11-16).",
+  "_note": "Single source of product facts for the site, schema, llms.txt, lints and prompts. Public App Store data only. scripts/check-facts.mjs compares it with the live US listing; it may rewrite only rating.* and only when the 1-decimal value or rating.show flips (show = value >= 4.5 and count >= 20). A change in storeName or minIOS needs a human because copy depends on it. storeUrl keeps the slug the repo CLAUDE.md documents; Apple 301s it to the current slug (quran-widget-quranwall) and keeps pt and ct (checked 2026-11-16). downloadsFloor/downloadsAsOf: a lower bound on total downloads from App Store Connect (a private count, confirmed by the ASO session), not in the public listing; the only allowed download claim is \"Downloaded <downloadsFloor> times\" (scripts/lint-facts.mjs rule social-proof-downloads), and any other user or download count is a FAIL. Raise the floor and the date together when the count grows.",
   "brand": "QuranWall",
   "storeName": "Quran Widget: QuranWall",
   "appId": "6781802080",
@@ -16,5 +16,7 @@
     "storefront": "us",
     "show": false
   },
+  "downloadsFloor": "1,000+",
+  "downloadsAsOf": "2026-11-16",
   "contactEmail": "iosnotewall@gmail.com"
 }

@@ -63,17 +63,17 @@ export default function EULA() {
 
                     <h3>1. THE APPLICATION</h3>
                     <p>
-                        <strong>QuranWall</strong> ("Licensed Application") is a piece of software created to help users organize their goals, reminders, and notes by generating personalized lock-screen wallpapers that make important information instantly visible throughout the day. It is customized for iOS mobile devices ("Devices").
+                        <strong>QuranWall</strong> ("Licensed Application") is a piece of software that places an ayah (verse) of the Quran on the Lock Screen wallpaper and in a Home Screen widget, so that it stays visible throughout the day. It is customized for iOS mobile devices ("Devices").
                     </p>
                     <p>
-                        The Application’s main use is to allow users to create, customize, and export wallpapers containing their notes, habits, and reminders using built-in templates and design tools.
+                        The Application’s main use is to show an ayah in the Uthmani Arabic script beside a translation (in one of 10 languages), either a new ayah each day or one the user pins, on a background, font and colours the user chooses, or on the user’s own photo.
                     </p>
                     <p>Furthermore, it is used to:</p>
                     <ul>
-                        <li>Generate wallpapers through an integrated iOS Shortcut;</li>
-                        <li>Provide optional premium features through an in-app subscription;</li>
+                        <li>Search all 114 surahs of the Quran by surah, ayah or keyword;</li>
+                        <li>Offer an in-app subscription;</li>
                         <li>Save user preferences and design settings for easier reuse; and</li>
-                        <li>Offer motivational and organizational tools that support consistency and habit building.</li>
+                        <li>Work offline, without ads.</li>
                     </ul>
                     <p>
                         The Licensed Application is not tailored to comply with industry-specific regulations (Health Insurance Portability and Accountability Act (HIPAA), Federal Information Security Management Act (FISMA), etc.), so if your interactions would be subjected to such laws, you may not use this Licensed Application. You may not use the Licensed Application in a way that would violate the Gramm-Leach-Bliley Act (GLBA).

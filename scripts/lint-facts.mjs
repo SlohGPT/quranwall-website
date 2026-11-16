@@ -49,12 +49,24 @@ const CAMPAIGN_TOKENS = Object.values(CAMPAIGNS);
 
 // ---------------------------------------------------------------- text rules
 
+const escRe = (t) => String(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+if (!facts.downloadsFloor || !facts.downloadsAsOf) throw new Error('lint-facts: facts.json needs downloadsFloor and downloadsAsOf');
+
 const BRAND = String.raw`Quran ?Wall`;
 // A clause about the app, without crossing a sentence, comma, semicolon, colon, dash, bar (title separator) or bracket (keeps a
 // competitor's feature in "Muslim Pro has qibla, while QuranWall ..." from being read as ours).
 const CL = String.raw`[^.,;:—–()|]`;
 // A number as digits or a small number word (setup-time rule).
-const NUM = String.raw`(?:\d+(?:\.\d+)?|one|two|three|four|five|ten|fifteen|twenty|thirty|sixty)`;
+const NUM = String.raw`(?:\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|forty-five|sixty|ninety)`;
+// A time quantity: "60 seconds", "60s", "2 minutes", "a minute", "a couple of minutes", "a few seconds".
+const QTY = String.raw`(?:(?:a|an|a couple of|a few|couple of)\s+(?:seconds?|secs?|minutes?|mins?)|${NUM}\s?(?:seconds?|secs?|minutes?|mins?|s))\b`;
+// Words that may sit between a setup phrase and its time quantity ("in under", "takes just", "within about").
+const QLEAD = String.raw`(?:(?:in|within|under|just|only|about|around|roughly|less than|takes?|take)\s+)+`;
+// What counts as "setting up" in the setup-time rule.
+const SETUPV = String.raw`(?:set[- ]?up|sets? up|setting up|install\w*|ready|get(?:ting)? started|up and running)`;
+// A head count: "1,000+", "50,000", "10k", "3 million" (social-proof rules).
+const COUNT = String.raw`\d[\d,.]*\+?(?:\s?(?:k|m|million|thousand)\b)?`;
+const PEOPLE = String.raw`(?:believers|muslims|users|people)`;
 // Local negation inside a sentence: a sentence that denies a feature is the opposite of a claim. Real negations
 // only. "only", "unlike", "except", "instead of", "rather than" are NOT negations ("QuranWall is the only app with
 // tafsir on your lock screen" is an invented claim), and "not only" is an addition, not a denial.
@@ -86,7 +98,7 @@ const rules = [
   // NOT CONFIRMED: any stated setup time ("Seconds to set up", "2-minute setup", "Set up in under 2 minutes",
   // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
   // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
-  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b(?:set[- ]?up|setting up|install\\w*)\\b[^.]{0,30}\\b(?:in|within|under|just|takes?|takes about|less than)\\s+(?:about\\s+|only\\s+|just\\s+|less than\\s+|under\\s+)?${NUM}\\s?(?:seconds?|secs?|minutes?|mins?|s)\\b|\\b(?:under|within|less than|in just|in only)\\s+${NUM}\\s?(?:minutes?|mins?|seconds?|secs?)\\b[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b(?:set[- ]?up|setting up|install\\w*)\\b[^.]{0,30}\\b(?:under|within|less than)\\s+${NUM}\\s?(?:minutes?|mins?)\\b`, 'i'), null],
+  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b`, 'i'), null],
   // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
   ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
   // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
@@ -99,6 +111,16 @@ const rules = [
   ['invented-prayer-times', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:prayer times?|salah times?|salat times?|adhan|azan|qibla|qiblah|prayer reminders?|athan)\\b|\\b(?:prayer times?|qibla|qiblah|adhan)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-hifz', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:hifz|hifdh|memori[sz]ation (?:tracking|tracker|tools?|progress|plans?|features?|mode)|memori[sz]ing (?:progress|tools?)|track\\w*\\s+(?:your\\s+)?(?:hifz|memori[sz]ation|memori[sz]ing|progress)|hifz (?:tracker|tools?|plans?|mode|features?))\\b`, 'i'), null, DENY],
   ['invented-ai', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:AI|A\\.I\\.|artificial intelligence|machine learning|chatbot|AI-powered|AI-assisted)\\b|\\b(?:AI|artificial intelligence|chatbot)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  // NOT CONFIRMED: any social proof or user count. The site carries none (queue item p5 removed the old
+  // "1,000+ believers" lines; see GRANDFATHER below). The one allowed number is the App Store Connect downloads floor
+  // from facts.json ("Downloaded <downloadsFloor> times", rule social-proof-downloads). Stats whose label names users,
+  // believers, people or Muslims are linted separately (lintStat); this rule covers prose and tag-stripped HTML.
+  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+(?:over\\s+|more than\\s+)?(?:${COUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+(?:over\\s+|more than\\s+)?${COUNT}(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|k\\b)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|k)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
+  // "Downloaded <downloadsFloor> times" is the one allowed download claim; any other count FAILs.
+  ['social-proof-downloads', new RegExp(`\\bdownloaded\\s+(?!${escRe(facts.downloadsFloor)}\\s+times\\b)(?:over\\s+|more than\\s+)?\\d[\\d,.]*\\+?\\s+times\\b`, 'i'), null],
+  // NOT CONFIRMED: "Premium" as a plan name ("QuranWall Premium", "upgrade to Premium", "go Premium",
+  // "Premium needs ..."). Case-sensitive on Premium on purpose; "premium" as an adjective is fine.
+  ['premium-plan-word', /\bQuran ?Wall Premium\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\s+)?Premium\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
 ];
 
 // A sentence that states the ban itself ("never write ...", "NOT CONFIRMED ...") is not a violation.
@@ -110,20 +132,75 @@ const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', '
 // A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
 // claim through a bare phrase, so the bare-phrase rules skip it.
 const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
-const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'verse-packs-bare', 'free-app-bare']);
+const BARE_RULES = new Set(['no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare']);
 
-/** Lint one piece of text. Pushes { id, s } into `out`. */
-function lintText(text, out) {
+/**
+ * Files whose negations are rule text, not copy: skills and the SEO queue/keyword notes say "NOT CONFIRMED: do not
+ * add claims about verse packs" on purpose, so they keep whole-sentence NEG like the prompt files. Everything else
+ * (posts, components, pages, public/*.txt|md, built HTML) is site content and is linted per clause.
+ */
+const negOpts = (file) => {
+  const f = String(file);
+  if (/seo-(?:priorities|keywords)\.json$/.test(f)) return { wholeSentenceNeg: true, planText: true };
+  return /(?:^|[\\/])\.claude[\\/]/.test(f) ? { wholeSentenceNeg: true } : {};
+};
+// Queue notes quote the strings they tell the executor to remove ("reword every '1,000+ believers' claim ..."): in
+// planText files a sentence that orders a removal is a mention, not a claim.
+const PLAN_VERBS = /\b(?:reword|rewrite|remove[sd]?|delete[sd]?|replace[sd]?|grandfather\w*|strip(?:ped)?)\b/i;
+
+/**
+ * Lint one piece of text. Pushes { id, s } into `out`.
+ * NEG/DENY (a sentence that states the ban) is applied per clause for site content: only the clause that holds the
+ * matched phrase counts, from its start up to the end of the match (clauses end at ':' and ';' as well as at the
+ * sentence breaks). So "Never miss a verse: set up in 60 seconds." still fails. Prompt and skill files pass
+ * { wholeSentenceNeg: true }: their rule text legitimately says "never write X" anywhere in the sentence.
+ */
+function lintText(text, out, opts = {}) {
   const aboutOtherApp = OTHER_APP_ITEM.test(text) && !/Quran ?Wall/i.test(text);
   for (const s of text.split(/(?<=[.!?])["']?\s+/)) {
     for (const [id, re, , allow] of rules) {
       if (aboutOtherApp && BARE_RULES.has(id)) continue;
-      if (!re.test(s)) continue;
-      if (allow && allow.test(s)) continue;
-      if (NEG.test(s)) continue;
+      const m = re.exec(s);
+      if (!m) continue;
+      // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
+      let scope = s;
+      if (!opts.wholeSentenceNeg) {
+        const start = Math.max(s.lastIndexOf(':', m.index - 1), s.lastIndexOf(';', m.index - 1)) + 1;
+        scope = s.slice(m.index > 0 ? start : 0, m.index + m[0].length);
+      }
+      if (allow) {
+        if (allow === DENY ? DENY.test(scope) : allow.test(s)) continue;
+      }
+      if (NEG.test(scope)) continue;
+      if (opts.planText && PLAN_VERBS.test(s)) continue;
       out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
     }
   }
+}
+
+/** A stat label that names a head count (users, believers, people, Muslims) is social proof whatever the value. */
+const STAT_PEOPLE_LABEL = /\b(?:users?|believers?|muslims?|people)\b/i;
+/** A stat label about setup or install time ("Seconds to set up", "Minute setup", "Setup time") fails whatever the value. */
+const STAT_SETUP_LABEL = /\b(?:seconds?|secs?|minutes?|mins?)\b[^.]{0,12}\b(?:set[- ]?up|install\w*)\b|\b(?:set[- ]?up|install\w*)\s+(?:time|speed|in)\b|\btime to (?:set[- ]?up|install|start|get started)\b|\b(?:set[- ]?up|install\w*)\b[^.]{0,12}\b(?:seconds?|secs?|minutes?|mins?)\b/i;
+
+/** Stat-specific rules on {value|number, suffix, label}; `joined` is the rendered "<n><suffix> <label>". */
+function lintStat(label, joined, out) {
+  if (STAT_PEOPLE_LABEL.test(label)) out.push({ id: 'social-proof', s: joined.replace(/\s+/g, ' ').slice(0, 190) });
+  if (STAT_SETUP_LABEL.test(label)) out.push({ id: 'setup-time', s: joined.replace(/\s+/g, ' ').slice(0, 190) });
+}
+
+/** Stat objects written on one source line ("{ value: 1000, label: '...', suffix: '+' }") as { label, joined }. */
+function statsInSourceLine(ln) {
+  const res = [];
+  for (const m of ln.matchAll(/\{[^{}]*\}/g)) {
+    const obj = m[0];
+    const label = /\blabel\s*:\s*(['"`])((?:(?!\1).)*)\1/.exec(obj);
+    const val = /\b(?:value|number)\s*:\s*(?:(['"`])((?:(?!\1).)*)\1|(-?\d+(?:[.,]\d+)*))/.exec(obj);
+    if (!label || !val) continue;
+    const suf = /\bsuffix\s*:\s*(['"`])((?:(?!\1).)*)\1/.exec(obj);
+    res.push({ label: label[2], joined: `${val[2] ?? val[3]}${suf ? suf[2] : ''} ${label[2]}` });
+  }
+  return res;
 }
 
 /** "60s Seconds to set up ..." for {value|number: 60, suffix: 's', label: '...'} (post stat blocks and TSX-like data). */
@@ -138,7 +215,7 @@ function statText(node) {
 function walkJson(node, loc, file, out) {
   if (typeof node === 'string') {
     const found = [];
-    lintText(node, found);
+    lintText(node, found, negOpts(file));
     for (const h of found) out.push({ ...h, loc });
     return;
   }
@@ -154,8 +231,9 @@ function walkJson(node, loc, file, out) {
     const stat = statText(node);
     if (stat) {
       const found = [];
-      lintText(stat, found);
-      for (const h of found) out.push({ ...h, loc: `${loc} (stat)` });
+      lintText(stat, found, negOpts(file));
+      lintStat(node.label, stat, found);
+      for (const h of found.filter((x, i) => found.findIndex((y) => y.id === x.id && y.s === x.s) === i)) out.push({ ...h, loc: `${loc} (stat)` });
     }
     for (const k of Object.keys(node)) {
       if (k.startsWith('_')) continue;
@@ -180,8 +258,23 @@ function lintFile(abs) {
   } else {
     txt.split('\n').forEach((ln, i) => {
       const found = [];
-      lintText(ln, found);
-      for (const h of found) hits.push({ ...h, loc: `L${i + 1}`, lines: [i + 1] });
+      const no = negOpts(abs);
+      lintText(ln, found, no);
+      // JSX splits a phrase over tags ("Join <span ...>1,000+</span> believers"): lint the tag-stripped line for social proof.
+      if (ln.includes('<')) {
+        const stripped = ln.replace(/<\/?[A-Za-z][^<>]*>/g, ' ').replace(/\s+/g, ' ');
+        const extra = [];
+        lintText(stripped, extra, no);
+        const sp = extra.filter((h) => h.id === 'social-proof');
+        if (sp.length) { for (let k = found.length - 1; k >= 0; k--) if (found[k].id === 'social-proof') found.splice(k, 1); found.push(...sp); }
+      }
+      // A stat object on one line is linted as the text it renders.
+      for (const st of statsInSourceLine(ln)) {
+        lintText(st.joined, found, no);
+        lintStat(st.label, st.joined, found);
+      }
+      const uniq = found.filter((x, k) => found.findIndex((y) => y.id === x.id && y.s === x.s) === k);
+      for (const h of uniq) hits.push({ ...h, loc: `L${i + 1}`, lines: [i + 1] });
     });
   }
   return hits;
@@ -324,6 +417,42 @@ const results = []; // { level: 'FAIL' | 'WARN', rule, where, msg }
 const fail = (rule, where, msg) => results.push({ level: 'FAIL', rule, where, msg });
 const warn = (rule, where, msg) => results.push({ level: 'WARN', rule, where, msg });
 
+/**
+ * GRANDFATHERED social proof. The live site still carries these lines until queue item p5 (seo-priorities.json)
+ * removes them on 2026-11-23: Hero.tsx "Trusted by 1,000+ believers", FinalCTA.tsx "Join 1,000+ believers"
+ * (rendered on / and /features), and two SocialProof.tsx stats. Until GRANDFATHER_UNTIL a hit that is exactly one
+ * of these (matched in source and in built HTML) is a WARN naming p5; from that date it is a FAIL. p5 deletes these
+ * entries together with the copy. If Karol's dated answer in TODO-KAROL.md keeps one of them, p5 moves that entry
+ * to a documented permanent allowlist with his date instead. LINT_FACTS_TODAY=YYYY-MM-DD overrides the clock (tests).
+ */
+const GRANDFATHER_UNTIL = '2026-11-23';
+const GRANDFATHER = [
+  /Trusted by 1,000\+ believers/i,                  // src/components/Hero.tsx
+  /Join 1,000\+ believers/i,                        // src/components/FinalCTA.tsx
+  /(?:1,?000\+?\s+)?Believers using QuranWall/i,    // src/components/SocialProof.tsx stat {1000, '+'}
+  /(?:92%?\s+)?Early users feel closer to Allah/i,  // src/components/SocialProof.tsx stat {92, '%'}
+];
+const todayIso = () => process.env.LINT_FACTS_TODAY || new Date().toISOString().slice(0, 10);
+
+/** Report a text hit; a social-proof hit that is only grandfathered copy is a WARN until GRANDFATHER_UNTIL. */
+function emit(h, where) {
+  if (h.id === 'social-proof' && GRANDFATHER.some((g) => g.test(h.s))) {
+    let rest = h.s;
+    for (const g of GRANDFATHER) rest = rest.replace(new RegExp(g.source, 'gi'), ' ');
+    const left = [];
+    lintText(rest, left);
+    if (!left.some((x) => x.id === 'social-proof')) {
+      if (todayIso() < GRANDFATHER_UNTIL) {
+        warn('social-proof', where, `${h.s}  [grandfathered until ${GRANDFATHER_UNTIL}: queue item p5 removes it]`);
+      } else {
+        fail('social-proof', where, `${h.s}  [grandfather expired ${GRANDFATHER_UNTIL}: queue item p5 should have removed it]`);
+      }
+      return;
+    }
+  }
+  fail(h.id, where, h.s);
+}
+
 function report() {
   const byRule = new Map();
   for (const r of results) {
@@ -357,7 +486,7 @@ function runText(files, rangesByFile) {
         const inAdded = h.lines === null || h.lines.some((l) => ranges.some(([a, b]) => l >= a && l <= b));
         if (!inAdded) continue;
       }
-      fail(h.id, `${r} ${h.loc}`, h.s);
+      emit(h, `${r} ${h.loc}`);
     }
   }
 }
@@ -386,8 +515,8 @@ function runPrompts(files) {
       else if (!isItem && ln.trim() === '') banSection = false;
       if (banSection && isItem) return;
       const found = [];
-      lintText(ln, found);
-      for (const h of found) fail(h.id, `${label} L${i + 1}`, h.s);
+      lintText(ln, found, { wholeSentenceNeg: true });
+      for (const h of found) emit(h, `${label} L${i + 1}`);
     });
   }
   console.log(`prompts: ${n} file(s) linted`);
@@ -478,7 +607,7 @@ function runDist(distArg) {
     // and the email check on the raw HTML (mailto: links, JSON-LD).
     const found = [];
     for (const line of htmlToText(html).split('\n')) lintText(line, found);
-    for (const h of found) fail(h.id, r, h.s);
+    for (const h of found) emit(h, r);
     checkEmailText(html, r);
 
     // App Store links (anchors only; structured data keeps the plain listing URL on purpose)
