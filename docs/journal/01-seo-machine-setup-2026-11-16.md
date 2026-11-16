@@ -415,3 +415,16 @@ FaithWall sent round 3 of the shared system: port its keyword engine (FaithWall 
 - **Open:**
   - The refresh prompt still writes weekly journal entries to `docs/journal` (step 7b, from the setup), which disagrees with the CLAUDE.md line about `docs/`. That's Karol's call; it's left as it is.
   - Script suggestions went to FaithWall: a neutral host line instead of "Cloudflare", and a header note that `regex_families` take no lookarounds.
+
+## Night: the machine's log moves out of `docs/`
+- **Asked:** I asked Karol whether the weekly refresh should keep writing its journal entries in `docs/journal`, given that `CLAUDE.md` says the SEO machine never touches `docs/`. Karol: "I'm gonna leave everything up to you."
+- **Decided:** the machine moves out. `CLAUDE.md` wins over the prompts, and a prompt that contradicts it leaves the scheduled run to pick one rule. The machine now writes its own log in `seo-log/`, which has its own hub, numbering and status. Manual sessions keep writing `docs/journal`, and the hub points to `seo-log/`.
+- **Changed:**
+  - The refresh prompt's step 7b now writes `seo-log/NN-weekly-seo-refresh-…`, updates `seo-log/README.md` and never touches `docs/`. Its commit list now names `seo-log/`, `keyword-research/` and the cluster map.
+  - The merge gate's step 6 now writes `seo-log/NN-merge-gate-…`, with commit subject `seo-log: NN - …`.
+  - The autopilot's step 11 now names both folders.
+  - The repo got `seo-log/README.md` and a line in this hub.
+  - The prompts before this change are backed up locally.
+- **Verified:**
+  - `lint-facts --prompts`: 0 FAIL
+  - no `docs/journal` write is left in any of the three prompts
