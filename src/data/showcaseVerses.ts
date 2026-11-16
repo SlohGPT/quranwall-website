@@ -8,6 +8,7 @@
 export type ShowcaseVerse = {
   key: string; // surah:ayah
   surah: string; // transliterated surah name as the app writes it
+  surahNameAr: string; // Arabic-script surah name, copied from BibleBookNames.swift `arabic` (the app uses it for Arabic, Urdu and Persian editions)
   arabic: string;
   translation: string;
   translationName: string;
@@ -19,6 +20,7 @@ export const SHOWCASE_VERSES: ShowcaseVerse[] = [
   {
     key: '94:6',
     surah: 'Ash-Sharh',
+    surahNameAr: 'الشَّرۡحِ',
     arabic: 'إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا',
     translation: 'Indeed, with hardship [will be] ease.',
     translationName: SAHEEH,
@@ -26,6 +28,7 @@ export const SHOWCASE_VERSES: ShowcaseVerse[] = [
   {
     key: '13:28',
     surah: "Ar-Ra'd",
+    surahNameAr: 'الرَّعۡدِ',
     arabic: 'أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ',
     translation: 'Unquestionably, by the remembrance of Allāh hearts are assured.',
     translationName: SAHEEH,
@@ -33,6 +36,7 @@ export const SHOWCASE_VERSES: ShowcaseVerse[] = [
   {
     key: '2:152',
     surah: 'Al-Baqarah',
+    surahNameAr: 'البَقَرَةِ',
     arabic: 'فَٱذْكُرُونِىٓ أَذْكُرْكُمْ وَٱشْكُرُوا۟ لِى وَلَا تَكْفُرُونِ',
     translation: 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.',
     translationName: SAHEEH,
@@ -40,6 +44,7 @@ export const SHOWCASE_VERSES: ShowcaseVerse[] = [
   {
     key: '65:3',
     surah: 'At-Talaq',
+    surahNameAr: 'الطَّلَاقِ',
     arabic: 'وَمَن يَتَوَكَّلْ عَلَى ٱللَّهِ فَهُوَ حَسْبُهُۥٓ',
     translation: 'And whoever relies upon Allāh - then He is sufficient for him.',
     translationName: SAHEEH,
@@ -47,6 +52,7 @@ export const SHOWCASE_VERSES: ShowcaseVerse[] = [
   {
     key: '2:286',
     surah: 'Al-Baqarah',
+    surahNameAr: 'البَقَرَةِ',
     arabic: 'لَا يُكَلِّفُ ٱللَّهُ نَفْسًا إِلَّا وُسْعَهَا',
     translation: 'Allāh does not charge a soul except [with that within] its capacity.',
     translationName: SAHEEH,

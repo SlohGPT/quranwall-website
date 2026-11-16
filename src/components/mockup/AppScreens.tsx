@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { SHOWCASE_VERSES, type ShowcaseVerse } from '../../data/showcaseVerses';
 import LockScreen, { StatusBarIcons, type Edition } from './LockScreen';
+import { referenceOf, refDir } from './QuranWidget';
 import Wallpaper, { type WallpaperVariant } from './Wallpaper';
 import { useLayers, usePrefersReducedMotion } from './utils';
 
@@ -76,7 +77,7 @@ export function AppStoreScreen() {
             <p lang="ar" dir="rtl" className="absolute inset-x-0 text-center font-quran" style={{ top: '40cqw', padding: '0 4cqw', fontSize: '5.8cqw', lineHeight: 1.8, color: GOLD }}>
               {VERSE.arabic}
             </p>
-            <p className="absolute inset-x-0 text-center font-semibold" style={{ top: '62cqw', fontSize: '4.2cqw', color: GOLD, opacity: 0.78 }}>{appRef(VERSE)}</p>
+            <p {...refDir(true)} className="absolute inset-x-0 text-center font-quran" style={{ top: '62cqw', fontSize: '4.5cqw', lineHeight: 1.6, color: GOLD, opacity: 0.78 }}>{appRef(VERSE, true)}</p>
           </div>
         ))}
       </div>
@@ -85,8 +86,8 @@ export function AppStoreScreen() {
 }
 
 /** The app writes the reference as the surah name and the ayah number, e.g. "Ash-Sharh 6". */
-function appRef(v: ShowcaseVerse) {
-  return `${v.surah} ${v.key.split(':')[1]}`;
+function appRef(v: ShowcaseVerse, arabic = false) {
+  return referenceOf(v, arabic);
 }
 
 const SEARCH_PLACEHOLDER = "Search ayahs or reference (e.g. 'mercy', 'Al-Baqarah 255')";
@@ -210,7 +211,6 @@ export function ReviewScreen({ verse = SHOWCASE_VERSES[0], edition = 'translatio
       {/* nav row */}
       <div className="absolute flex items-center justify-between" style={{ top: '13cqw', left: '5.5cqw', right: '5.5cqw', height: '9cqw', fontSize: '4.6cqw' }}>
         <span style={{ color: GOLD_DEEP }}>Cancel</span>
-        <span className="font-semibold" style={{ color: GOLD_DEEP }}>Done</span>
       </div>
 
       {/* reference + edition name */}
@@ -220,7 +220,7 @@ export function ReviewScreen({ verse = SHOWCASE_VERSES[0], edition = 'translatio
         style={{ top: '24cqw', left: '5.5cqw', right: '5.5cqw', height: '16cqw' }}
         render={(c) => (
           <div>
-            <p className="font-bold" style={{ fontSize: '7.2cqw', lineHeight: 1.15, color: GOLD_DEEP }}>{appRef(c.verse)}</p>
+            <p {...refDir(c.edition === 'arabic')} className="font-bold" style={{ fontSize: '7.2cqw', lineHeight: 1.15, color: GOLD_DEEP, textAlign: 'left' }}>{appRef(c.verse, c.edition === 'arabic')}</p>
             <p className="font-medium" style={{ marginTop: '2cqw', fontSize: '3.85cqw', color: 'rgba(255,255,255,0.55)' }}>
               {c.edition === 'arabic' ? 'Arabic — Uthmani' : c.verse.translationName}
             </p>

@@ -116,8 +116,9 @@ export default function TestimonialsAndFAQ() {
                                             {/* grid-rows 0fr -> 1fr animates height without measuring; text stays in the DOM */}
                                             <div
                                                 id={`faq-answer-${index}`}
-                                                role="region"
+                                                role={open ? 'region' : undefined}
                                                 aria-labelledby={`faq-question-${index}`}
+                                                aria-hidden={!open}
                                                 className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none ${
                                                     open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                                                 }`}

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useMemo, type CSSProperties } from 'react';
 import { SHOWCASE_VERSES, type ShowcaseVerse } from '../../data/showcaseVerses';
 import Wallpaper, { type WallpaperVariant } from './Wallpaper';
-import { referenceOf } from './QuranWidget';
+import { referenceOf, refDir } from './QuranWidget';
 import { useLayers } from './utils';
 
 type Props = {
@@ -118,10 +118,21 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
                   {l.value.verse.translation}
                 </p>
               )}
-              {/* the app draws the reference in the text colour at 78 % */}
-              <p className="font-semibold" style={{ marginTop: '4cqw', fontSize: '4.4cqw', color: l.value.accent ?? (l.value.edition === 'arabic' ? GOLD : '#fff'), opacity: 0.78 }}>
-                {referenceOf(l.value.verse)}
-              </p>
+              {/* the app draws the reference in the text colour at 78 %; on an Arabic edition it is the Arabic surah name in
+                  the same Arabic face (Amiri Quran) at 0.78 x the verse size (WallpaperRenderer.referenceFontScale) */}
+              {l.value.edition === 'arabic' ? (
+                <p
+                  {...refDir(true)}
+                  className="font-quran"
+                  style={{ marginTop: '2cqw', fontSize: '6.55cqw', lineHeight: 1.6, color: l.value.accent ?? GOLD, opacity: 0.78 }}
+                >
+                  {referenceOf(l.value.verse, true)}
+                </p>
+              ) : (
+                <p className="font-semibold" style={{ marginTop: '4cqw', fontSize: '4.4cqw', color: l.value.accent ?? '#fff', opacity: 0.78 }}>
+                  {referenceOf(l.value.verse)}
+                </p>
+              )}
             </motion.div>
           );
         })}

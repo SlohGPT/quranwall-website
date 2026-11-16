@@ -22,12 +22,14 @@ type TileProps = {
   title: string;
   description: string;
   className?: string;
+  /** Extra classes for the title/description block (used to keep it clear of absolutely positioned art). */
+  textClassName?: string;
   /** Absolutely positioned art that is allowed to bleed to the tile edges. */
   backdrop?: ReactNode;
   children?: ReactNode;
 };
 
-function Tile({ title, description, className = '', backdrop, children }: TileProps) {
+function Tile({ title, description, className = '', textClassName = '', backdrop, children }: TileProps) {
   return (
     <motion.article
       variants={item}
@@ -40,7 +42,7 @@ function Tile({ title, description, className = '', backdrop, children }: TilePr
         style={{ background: 'radial-gradient(90% 60% at 0% 0%,rgba(217,185,104,0.07),transparent 70%)' }}
       />
       {backdrop}
-      <div className="relative z-10">
+      <div className={`relative z-10 ${textClassName}`}>
         <h3 className="text-lg font-bold tracking-tight text-white sm:text-xl">{title}</h3>
         <p className="mt-1.5 max-w-md text-sm leading-relaxed text-white/55 sm:text-[15px]">{description}</p>
       </div>
@@ -120,10 +122,10 @@ function LanguagesArt() {
   }, [hover, reduced]);
 
   const v = SHOWCASE_VERSES[0];
-  const ref = referenceOf(v);
+  // The app writes the surah name in the edition's language: Arabic script for the Arabic and Urdu editions.
   const choices = [
-    { key: 'ar', lang: 'ar', dir: 'rtl', language: 'Arabic', name: 'Uthmani', text: v.arabic, arabic: true },
-    ...VERSE_94_6_TRANSLATIONS.map((t) => ({ key: t.lang, lang: t.lang, dir: t.dir, language: t.language, name: t.name, text: t.text, arabic: false })),
+    { key: 'ar', lang: 'ar', dir: 'rtl', language: 'Arabic', name: 'Uthmani', text: v.arabic, arabic: true, arabicRef: true },
+    ...VERSE_94_6_TRANSLATIONS.map((t) => ({ key: t.lang, lang: t.lang, dir: t.dir, language: t.language, name: t.name, text: t.text, arabic: false, arabicRef: t.lang === 'ur' })),
   ];
   const activeLanguage = choices[active].arabic ? 'Arabic' : LANGUAGE_OF[choices[active].language];
 
@@ -150,7 +152,11 @@ function LanguagesArt() {
               >
                 {t.text}
               </p>
-              <p className="text-[12px] font-semibold text-brand-light/80">{ref}</p>
+              {t.arabicRef ? (
+                <p lang="ar" dir="rtl" className="font-quran text-[14px] leading-[1.4] text-brand-light/80">{referenceOf(v, true)}</p>
+              ) : (
+                <p className="text-[12px] font-semibold text-brand-light/80">{referenceOf(v)}</p>
+              )}
               <p className="flex items-center gap-2 text-[11px] text-white/50">
                 <span lang={t.lang} dir={t.dir} className="font-semibold text-brand-light">{t.language}</span>
                 <span aria-hidden="true">·</span>
@@ -261,7 +267,7 @@ function CustomiserArt() {
                 <button
                   key={b.id}
                   type="button"
-                  aria-label={`Example background ${BACKGROUNDS.indexOf(b) + 1}`}
+                  aria-label={`Background: ${b.label}`}
                   aria-pressed={on}
                   onClick={() => setBg(b.id)}
                   className="group/sw flex flex-col items-center gap-1.5 focus:outline-none"
@@ -388,23 +394,23 @@ export default function Features() {
         style={{ background: 'radial-gradient(60% 100% at 50% 0%,rgba(217,185,104,0.06),transparent 70%)' }}
       />
       <div className="container-main relative">
-        <div className="mb-14 text-center sm:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-brand">Features</p>
-            <h2 className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Made for the screen
-              <br />
-              <span className="text-white/40">you see most</span>
-            </h2>
-          </motion.div>
-        </div>
-
         <MotionConfig reducedMotion="user">
+          <div className="mb-14 text-center sm:mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-brand">Features</p>
+              <h2 className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Made for the screen
+                <br />
+                <span className="text-white/40">you see most</span>
+              </h2>
+            </motion.div>
+          </div>
+
           <motion.div
             variants={container}
             initial="hidden"
@@ -416,6 +422,8 @@ export default function Features() {
               title="The Quran on your Lock Screen"
               description="The ayah you choose, as your iPhone Lock Screen wallpaper, in Arabic or a translation."
               className="min-h-[540px] md:col-span-2 md:min-h-[480px] lg:row-span-2 lg:min-h-[620px]"
+              // md only: the phone sits at right-[7%] w-[270px]; stop the text 16px short of its left edge (93% of the tile minus 270 + 28 padding + 16)
+              textClassName="md:max-w-[calc(93%-262px)] lg:max-w-none"
               backdrop={<LockScreenArt />}
             />
 

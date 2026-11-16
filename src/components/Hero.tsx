@@ -126,7 +126,13 @@ function useDemoLoop() {
   const running = wide && visible && !reduced;
 
   useEffect(() => {
-    if (!running) { setPressed(false); setStep(1); return; }
+    if (!running) {
+      setPressed(false);
+      setStep(1);
+      // Paused between the front change and the back advance: move the back phone on, so the next tap shows a change.
+      setBack((b) => (b === front ? (b + 1) % SHOWCASE_VERSES.length : b));
+      return;
+    }
     const target = back;
     const ids = [
       setTimeout(() => { setTapKey((k) => k + 1); setPressed(true); setStep(2); }, T_TAP),

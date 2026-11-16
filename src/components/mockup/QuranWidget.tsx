@@ -12,10 +12,17 @@ type Props = {
 
 const GOLD = '#D9B968'; // the widget's brandGold
 
-/** Reference line as the app writes it: surah name and ayah number, e.g. "Ash-Sharh 6" */
-export function referenceOf(v: ShowcaseVerse) {
-  return `${v.surah} ${v.key.split(':')[1]}`;
+/**
+ * Reference line as the app writes it: surah name and ayah number, e.g. "Ash-Sharh 6". The app (BibleVerse.reference)
+ * takes the surah name in the edition's language, so an Arabic (or Urdu) edition gets the Arabic-script name
+ * (BibleBookNames.arabic) and the same Latin ayah number: "الشَّرۡحِ 6".
+ */
+export function referenceOf(v: ShowcaseVerse, arabic = false) {
+  return `${arabic ? v.surahNameAr : v.surah} ${v.key.split(':')[1]}`;
 }
+
+/** lang and dir for a reference line: Arabic-script when the edition is Arabic, nothing otherwise. */
+export const refDir = (arabic: boolean) => (arabic ? ({ lang: 'ar', dir: 'rtl' } as const) : {});
 
 /** The app's star-and-crescent symbol (StarCrescentSymbol in the widget source): a disc with a bite taken out, plus a five-point star. */
 function Crescent({ width, height }: { width: string; height: string }) {
@@ -70,8 +77,8 @@ export default function QuranWidget({ size = 'medium', verse = SHOWCASE_VERSES[0
   );
 
   const ref = (
-    <p className="font-semibold" style={{ fontSize: medium ? '3.5cqw' : '6.3cqw', color: GOLD, lineHeight: 1.2 }}>
-      {referenceOf(verse)}
+    <p {...refDir(arabic)} className="font-semibold" style={{ fontSize: medium ? '3.5cqw' : '6.3cqw', color: GOLD, lineHeight: 1.2 }}>
+      {referenceOf(verse, arabic)}
     </p>
   );
 
