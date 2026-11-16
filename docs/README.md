@@ -14,8 +14,10 @@ Direction lives in `SEO-STRATEGY.md` and human-only tasks in `TODO-KAROL.md`.
 - **Indexing:** only the home page is indexed so far. `npm run gsc-inspect` checks every sitemap URL, and the Monday refresh reads it. Request Indexing for the money posts is in `TODO-KAROL.md`.
 - **Install attribution:** every App Store link carries `ct=qw-web-<type>`. The fixed list lives in `src/lib/app-store.ts`, capped at 30 characters; posts add the `-mid`, `-end` and `-sticky` placements, and there are `smart-banner` and `handoff` tokens. Karol reads Campaigns monthly in App Store Connect.
 - **Facts and gates (2026-11-16):** product facts live in `src/data/facts.json`. `npm run lint-facts` (`--diff`, `--dist`, `--prompts`, `--all`) and `npm run check-facts` guard them, and the merge bot blocks on a FAIL.
+- **Homepage redesign (2026-11-16, journal 02):** on branch `design/homepage-v2` (worktree `../quranwall-website-home`), not merged: coded phone mockups with the app's real Lock Screen UI in the hero, a features bento, and a design pass on the other home sections. Verses in mockups come only from `src/data/showcaseVerses.ts` (checked on quran.com).
 
 ## Journal
 Append-only, one entry per session, merge gate or weekly refresh; next number = highest + 1.
 
 - [01 — SEO machine setup, 2026-11-16](journal/01-seo-machine-setup-2026-11-16.md): ported the FaithWall/NoteWall pipeline (strategy, queue, Search Console script, campaign tokens, three scheduled tasks); Search Console and Bing connected the same day; the FaithWall review applied in the evening (`46b9109`, `961cfdc`) and its install cards and fact gates at night (`26a756a`); the product-fact answers are with Karol.
+- [02 — Homepage redesign, 2026-11-16](journal/02-homepage-redesign-2026-11-16.md): hero phone mockup built in code (Lock Screen + widget), six-tile features bento, section pass; verses from quran.com, fonts from the app; waits for merge.
