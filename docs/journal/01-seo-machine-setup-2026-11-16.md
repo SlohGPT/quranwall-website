@@ -94,3 +94,61 @@ Karol said "Yes, request now" for the home page, `/features` and the three money
   - `/blog/best-muslim-app-for-iphone-2026`: unknown to Google
 - **Blocked:** Request Indexing answered "daily quota exceeded" on the home page and again on one money post, so no request went through. Stopped after the second refusal.
 - **Decided:** the sitemap is submitted, so Google should crawl these pages without any requests. Request Indexing would only speed that up. The TODO item now lists the three money posts first, then `/features`, to request from 2026-11-17.
+
+## Evening: the FaithWall review applied to QuranWall
+The FaithWall session ("SEO strategy and blog traffic") relayed Karol's request to apply its SEO and conversion review here, with the urgent part due before the autopilot's first run (2026-11-17, 07:30).
+
+- **Found:**
+  - The three task prompts, the blog skill and parts of the site still carried claims the live listing doesn't make: Focus-mode install, verse packs, Premium, duas, the 60-second setup, "no account", iOS 16 and "free app".
+  - Unknown URLs answered 200 with the home page (a catch-all rewrite), so Google could index junk paths. The prerender left NUL bytes in some pages.
+  - `index.html` carried a MobileApplication block on every page. There were two FAQ sources.
+  - The home page body didn't link to `/features` or the money posts.
+  - URL Inspection over the whole sitemap (new `npm run gsc-inspect`): only the home page is indexed. A few URLs are discovered but not indexed, and most are still unknown to Google.
+- **Decided:**
+  - The live listing wins over the skill and the old copy. The only pricing wording is "free to download, with an in-app subscription". Every unconfirmed feature stays out until Karol confirms it in `TODO-KAROL.md`.
+  - Pushes use a one-off credential helper (`git -c credential.helper=… push`), not `gh auth switch`, because other sessions depend on the active gh account. The repo `CLAUDE.md` still says to switch on a 403. I didn't edit it because the request came from a peer session. That's Karol's call.
+  - Queue: p1–p4, p6 and p7 were executed by hand today and closed as done. p13–p15 (outreach) are retired. Added p17, Ramadan readiness, eligible from 2026-12-15.
+  - **Disagreed with the brief on two points:**
+    - p5 (the 1,000+ and 92% social proof, waitlist testimonials) stays until its 2026-11-23 window, as promised to Karol. "1,000+" may be true.
+    - p3/p4 (the "free" wording and iOS minimum) were done early as conservative wording rather than waiting.
+  - `SEO-STRATEGY.md` is now v3, numbered to match FaithWall; QuranWall had no v2. Outreach is retired, a new-post demand test is added, and there's no Turkish version yet.
+  - The journal stays one entry per session, so this is appended here rather than opening 02.
+- **Built:**
+  - `46b9109`: listing facts in the task prompts and the blog skill; overlapping queue items closed; outreach retired.
+  - `961cfdc`:
+    - real 404 with noindex, rewrite removed, NUL fix
+    - home links to `/features` and the money posts (ExploreMore)
+    - one MobileApplication node on Home with no rating; one FAQ source
+    - listing facts site-wide, legal pages included; all 8 posts with exact Sahih International verses and the translation named
+    - the hero's App Store row above the video on phones; slide1 preload removed
+    - strategy v3; `scripts/gsc-inspect.mjs`
+  - The three scheduled-task prompts outside the repo:
+    - listing facts and the credential-helper push
+    - outreach retired
+    - the refresh gains an indexing check that reads the inspection CSV at day 14 and day 28
+- **Verified:**
+  - Locally:
+    - typecheck clean; build 16/16 plus `404.html`; no NUL bytes
+    - JSON-LD: Home has Organization, WebSite, HowTo, FAQPage and MobileApplication; other pages carry no MobileApplication
+    - the sitemap diff only bumps lastmod on the 14 pages that changed
+    - a local serve returns 404 for unknown paths and 200 for every sitemap URL
+    - a 390px headless screenshot shows the App Store row above the video
+  - The live check after the deploy is the next section.
+- **Open:**
+  - Request Indexing for the three money posts and `/features` (2026-11-17 or later, once each)
+  - the six product-fact questions and the social-proof answer before 2026-11-23
+  - the leftover "60 seconds" stat in SocialProof (p5 window)
+  - the legal clauses on free trials and lifetime access, and the EULA Shortcut line
+  - dead code in `AppShowcase.tsx` quoting Proverbs 3:5
+  - the repo `CLAUDE.md` push rule
+
+## Live check after `961cfdc`
+- **Deploy:** live on Vercel about 30 seconds after the push.
+- **Status codes:** `/nope` and `/blog/nope` answer 404 with a single noindex robots tag. All 16 sitemap URLs answer 200.
+- **`/features`:** serves its own title.
+- **Home page:**
+  - carries Organization, WebSite, HowTo, FAQPage and one MobileApplication node, with no aggregateRating
+  - no slide1 preload
+  - links to the three money posts in its body
+- **No MobileApplication** on `/features`.
+- **IndexNow:** accepted the 14 changed pages plus `llms.txt` and `pricing.md`.
