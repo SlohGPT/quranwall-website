@@ -354,3 +354,32 @@ The ASO session tested the reclassification idea from the note above, and a seco
 - **It wasn't a simple relabel:** most of the web gain was downloads with no product-page view. Apple hides most referring domains below its display threshold, so the route itself can't be seen.
 - **For this site:** the Web referrer line in App Store Connect can't show whether quranwall.com works. The `ct=qw-web-*` campaign tokens added on 2026-11-16 are the measure. Apple lists a token only after it passes a threshold, so expect days or weeks with nothing showing.
 - **Changed:** this note, and the memory pointer.
+
+## Night: FaithWall's round-3 check (`1f28292`)
+FaithWall verified round 2 on `6c7f69c`, with two skeptics checking each claim. It found five more lint gaps and three docs items, and asked for the llms.txt wording and a website-quotes line in the licence item.
+- **Lint (`scripts/lint-facts.mjs`):**
+  - Counts with k or m now fail: "10K downloads", "Join 1K+ users".
+  - Install counts fail in prose and in stats ("5,000 installs", "Installed 5,000 times", a stat labelled Installs). **Decided:** install counts fail even at the floor, because the floor counts downloads. Only "Downloaded 1,000+ times" and "1,000+ downloads" pass.
+  - Counts in words now cover twenty to ninety and hundred(s): "Join twenty thousand believers" fails.
+  - Setup claims now cover "installs in seconds", "Done in 2 minutes with QuranWall", and the stat labels "Seconds to start" and "Taps to get going".
+  - Plan names now cover "Premium Membership", "QuranWall Pro" and "QuranWall Plus plan". "Pro tip" still passes.
+  - `--self-test` now runs 103 cases, up from 63.
+- **Correction to the round-2 section above:** the per-clause NEG check also splits at a bare " but" and a bare " although" (no comma), as well as at ":" and ";". The full `CLAUSE_BREAK` is `/[:;]|,\s*(?:but|yet|while|although)\b|\s(?:but|although)\b/gi`. A bare " yet" or " while" doesn't split. The hub's "Round 3" for `a34c536` should have said the round-2 check; it's fixed there.
+- **`public/llms.txt` follows the app until Karol decides:**
+  - each ayah shows in Uthmani Arabic *or* a translation
+  - the wallpaper keeps the chosen ayah, and only the widget rotates
+  - offline is qualified: the iOS project bundles all twelve text databases, so browsing, search and the widget work offline
+  - it no longer says "no audio recitation": the app streams read-along recitation from quran.com and caches it per ayah (`Recitation.swift`)
+- **Legal pages:** Terms of Use and Privacy Policy now name the app as the listing does ("Quran Widget: QuranWall"). Nothing else in their text changed.
+- **TODO-KAROL:**
+  - New question 7: the site and FAQ, the listing and the EULA disagree on what the wallpaper shows. The audio wording is in the same question. The EULA gets aligned after Karol answers, and FaithWall takes the listing side to the ASO session.
+  - The licence item now lists the website's own quotes (94:6 in seven translations, plus five ayat in Saheeh International, all copied from quran.com) for Karol to clear. Its "the site shows no Arabic" sentence is corrected.
+  - Two stale pricing sentences are updated for the no-pricing site.
+- **Cohort record (private):** I added annotation rows for the eight install-card posts, `/` and `/features`, all changed by the homepage-v2 merge (`6c7f69c`). This round changed no cohort page.
+- **Verified:**
+  - typecheck passes; build 16/16, sitemap unchanged
+  - `--self-test`: 103/103
+  - `--all` and `--dist`: 0 FAIL / 4 WARN (the grandfathered p5 strings)
+  - `--prompts` and `--diff`: 0 FAIL
+  - with the date forced to 2026-11-23, `--all` fails exactly those four strings
+  - `check-facts` unchanged
