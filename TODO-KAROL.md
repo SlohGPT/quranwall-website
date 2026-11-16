@@ -12,6 +12,7 @@ Items the SEO machine can't do itself. Newest first inside each section; the fir
 ## Monthly
 
 - **2026-11-16 — Review the `qw-web-*` campaigns in App Store Connect once a month.**
+  - **First, before any read:** accept Apple's updated agreement in App Store Connect → Business. Until you do, App Store Connect data stops at 2026-11-11 and the campaigns can't be read.
   - **Where:** App Store Connect → your app (QuranWall) → App Analytics → Acquisition. Read Campaigns by token, and also Sources → Web Referrer. Set the date range to the last 30 days.
   - **Threshold:** Apple only lists a campaign once it has at least 5 first-time downloads in the range (24-hour attribution), so empty rows are normal at first.
   - **Campaign names:**

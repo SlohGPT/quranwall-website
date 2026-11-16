@@ -202,3 +202,17 @@ The FaithWall session sent part 2: port its install-card and fact-gate commit (`
   - Karol's first Campaigns read around 2026-12-16, including whether `qw-web-smart-banner` shows up at all
   - the contact email
   - the slug and push lines in `CLAUDE.md`
+
+## Late: context from the ASO revenue audit
+The ASO session ("November 2026 iOS revenue and funnel investigation") sent QuranWall's findings as context, not as a task. Its figures stay out of this public repo; the source is the ASO repo, `docs/journal/04` and `docs/journal/04-audit-record/07-country-value-for-web-languages.md`.
+
+- **Found, relevant to the site:**
+  - QuranWall's US App Store search ranks stepped down on 2026-10-08 with no edit on our side. Judge the site on Campaigns and Web Referrer, not on search ranks.
+  - A gap in new subscriptions in late October happened with normal traffic, so it isn't a site effect. Its cause is still open on the ASO side.
+  - The web channel is small so far. Turkey is its largest source.
+  - The App Store listing has no Portuguese, Malay or Urdu locale.
+  - Reading the `qw-web-*` campaigns needs Karol to accept Apple's updated agreement first, and App Store Connect data stops at 2026-11-11 until he does.
+- **Decided:**
+  - `SEO-STRATEGY.md` now carries the audit's money test for translated posts, in words and without figures: a translated post must beat the English post's clicks by more than the value ratio times the effort ratio. It also says to judge the site on Campaigns and Web Referrer.
+  - `TODO-KAROL.md`'s campaign item now starts with the Apple agreement.
+  - "English only for now" stands.
