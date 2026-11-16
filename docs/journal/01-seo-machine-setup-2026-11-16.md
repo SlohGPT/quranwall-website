@@ -383,3 +383,35 @@ FaithWall verified round 2 on `6c7f69c`, with two skeptics checking each claim. 
   - `--prompts` and `--diff`: 0 FAIL
   - with the date forced to 2026-11-23, `--all` fails exactly those four strings
   - `check-facts` unchanged
+
+## Night: keyword engine port (`8eeff78`)
+FaithWall sent round 3 of the shared system: port its keyword engine (FaithWall `b011e21`, engine 1.0.0). Karol's ask, relayed: "the system will be the same on all of the apps Just unique with the keywords cluster and stuff."
+- **Built (`8eeff78`):**
+  - `scripts/keyword-research.mjs` is a byte-for-byte copy; its sha256 starts `4e9997c222f4`.
+  - The QuranWall config is `src/data/kw-config.json`:
+    - autocomplete: 11 requests a day for the US, 2 for Turkey, 2 for Indonesia (the last two are signals for the p18 decision, never content)
+    - holds: p18 until 12-15; the home page until p5 on 11-23; tool and mood pages until Karol names a licence-clear translation and a meanings reviewer
+  - `src/data/keyword-clusters.json` has 13 clusters. They come from the keyword bank plus today's autocomplete, and they're number-free.
+  - `keyword-research/` holds the rubric and the first run note.
+  - `npm run kw`, `npm run kw:check`, and the `.gitignore` lines.
+  - SEO-STRATEGY §5: autocomplete only through the engine; the engine and cluster-map bullet.
+  - A TODO item for the translation and the reviewer.
+  - Scheduled prompts:
+    - the refresh runs doctor, gsc and geo-probe after the data pull, takes autocomplete only through `kw expand`, curates the draft clusters, gives new items a `cluster_id`, and runs `kw check --staged` before committing
+    - the autopilot reads the item's cluster and never runs the engine
+- **Decided:**
+  - **Run notes location:** they go in `keyword-research/` at the repo root, not `docs/keyword-research/` as on FaithWall, because this repo's CLAUDE.md keeps the SEO machine out of `docs/`.
+  - **Open-ended hold:** the tool and mood page hold has no URL to enforce, so it's recorded with a far-future date; the cluster `hold` decisions and §5 carry it.
+- **Ran:**
+  - `kw check --self-test` passes in full.
+  - `doctor --online` reaches the property with the shared default key, so the config names no key.
+  - `gsc` exits 3, insufficient data, as expected one day after verification. No demand conclusion is drawn; the first useful pull is the 11-23 refresh.
+  - Autocomplete answered normally and used the whole day's allowance. Seven US seeds wait for the next run, so the dhikr, dua, morning-routine, reading-plan and focus-mode posts have no cluster yet.
+  - `geo-probe`: every AI search and training bot is allowed. The live robots.txt matches the repo, and all probed bots got a normal page.
+- **Verified:**
+  - typecheck passes; build 16/16
+  - lint-facts: all modes 0 FAIL, self-test 103/103
+  - `kw:check` and `kw check --staged`: 0 fail, 0 warn
+- **Open:**
+  - The refresh prompt still writes weekly journal entries to `docs/journal` (step 7b, from the setup), which disagrees with the CLAUDE.md line about `docs/`. That's Karol's call; it's left as it is.
+  - Script suggestions went to FaithWall: a neutral host line instead of "Cloudflare", and a header note that `regex_families` take no lookarounds.
