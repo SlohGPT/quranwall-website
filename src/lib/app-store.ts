@@ -15,8 +15,8 @@ const MAX_CT_LENGTH = 30;
 
 /**
  * Campaign names: a fixed list, never per post. Apple shows a campaign only with 5+ first-time downloads
- * in the date range, so tokens stay coarse. `blog` is the in-body link inside post JSON (static, literal URL);
- * the install cards and the sticky bar carry their own placement token. scripts/lint-facts.mjs reads this list.
+ * in the date range, so tokens stay coarse. `blog` is an in-body markdown link to the app inside a post
+ * (BlogRenderer rebuilds it in code); the install cards and the sticky bar carry their own placement token. scripts/lint-facts.mjs reads this list.
  */
 export const CAMPAIGNS = {
   home: 'qw-web-home',

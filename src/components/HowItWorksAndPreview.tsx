@@ -70,7 +70,7 @@ export default function HowItWorksAndPreview() {
 
                     {/* LEFT COLUMN: How It Works */}
                     <div>
-                        <SectionHeading eyebrow="How It Works" title="Set up in under" muted="2 minutes" />
+                        <SectionHeading eyebrow="How It Works" title="From the App Store" muted="to your Lock Screen" />
 
                         <ol className="relative mt-12 space-y-10 sm:mt-14">
                             {/* progression line behind the number badges */}

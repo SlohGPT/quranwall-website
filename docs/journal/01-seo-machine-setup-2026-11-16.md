@@ -202,3 +202,66 @@ The FaithWall session sent part 2: port its install-card and fact-gate commit (`
   - Karol's first Campaigns read around 2026-12-16, including whether `qw-web-smart-banner` shows up at all
   - the contact email
   - the slug and push lines in `CLAUDE.md`
+
+## Late: context from the ASO revenue audit
+The ASO session ("November 2026 iOS revenue and funnel investigation") sent QuranWall's findings as context, not as a task. Its figures stay out of this public repo; the source is the ASO repo, `docs/journal/04` and `docs/journal/04-audit-record/07-country-value-for-web-languages.md`.
+
+- **Found, relevant to the site:**
+  - QuranWall's US App Store search ranks stepped down on 2026-10-08 with no edit on our side. Judge the site on Campaigns and Web Referrer, not on search ranks.
+  - A gap in new subscriptions in late October happened with normal traffic, so it isn't a site effect. Its cause is still open on the ASO side.
+  - The web channel is small so far. Turkey is its largest source.
+  - The App Store listing has no Portuguese, Malay or Urdu locale.
+  - Reading the `qw-web-*` campaigns needs Karol to accept Apple's updated agreement first, and App Store Connect data stops at 2026-11-11 until he does.
+- **Decided:**
+  - `SEO-STRATEGY.md` now carries the audit's money test for translated posts, in words and without figures: a translated post must beat the English post's clicks by more than the value ratio times the effort ratio. It also says to judge the site on Campaigns and Web Referrer.
+  - `TODO-KAROL.md`'s campaign item now starts with the Apple agreement.
+  - "English only for now" stands.
+
+## Later that night: the FaithWall verification round (`3640fca`, `dde8b62`)
+The FaithWall session checked the night's work and sent a list of fixes, plus language and rights decisions for Karol. It is a peer request: the site, queue, prompt and TODO changes below were made; `CLAUDE.md` was not edited (routed to `TODO-KAROL.md`). The numbers in that message are private and stay out of this repo.
+
+- **Copy:**
+  - The home stat "60s, seconds to set up" is now "114 surahs, all searchable".
+  - "Set up in under 2 minutes" is now "From the App Store to your Lock Screen", on both How-it-works variants.
+  - The FinalCTA headline has no count. Its "Join 1,000+ believers" line stays until p5.
+  - The two posts that said "Premium is a subscription" now use the install line.
+  - The strategy's pricing line and an old outreach line drop "Premium".
+- **Gates (`scripts/lint-facts.mjs`, written by a subagent and reviewed here):**
+  - New `setup-time` rule, which also catches stats split across value, suffix and label, and the visible text of built pages.
+  - New `premium-name` rule.
+  - The DENY list holds real negations only, so "not only" is no longer a denial.
+  - `--all` and `--dist` check every email address against `facts.contactEmail` (third-party domains allowlisted by name).
+- **Links:**
+  - In-body App Store links in posts are rebuilt in code with `qw-web-blog`.
+  - The cta `buttonUrl` is no longer rendered (it was dead data). The end card links with `qw-web-blog-end`, and guide pages use `qw-web-pillar`.
+  - The data stays in the posts: dropping it would touch 8 files for no visible change, and the blog skill still writes it.
+- **Other:**
+  - `/blog` and `/about/karol-billik` lastmod 2026-11-16.
+  - The Search Console key path reads `GOOGLE_APPLICATION_CREDENTIALS`, with a home-directory fallback (new commit, no history rewrite).
+- **Prompts:** all three scheduled tasks now keep App Store Connect and RevenueCat numbers out of the repo (installs, downloads by country, conversion, revenue, € amounts, cohort stats; direction words only). The refresh gained step 2d, the Turkish gate.
+- **Queue:**
+  - p5 (still 2026-11-23): "1,000+" is backed by downloads, so it becomes "Downloaded 1,000+ times". The 92% and the testimonials go unless Karol records the survey and the people's consent.
+  - New p18 "Turkish go/no-go", status `gated`, from 2026-12-15. It goes only when all three hold: (a) at least 8 of 16 URLs are indexed, (b) Karol has a Turkish reviewer who knows Islamic terminology, (c) Karol picks the quote policy.
+  - When it goes, the refresh sets it to `go`, not `pending`, so the pilot runs in a manual session with the reviewer rather than through the autopilot and merge bot. This is a deviation from the brief, which didn't say who runs the pilot.
+- **Strategy:** "Re-decide around February 2027" is replaced by the trigger. Verdicts for the other languages: Arabic no (revisit 2027-04), Indonesian after Turkish, Malay and Urdu blocked on listing locales, French no.
+- **TODO-KAROL:**
+  - the `CLAUDE.md` line 25 public-repo rule
+  - translation rights: the Tanzil non-commercial editions, which Saheeh International edition the app uses, and the CC BY credit for the Arabic text in the app
+  - "ASO, not web": Turkey listing conversion, an Urdu listing, a Turkey price tier
+  - what `qw-web-blog` now means
+  - the email is linted
+- **Tanzil credit on the website:** not added. No page shows Arabic ayah text: there are no Arabic characters in the built pages, and the slideshow images show English only. The credit goes in the day a page does.
+- **Verified:**
+  - typecheck, and build 16/16
+  - `lint-facts` `--all`, `--dist`, `--prompts` and `--diff`: 0 FAIL
+  - `check-facts`: no change
+  - the live check after the deploy (below)
+- **Live after the deploy (~45 s):**
+  - Home: the 114 stat, the new heading and the new FinalCTA line are there, and no setup-time text.
+  - Both posts: the new FAQ answer, no "Premium is a", and the end card on `qw-web-blog-end`.
+  - The sitemap carries the two new lastmods.
+  - IndexNow `--all` (site-wide components changed) was accepted.
+- **Open:**
+  - p5 on 2026-11-23
+  - p18 from 2026-12-15
+  - Karol's calls on translation rights, the Saheeh edition, the in-app Tanzil credit and the `CLAUDE.md` lines

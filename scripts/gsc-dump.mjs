@@ -3,10 +3,12 @@
 // Output is local analysis input only. Never commit it (this repo is public; gsc-data*.json is gitignored).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createSign } from 'node:crypto';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 const KEY_PATH =
   process.env.GOOGLE_APPLICATION_CREDENTIALS ??
-  '/Users/carly/GITHUB REPOS/karchi/scripts/service-account-key.json';
+  join(homedir(), 'GITHUB REPOS', 'karchi', 'scripts', 'service-account-key.json');
 const SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 const OUT = process.argv[2] ?? 'gsc-data.json';
 

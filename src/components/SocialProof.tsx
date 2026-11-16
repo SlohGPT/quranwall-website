@@ -11,7 +11,7 @@ import StarPattern from './ui/StarPattern';
 const stats = [
   { value: 92, label: 'Early users feel closer to Allah', suffix: '%' },
   { value: 1000, label: 'Believers using QuranWall', suffix: '+' },
-  { value: 60, label: 'Seconds to set up your lock screen', suffix: 's' },
+  { value: 114, label: 'Surahs, all searchable', suffix: '' },
 ];
 
 function formatCount(n: number, decimals: number, suffix: string) {
@@ -25,7 +25,7 @@ function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?:
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
   const reduceMotion = useReducedMotion();
-  // Render the FINAL value ("92%" / "1,000+" / "60s") in SSR so crawlers and
+  // Render the FINAL value ("92%" / "1,000+" / "114") in SSR so crawlers and
   // AI bots that don't execute JS read the real numbers, not "0.0". The
   // count-up still runs on the client when the section scrolls into view
   // (off-screen on load, so users never see a reset). React-state-based update
