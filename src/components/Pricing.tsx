@@ -1,6 +1,9 @@
-import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
+import Reveal from './ui/Reveal';
+import SectionHeading from './ui/SectionHeading';
+import StarPattern from './ui/StarPattern';
+import { glassCardClass } from './ui/GlassCard';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 
 // Feature list mirrors the live App Store listing. No prices, plan names or trial lengths:
@@ -16,49 +19,38 @@ const features = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="section-space bg-surface-elevated">
-      <div className="container-main">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <p className="text-brand font-medium mb-3 tracking-wide uppercase text-sm">Pricing</p>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]">
-            Free to download.
-            <br />
-            <span className="text-white/40">With an in-app subscription.</span>
-          </h2>
-          <p className="text-white/60 text-lg mt-4 max-w-2xl mx-auto">
+    <section id="pricing" className="section-space relative overflow-hidden bg-gradient-to-b from-surface via-surface-elevated to-surface">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+      <StarPattern opacity={0.025} fade="left" />
+      <div className="container-main relative">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-20">
+          <SectionHeading eyebrow="Pricing" title="Free to download." muted="With an in-app subscription.">
             The App Store shows the price and billing period before you subscribe.
-          </p>
-        </motion.div>
+          </SectionHeading>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="max-w-xl mx-auto rounded-3xl p-8 bg-surface-card border-2 border-brand shadow-xl shadow-brand/10"
-        >
-          <p className="text-white font-bold text-lg mb-5">What QuranWall does</p>
-          <ul className="space-y-4 mb-8">
-            {features.map((feature) => (
-              <li key={feature} className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center mt-0.5">
-                  <Check size={14} className="text-brand" />
-                </div>
-                <span className="text-white/80 text-sm leading-relaxed">{feature}</span>
-              </li>
-            ))}
-          </ul>
+          <Reveal delay={0.1}>
+            <div className={`${glassCardClass} overflow-hidden p-7 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-9`}>
+              <div aria-hidden="true" className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/70 to-transparent" />
+              <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.16),transparent)]" />
 
-          <div className="flex justify-center">
-            <AppStoreButton href={appStoreUrl(CAMPAIGNS.pricing)} />
-          </div>
-        </motion.div>
+              <p className="relative mb-6 text-lg font-bold text-white">What QuranWall does</p>
+              <ul className="relative mb-9 space-y-4">
+                {features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3.5">
+                    <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand/15 ring-1 ring-brand/40">
+                      <Check size={14} strokeWidth={3} className="text-brand" aria-hidden="true" />
+                    </span>
+                    <span className="text-[15px] leading-relaxed text-white/80">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="relative border-t border-white/[0.08] pt-7">
+                <AppStoreButton href={appStoreUrl(CAMPAIGNS.pricing)} />
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

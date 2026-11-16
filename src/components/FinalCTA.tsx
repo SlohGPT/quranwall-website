@@ -1,61 +1,53 @@
 import AppStoreButton from './AppStoreButton';
+import Reveal from './ui/Reveal';
+import StarPattern from './ui/StarPattern';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
-const avatars = [
-  'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100',
-  'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=100',
-  'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
-  'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-];
 
+// Designed composition instead of a stock photo: the app icon with a gold halo over the star lattice.
 export default function FinalCTA() {
   return (
     <section data-hides-sticky className="section-space bg-surface">
       <div className="container-main">
-        <div className="relative rounded-[2rem] overflow-hidden border-2 border-brand/30">
-          <div className="absolute inset-0">
-            <img
-              src="https://images.pexels.com/photos/1064162/pexels-photo-1064162.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt=""
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/80 to-surface/60" />
-          </div>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2rem] border border-brand/25 bg-gradient-to-b from-surface-elevated via-[#241748] to-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <StarPattern opacity={0.04} />
+            <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-0 h-[28rem] w-[44rem] max-w-none -translate-x-1/2 -translate-y-1/4 rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.22),transparent)]" />
+            <div aria-hidden="true" className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-brand/60 to-transparent" />
 
-          <div className="relative px-8 py-20 sm:px-12 sm:py-28 lg:px-20">
-            <div className="max-w-xl">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
+            <div className="relative flex flex-col items-center px-6 py-16 text-center sm:px-12 sm:py-24 lg:py-28">
+              {/* app icon with halo */}
+              <div className="relative mb-10 flex h-24 w-24 items-center justify-center sm:h-28 sm:w-28">
+                <div aria-hidden="true" className="absolute -inset-10 rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.45),transparent)]" />
+                <div aria-hidden="true" className="absolute -inset-5 rounded-full border border-brand/25" />
+                <div aria-hidden="true" className="absolute -inset-10 rounded-full border border-brand/10" />
+                <img
+                  src="/icon-app-256.png"
+                  alt="QuranWall app icon"
+                  width={112}
+                  height={112}
+                  className="relative h-full w-full rounded-[22%] shadow-[0_12px_40px_rgba(0,0,0,0.45),0_0_0_1px_rgba(217,185,104,0.35)]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              <h2 className="mb-6 max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Start every day
                 <br />
                 <span className="text-white/40">with purpose</span>
               </h2>
-              <p className="text-lg text-white/60 mb-8 leading-relaxed">
+              <p className="mb-9 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
                 Transform your phone into a tool for spiritual growth. Join thousands of believers who begin each day with inspiration.
               </p>
 
               <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />
 
-              <div className="flex items-center gap-4 mt-8">
-                <div className="flex -space-x-2">
-                  {avatars.map((src, i) => (
-                    <img
-                      key={i}
-                      src={src}
-                      alt=""
-                      className="w-9 h-9 rounded-full border-2 border-surface object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ))}
-                </div>
-                <p className="text-white/60 text-sm">
-                  Join <span className="text-white font-semibold">1,000+</span> believers
-                </p>
-              </div>
+              <p className="mt-8 text-sm text-white/60">
+                Join <span className="font-semibold text-white">1,000+</span> believers
+              </p>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
