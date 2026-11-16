@@ -83,3 +83,14 @@ Karol approved the Search Console grant ("Yes, add it", then "Yes, do all of it"
   - Request Indexing for the money pages, now possible
   - the permission mode on the three tasks
   - the monthly `qw-web-*` review, around 2026-12-16
+
+## Later still: Request Indexing
+Karol said "Yes, request now" for the home page, `/features` and the three money posts.
+- **Found:** URL Inspection worked and showed where each page stands:
+  - home page: indexed
+  - `/features`: discovered, not indexed
+  - `/blog/quran-verse-iphone-lock-screen`: unknown to Google
+  - `/blog/best-islamic-lock-screen-app-iphone`: unknown to Google
+  - `/blog/best-muslim-app-for-iphone-2026`: unknown to Google
+- **Blocked:** Request Indexing answered "daily quota exceeded" on the home page and again on one money post, so no request went through. Stopped after the second refusal.
+- **Decided:** the sitemap is submitted, so Google should crawl these pages without any requests. Request Indexing would only speed that up. The TODO item now lists the three money posts first, then `/features`, to request from 2026-11-17.
