@@ -27,3 +27,7 @@ dist-ssr
 
 # Local Search Console dumps (public repo: never commit raw GSC numbers)
 gsc-data*.json
+
+# Keyword engine: key files and the private data dir must never be committed
+*.key
+kw-private/

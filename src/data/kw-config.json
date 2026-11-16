@@ -1,0 +1,108 @@
+{
+  "engine_min_version": "1.0.0",
+  "site": "quranwall.com",
+  "origin": "https://quranwall.com",
+  "private_dir": "~/.claude/quranwall-gsc/kw",
+  "clusters_file": "src/data/keyword-clusters.json",
+  "public_docs_dir": "keyword-research",
+  "sitemap_path": "public/sitemap.xml",
+  "repo_robots_path": "public/robots.txt",
+  "priorities_file": "src/data/seo-priorities.json",
+  "readonly_json": ["src/data/seo-keywords.json", "src/data/seo-priorities.json"],
+  "tool_pages": [],
+  "gsc": {
+    "property": "sc-domain:quranwall.com",
+    "regex_families": [
+      { "id": "quran", "pattern": "qur'?an|koran|kuran|mushaf" },
+      { "id": "ayah-verse", "pattern": "ayah|ayat|ayaat|aayat|ayet|verse|scripture" },
+      { "id": "surah", "pattern": "surah|\\bsura\\b|surat|ayatul|ayat al|kursi|yaseen|yasin|kahf|mulk|fatiha|ikhlas|rahman" },
+      { "id": "lock-screen", "pattern": "lock ?screen|lockscreen|kilit ekran|layar kunci" },
+      { "id": "widget", "pattern": "widget" },
+      { "id": "wallpaper", "pattern": "wallpaper|background|duvar ka|latar" },
+      { "id": "iphone-app", "pattern": "(iphone|ios|apple) (app|apps|widget|widgets|wallpaper|lock)|apps? (for|on) (iphone|ios)" },
+      { "id": "islamic-practice", "pattern": "islam|muslim|\\bduas?\\b|dhikr|zikr|adhkar|azkar|tasbih|istighfar|salawat|salah|fajr|tahajjud|ramadan|sabr" },
+      { "id": "mood", "pattern": "for (anxiety|anxious|fear|stress|grief|depress|lonel|sad|anger|hope|strength|patience|peace|sleep|healing|comfort|worry|gratitude)|when (you|i) (feel|are)|verses? about" },
+      { "id": "compare", "pattern": " vs |versus|alternative|best .*app|apps? like|top .*apps?" },
+      { "id": "daily-verse", "pattern": "daily|of the day|every day|each day|today|rotating" }
+    ]
+  },
+  "autocomplete": {
+    "daily_cap": 15,
+    "markets": [
+      { "id": "us", "hl": "en", "gl": "us", "cap": 11 },
+      { "id": "tr", "hl": "tr", "gl": "tr", "cap": 2 },
+      { "id": "id", "hl": "id", "gl": "id", "cap": 2 }
+    ],
+    "modifiers": ["for", "app", "iphone", "widget"]
+  },
+  "seeds": [
+    { "seed": "quran lock screen" },
+    { "seed": "quran verse widget iphone" },
+    { "seed": "quran wallpaper iphone" },
+    { "seed": "quran verse lock screen" },
+    { "seed": "daily quran verse app" },
+    { "seed": "best quran app for iphone" },
+    { "seed": "islamic lock screen" },
+    { "seed": "quran verses for anxiety" },
+    { "seed": "dhikr widget iphone" },
+    { "seed": "best muslim app for iphone" },
+    { "seed": "ayatul kursi wallpaper" },
+    { "seed": "dua widget iphone" },
+    { "seed": "ayah of the day widget" },
+    { "seed": "best dhikr app" },
+    { "seed": "quran reading plan app" },
+    { "seed": "muslim morning routine" },
+    { "seed": "islamic wallpaper iphone" },
+    { "seed": "quran focus mode" },
+    { "seed": "ayet kilit ekranı", "market": "tr" },
+    { "seed": "ayet widget", "market": "tr" },
+    { "seed": "wallpaper ayat al quran", "market": "id" },
+    { "seed": "widget ayat quran", "market": "id" }
+  ],
+  "intent_rules": [
+    { "intent": "navigational", "pattern": "\\bquran ?wall\\b" },
+    { "intent": "how-to", "pattern": "^how (to|do i|do you|can i)\\b|\\b(set ?up|add|put|change|get)\\b.*\\b(lock ?screen|home ?screen|widget|wallpaper)\\b" },
+    { "intent": "question", "pattern": "^(what|why|when|where|which|who|can|could|does|do|did|is|are|was|were|should|will|would)\\b" },
+    { "intent": "compare", "pattern": "\\b(vs|versus|alternatives?|compared?|comparison|best|top)\\b|\\bapps? like\\b" },
+    { "intent": "mood", "pattern": "\\bfor (anxiety|anxious|fear|stress|grief|depression|loneliness|lonely|sadness|sad|anger|hope|strength|patience|peace|sleep|healing|comfort|worry|gratitude)\\b|\\bwhen (you|i|we) (feel|are)\\b|\\bverses? about\\b" },
+    { "intent": "app-install", "pattern": "\\b(apps?|widgets?|lock ?screens?|lockscreen|wallpapers?|iphone|ios|download)\\b" }
+  ],
+  "modifiers": ["sahih international", "saheeh international", "yusuf ali", "pickthall", "hilali khan", "clear quran", "arabic", "transliteration"],
+  "hold_lists": [
+    {
+      "until": "2026-12-15",
+      "reason": "p18 Turkish go/no-go, gated; Turkish and Indonesian autocomplete results are market signals for that decision, never content",
+      "urls": ["/tr", "/tr/kilit-ekranina-ayet-nasil-eklenir", "/tr/ayet-widget-iphone"]
+    },
+    {
+      "until": "2099-12-31",
+      "reason": "no tool page or mood page until Karol names a licence-clear translation and a meanings reviewer (open-ended)",
+      "urls": []
+    },
+    {
+      "until": "2026-11-23",
+      "reason": "p5 social proof rewording",
+      "urls": ["/"]
+    }
+  ],
+  "public_ban_phrases": [
+    "\\bquran ?wall( app)? is (totally |completely )?free\\b"
+  ],
+  "geo": {
+    "paths": ["/", "/blog/", "/llms.txt"],
+    "search_bots": ["OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Bingbot", "Googlebot"],
+    "training_bots": ["GPTBot", "ClaudeBot", "Google-Extended", "CCBot", "Applebot-Extended", "Bytespider", "meta-externalagent", "Amazonbot"],
+    "user_agents": {
+      "OAI-SearchBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot",
+      "ChatGPT-User": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+      "Claude-SearchBot": "Mozilla/5.0 (compatible; Claude-SearchBot/1.0)",
+      "Claude-User": "Mozilla/5.0 (compatible; Claude-User/1.0)",
+      "PerplexityBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+      "Perplexity-User": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Perplexity-User/1.0; +https://perplexity.ai/perplexity-user)",
+      "Bingbot": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+      "Googlebot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "GPTBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)",
+      "ClaudeBot": "Mozilla/5.0 (compatible; ClaudeBot/1.0)"
+    }
+  }
+}

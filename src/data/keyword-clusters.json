@@ -1,0 +1,352 @@
+{
+  "engine_version": "1.0.0",
+  "site": "quranwall.com",
+  "updated": "2026-11-16",
+  "clusters": [
+    {
+      "id": "quran-lock-screen-app",
+      "name": "Quran lock screen app",
+      "head_keyword": "quran lock screen",
+      "members": [
+        "quran lock screen",
+        "quran lock screen widget",
+        "quran lock screen app",
+        "quran verse lock screen",
+        "quran verse lock screen widget",
+        "quran verse lock screen app",
+        "daily quran verse lock screen",
+        "quran verse on iphone lock screen",
+        "quran quotes lock screen",
+        "quran quotes lock screen widget",
+        "daily quran verse widget lock screen",
+        "islam lock screen"
+      ],
+      "intent": "app-install",
+      "content_type": "blog",
+      "target_url": "/blog/quran-verse-iphone-lock-screen",
+      "decision": "depth-pass",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Every lock screen seed returned app and widget phrasings of the product itself: app, widget, daily verse and quotes variants"
+        }
+      ],
+      "queue_id": "p8",
+      "notes": "The product page owns the install intent. The App Store listings that fill the same results make this a contested query, so the page needs depth and a clear answer, not a second URL."
+    },
+    {
+      "id": "how-to-put-quran-verse-on-lock-screen",
+      "name": "How to put a Quran verse on the lock screen",
+      "head_keyword": "how to put quran verse on lock screen",
+      "members": [
+        "how to put quran verse on lock screen",
+        "how to add quran verse in lock screen"
+      ],
+      "intent": "how-to",
+      "content_type": "blog",
+      "target_url": "/blog/quran-verse-iphone-lock-screen",
+      "decision": "depth-pass",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Two how-to phrasings came up under the verse lock screen seed, matching the title of the product post"
+        }
+      ],
+      "queue_id": "p8",
+      "notes": "Same page as the lock screen app cluster: a how-to intent on the same job, so answer it inside the page."
+    },
+    {
+      "id": "quran-verse-widget-iphone",
+      "name": "Quran verse widget for iPhone",
+      "head_keyword": "quran verse widget iphone",
+      "members": [
+        "quran verse widget iphone",
+        "quran quotes widget iphone",
+        "quran verse widget ios",
+        "daily quran verse widget iphone",
+        "daily quran verse app widget",
+        "quran verse home screen widget iphone"
+      ],
+      "intent": "app-install",
+      "content_type": "blog",
+      "target_url": "/blog/quran-verse-iphone-lock-screen",
+      "decision": "depth-pass",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "The widget seed and the daily verse seed both returned widget phrasings, iPhone and iOS forms alike"
+        }
+      ],
+      "queue_id": "p8",
+      "notes": "Strategy section 10 gives the product post the widget phrasings. The home page and the features page carry the category phrasing through p11."
+    },
+    {
+      "id": "quran-wallpaper-iphone",
+      "name": "Quran wallpaper for iPhone",
+      "head_keyword": "quran wallpaper iphone",
+      "members": [
+        "quran wallpaper iphone",
+        "quran wallpaper ios",
+        "quran quotes wallpaper iphone",
+        "quran verse wallpaper iphone",
+        "quran ayat wallpaper iphone",
+        "quran aesthetic wallpaper iphone",
+        "quran lock screen wallpaper"
+      ],
+      "intent": "informational",
+      "content_type": "blog",
+      "target_url": null,
+      "decision": "hold",
+      "hold_reason": "queued as p16 until 2026-12-07",
+      "held_until": "2026-12-07",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "A separate wallpaper family showed up next to the widget one, with aesthetic and ayat phrasings"
+        }
+      ],
+      "queue_id": "p16",
+      "notes": "Queued as p16 for /blog/quran-wallpaper-iphone, which is not live yet. It ships only through the demand test and after the depth items. Check first whether the product post already answers the wallpaper intent."
+    },
+    {
+      "id": "islamic-lock-screen-wallpaper",
+      "name": "Islamic lock screen wallpaper",
+      "head_keyword": "islamic lock screen",
+      "members": [
+        "islamic lock screen",
+        "islamic lock screen wallpaper",
+        "lock screen wallpaper islamic",
+        "islamic lock screen widget",
+        "islam wallpaper iphone",
+        "islamic lock screen wallpaper for mobile"
+      ],
+      "intent": "informational",
+      "content_type": "compare",
+      "target_url": "/blog/best-islamic-lock-screen-app-iphone",
+      "decision": "monitor",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "The broad Islamic lock screen seed returned a long tail of image-download phrasings (resolution, device, audience)"
+        }
+      ],
+      "queue_id": "p9",
+      "notes": "Mostly people looking for images to download. The roundup answers the app side; no gallery page, and the laptop and Android phrasings are out of scope."
+    },
+    {
+      "id": "ayatul-kursi-wallpaper",
+      "name": "Ayatul Kursi wallpaper",
+      "head_keyword": "ayatul kursi wallpaper",
+      "members": [
+        "ayatul kursi wallpaper",
+        "ayatul kursi wallpaper iphone",
+        "ayatul kursi wallpaper in english",
+        "ayatul kursi wallpaper hd",
+        "ayatul kursi wallpaper hd download"
+      ],
+      "intent": "informational",
+      "content_type": "none",
+      "target_url": null,
+      "decision": "monitor",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "A single verse as a wallpaper filled the whole suggestion list, all of it image-download phrasing"
+        }
+      ],
+      "notes": "One famous ayah wanted as an image. A page for it would be a thin gallery, so it waits for the wallpaper post (p16) to decide whether a section covers it."
+    },
+    {
+      "id": "daily-quran-verse-app",
+      "name": "Daily Quran verse app",
+      "head_keyword": "daily quran verse app",
+      "members": [
+        "daily quran verse app",
+        "daily quran quotes app",
+        "quran verse of the day app",
+        "daily quran verses",
+        "daily quran verses in english"
+      ],
+      "intent": "app-install",
+      "content_type": "aso-handoff",
+      "target_url": null,
+      "decision": "aso-handoff",
+      "aso_handoff": true,
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "The daily verse seed returned app-shaped phrasings, the kind searched inside the App Store"
+        }
+      ],
+      "notes": "App-shaped phrasing goes to the App Store keyword work. The site keeps the product post and the home page for it."
+    },
+    {
+      "id": "best-quran-app-iphone",
+      "name": "Best Quran app for iPhone",
+      "head_keyword": "best quran app for iphone",
+      "members": [
+        "best quran app for iphone",
+        "best quran app for iphone free",
+        "best quran app for iphone without ads",
+        "best quran app for iphone reddit",
+        "best quran app for ios"
+      ],
+      "intent": "compare",
+      "content_type": "compare",
+      "target_url": "/blog/best-muslim-app-for-iphone-2026",
+      "decision": "monitor",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Comparison phrasings including ads, price and reddit forms; the free forms are recorded as demand only"
+        }
+      ],
+      "notes": "No Search Console data yet, so we cannot tell whether the broad roundup already shows for it. Revisit after the first data and the demand test; no dedicated page now, and never a claim that the app is free."
+    },
+    {
+      "id": "best-muslim-app-iphone",
+      "name": "Best Muslim app for iPhone",
+      "head_keyword": "best muslim app for iphone",
+      "members": [
+        "best muslim app for iphone",
+        "best islamic app for iphone",
+        "best muslim app for ios",
+        "best muslim prayer app for iphone",
+        "best athan app for iphone",
+        "best athan app ios",
+        "what is the best muslim app"
+      ],
+      "intent": "compare",
+      "content_type": "compare",
+      "target_url": "/blog/best-muslim-app-for-iphone-2026",
+      "decision": "refresh",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Broad best-app phrasings, with a strong prayer-time and athan side that QuranWall does not serve"
+        }
+      ],
+      "queue_id": "p12",
+      "notes": "The roundup stays honest that prayer times and athan apps do a different job. Dating and friends app phrasings in the same list are out of scope."
+    },
+    {
+      "id": "quran-verses-for-anxiety",
+      "name": "Quran verses for anxiety",
+      "head_keyword": "quran verses for anxiety",
+      "members": [
+        "quran verses for anxiety",
+        "quran verses for anxiety and depression",
+        "quran verses for anxiety and depression in arabic",
+        "quran verses for anxiety and depression in urdu",
+        "quranic verses for anxiety and recovery",
+        "quran ayat for anxiety",
+        "quran ayat for anxiety and depression",
+        "quran quotes for anxiety",
+        "islamic verses for anxiety",
+        "quran verses for anxious"
+      ],
+      "intent": "mood",
+      "content_type": "blog",
+      "target_url": null,
+      "decision": "hold",
+      "hold_reason": "no mood page until Karol names a licence-clear translation and a meanings reviewer (TODO-KAROL.md)",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "A wide mood family: anxiety with depression, recovery, Arabic and Urdu forms"
+        }
+      ],
+      "notes": "A mood page needs quoted ayat and a meanings reviewer. The machine adds none until both exist (TODO-KAROL.md). The lock screen angle is the only one we can own."
+    },
+    {
+      "id": "dhikr-widget",
+      "name": "Dhikr widget",
+      "head_keyword": "dhikr widget iphone",
+      "members": [
+        "dhikr widget iphone"
+      ],
+      "intent": "app-install",
+      "content_type": "none",
+      "target_url": null,
+      "decision": "hold",
+      "hold_reason": "product fit unconfirmed: the live listing does not describe a dhikr or tasbih widget (TODO-KAROL.md)",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "The seed returned no dhikr phrasing, only unrelated countdown widget questions, so autocomplete adds no signal for it today"
+        }
+      ],
+      "notes": "Product fit is unconfirmed: the live listing mentions no dhikr or tasbih widget. The keyword bank blocks it until Karol answers."
+    },
+    {
+      "id": "turkish-ayet-lock-screen-widget",
+      "name": "Turkish ayet lock screen and widget",
+      "head_keyword": "ayet kilit ekranı",
+      "members": [
+        "ayet kilit ekranı",
+        "ayet online kilit ekranı",
+        "kilit ekranına ayet koyma",
+        "kilit ekranına ayet nasıl eklenir",
+        "kilit ekranı ayet uygulaması",
+        "kilit ekranında ayet",
+        "kilit ekranında ayet gösteren uygulama",
+        "kilit ekranında ayet ve hadisler",
+        "ayet widget",
+        "kuran ayet widget",
+        "iphone ayet widget",
+        "kuran widgets ayet ve dualar"
+      ],
+      "intent": "informational",
+      "content_type": "none",
+      "target_url": null,
+      "decision": "hold",
+      "hold_reason": "p18 Turkish go/no-go is gated until 2026-12-15",
+      "held_until": "2026-12-15",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Turkish autocomplete returned lock screen and widget phrasings in the same shapes as the English market"
+        }
+      ],
+      "queue_id": "p18",
+      "notes": "A market signal for the p18 go or no-go, never content. The Android phrasings are out of scope."
+    },
+    {
+      "id": "indonesian-wallpaper-ayat",
+      "name": "Indonesian wallpaper ayat and widget",
+      "head_keyword": "wallpaper ayat al quran",
+      "members": [
+        "wallpaper ayat al quran",
+        "wallpaper ayat al quran aesthetic",
+        "wallpaper ayat al quran hd",
+        "wallpaper ayat al quran hitam",
+        "wallpaper ayat al quran aesthetic biru",
+        "widget al quran ayat dan doa"
+      ],
+      "intent": "informational",
+      "content_type": "none",
+      "target_url": null,
+      "decision": "monitor",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-16",
+          "note": "Indonesian autocomplete is dominated by aesthetic image phrasings, with one widget phrasing"
+        }
+      ],
+      "notes": "A market signal only. No Indonesian page is planned, and the Turkish go or no-go (p18) does not cover it."
+    }
+  ]
+}
