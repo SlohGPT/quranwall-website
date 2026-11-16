@@ -428,3 +428,42 @@ FaithWall sent round 3 of the shared system: port its keyword engine (FaithWall 
 - **Verified:**
   - `lint-facts --prompts`: 0 FAIL
   - no `docs/journal` write is left in any of the three prompts
+
+## Handover: the session closed on 2026-11-16, late night
+Karol closed this session. This is everything a new session needs to pick up. The repo is clean and pushed (origin/main `0d0fb01` at close).
+
+- **Waiting on others:**
+  - **FaithWall's verdict on round 3** (`1f28292`, `f4bcbc9`) arrives after this session closed. A new QuranWall session takes it. Fix only what FaithWall's two skeptics both keep, then run every gate: typecheck, build, every `lint-facts` mode including `--self-test`, `check-facts`, and `kw:check`.
+  - **Changes to the shared keyword script:** I proposed three: a host-neutral geo-probe line, a header note that `regex_families` take no lookarounds, and open-ended holds. If FaithWall ships a new `scripts/keyword-research.mjs`, copy it byte for byte and check the sha256 it sends. Never edit it here.
+- **Waiting on Karol** (`TODO-KAROL.md` holds the details):
+  - The seven product questions, including question 7: the wallpaper shows Arabic *or* a translation and never changes by itself, and the app does play recitation audio. The EULA's section 1 is aligned after the answer.
+  - Social proof (p5).
+  - The skill fact edits.
+  - Translation rights, including the website's own quotes.
+  - A licence-clear translation and a meanings reviewer before any tool page or mood page.
+  - The ASO items.
+  - Request Indexing, from 2026-11-17.
+  - The contact email.
+  - The Smart App Banner check.
+  - The `CLAUDE.md` lag (push auth, the public-repo line, "no audio recitation").
+- **Dates the machine and the next session should watch:**
+  - **2026-11-23 (Monday):** the first refresh with Search Console data sets the baseline. `kw gsc` may still exit 3, because it needs 28 days. p5 rewords the social proof, and the four grandfathered strings turn into lint FAILs that day.
+  - **2026-12-01 and 2026-12-15:** read the Request Indexing outcome from `gsc-inspect`.
+  - **2026-12-07:** the wallpaper cluster's hold ends (queue p16).
+  - **2026-12-15:** the p18 Turkish gate check starts weekly, and p17 (Ramadan readiness) becomes eligible.
+  - **About 2026-12-16:** the first campaign-token read in App Store Connect (cohort record, private).
+  - **The ASO session's reads on 12-08 and 12-14:** no US metadata change and no app build before 12-14. The App Store Connect API stays 403 until Karol accepts Apple's updated agreement.
+- **Where things live:**
+  - doctrine: `SEO-STRATEGY.md`
+  - queue: `src/data/seo-priorities.json`
+  - facts: `src/data/facts.json` and `npm run lint-facts`
+  - keywords: `npm run kw`, `src/data/kw-config.json`, `src/data/keyword-clusters.json`, `keyword-research/`
+  - the machine's log: `seo-log/`
+  - Karol's manual-session journal: `docs/journal`
+  - private numbers, outside the repo: the quranwall-gsc folder under `~/.claude` (Search Console dumps, inspect CSVs, the cohort record with its annotation rows, the keyword engine's private data)
+  - scheduled prompts: the three quranwall-* tasks under `~/.claude/scheduled-tasks`
+- **Rules that bit tonight:**
+  - Two sessions shared this checkout. Don't commit or push another session's merge without asking it first.
+  - Push with the one-off credential helper, not `gh auth switch`.
+  - Run `npm run build` before every push.
+- **FYI:** the BILLIK Vercel team showed most of its monthly credit used, with days left in the cycle; I passed that on to Karol. quranwall.com deploys from the SlohGPT account, not that team.

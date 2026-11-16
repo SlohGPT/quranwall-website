@@ -3,6 +3,8 @@
 Public repo: qualitative only, never raw Search Console numbers.
 
 ## Status (2026-11-16)
+**Handover (session closed late 2026-11-16):** what is open, what waits on Karol and the dates to watch are in the last section of journal 01, "Handover".
+
 The SEO machine was set up today (journal 01), ported from FaithWall and NoteWall:
 - `quranwall-seo-autopilot-local` (daily 07:30) works `src/data/seo-priorities.json`
 - `quranwall-merge-bot` (daily 11:15) verifies and merges `claude/*` branches
