@@ -4,7 +4,7 @@
     "description": "Build a muslim morning routine iphone setup that sticks — Fajr, adhkar, Quran, and a calm lock screen before the day gets loud.",
     "date": "June 25, 2026",
     "datePublished": "2026-06-25",
-    "dateModified": "2026-11-16",
+    "dateModified": "2026-11-17",
     "readTime": "5 min read",
     "image": "/blog-thumbnails/muslim-morning-routine-iphone.jpg",
     "imageAttribution": {
@@ -99,7 +99,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Two things break almost every morning routine. The first is the **scroll trap**: you unlock for the alarm, see one notification, and twenty minutes vanish before adhkar. A Morning Focus mode closes that door. The second is **manual upkeep** — saving a Quran screenshot as wallpaper, changing it every few days, forgetting by week two. Reading-app screenshots were never designed for the lock-screen surface anyway; they clip awkwardly behind the clock and fade into wallpaper you stop noticing. QuranWall shows a new ayah each day, so the morning touchpoint stays fresh without you curating which ayah fits today's mood."
+      "text": "Two things break almost every morning routine. The first is the **scroll trap**: you unlock for the alarm, see one notification, and twenty minutes vanish before adhkar. A Morning Focus mode closes that door. The second is **screenshot upkeep** — saving a Quran screenshot as wallpaper, changing it every few days, forgetting by week two. Reading-app screenshots were never designed for the lock-screen surface anyway; they clip awkwardly behind the clock and fade into wallpaper you stop noticing. QuranWall is designed for the Lock Screen, so there are no screenshots to make, and changing the ayah takes a few taps in the app; turn on auto-rotate and the widget shows a new ayah every day."
     },
     {
       "type": "important",
@@ -129,7 +129,7 @@
     {
       "type": "cta",
       "title": "Start tomorrow's Fajr with Quran on the lock screen",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, Arabic beside a translation, with a new ayah each day.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, in Uthmani Arabic or a translation. Turn on auto-rotate and the widget shows a new ayah every day.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

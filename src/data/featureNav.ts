@@ -35,7 +35,7 @@ export const featureNav: AppFeature[] = [
   },
   {
     id: 'translations',
-    label: 'Arabic and Translation',
+    label: 'Arabic or Translation',
     eyebrow: 'Read it in your language',
     title: 'Arabic or a translation in 10 languages',
     description:

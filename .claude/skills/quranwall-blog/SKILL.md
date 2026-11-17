@@ -15,7 +15,8 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
 - **Pricing: none on the website at all.** Karol 2026-11-16: "we don't need to mention the pricing on the website, at all in my opinion. Like, let people download the app and then they will see and they will convert themselves." Pages, posts, CTAs and install cards never mention price, "free", "free to download", subscription, trial or plans; the App Store shows it. (Other apps' pricing in a roundup may be stated when true on their live listing.) The only exceptions are the machine files `public/llms.txt` and `public/pricing.md`, which are not written by this skill.
-- **Confirmed features (live App Store listing, 2026-11-16):** Uthmani Arabic beside a translation, 10 languages; Lock Screen wallpaper and Home Screen widget; your own background, font and colours (a preset or your own photo); all 114 surahs searchable by surah, ayah or keyword; no ads; works offline.
+- **Confirmed features (live App Store listing, 2026-11-16):** Uthmani Arabic or a translation (one per wallpaper, never both together), 10 languages; Lock Screen wallpaper and Home Screen widget; your own background, font and colours (a preset or your own photo); all 114 surahs searchable by surah, ayah or keyword; no ads; works offline.
+- **Wallpaper vs widget (verified in the app source, 2026-11-17):** the Lock Screen wallpaper never changes by itself: you pick an ayah, tap Make It Mine, Apple's Shortcuts sets it, and it stays until you pick another in the app. Only the widget can change on its own, and only if the user turns on auto-rotate (off by default): a new ayah every day, every 8 hours or every hour. Never write "a new ayah each day", "automatic", "nothing to change" or "no app to open" about the wallpaper.
 - **Not confirmed, so never claim until TODO-KAROL.md records Karol confirming them:** verse packs or any named pack, installing through iOS Focus modes, "Premium" or "unlimited" unlocks, duas, a "60-second setup", "no account". You may still write about seasons of life (hardship, grief, sabr, tawakkul) as topics.
 - **Requires:** iOS 15.0 or later (the live listing's minimum).
 - **The 5 clusters** (must match `src/types/blog.ts` exactly):
@@ -137,9 +138,9 @@ Every post includes a friction-reveal section (any heading: "Where this gets har
 #### CTA copy variation (don't reuse one boilerplate)
 
 Vary the final CTA title + description by post type. Examples:
-- **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Arabic beside a translation in 10 languages, on your Lock Screen and Home Screen widget."`
+- **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Uthmani Arabic or a translation in 10 languages, on your Lock Screen and Home Screen widget."`
 - **How-to:** title `"Pick an ayah, set it once"` / description `"QuranWall puts it on your Lock Screen wallpaper and Home Screen widget. No ads, works offline."`
-- **Friction-resolution:** title `"Stop screenshotting verses"` / description `"QuranWall designs the ayah for the Lock Screen: your background, font and colours, Arabic beside a translation."`
+- **Friction-resolution:** title `"Stop screenshotting verses"` / description `"QuranWall designs the ayah for the Lock Screen: your background, font and colours, in Uthmani Arabic or a translation."`
 
 Never ship a generic "Download QuranWall" title alone.
 
