@@ -103,7 +103,7 @@ export function VerseCard({ section }: { section: Verse }) {
         <path d={crescentPath(14, 14, 10)} />
       </svg>
       <p dir="auto" className="font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">"{section.text}"</p>
-      <footer className="mt-3 text-[15px] font-semibold tracking-wide text-brand">, {section.reference}</footer>
+      <footer className="mt-3 text-[15px] font-semibold tracking-wide text-brand">{section.reference}</footer>
       <span aria-hidden="true" className="absolute bottom-3 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-white/40" />
     </blockquote>
   );
