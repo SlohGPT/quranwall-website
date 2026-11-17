@@ -8,7 +8,7 @@ export default function AuthorBio() {
         aria-label="About Karol Billik"
         className="w-16 h-16 rounded-full bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center text-white text-2xl font-bold shrink-0 hover:scale-105 transition-transform"
       >
-        KB
+        <span aria-hidden="true">KB</span>
       </Link>
       <div>
         <Link to="/about/karol-billik" className="text-white font-semibold hover:text-brand transition-colors">

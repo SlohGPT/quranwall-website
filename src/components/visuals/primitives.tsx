@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 /**
  * Shared parts of the spot scenes: palette (site tokens only), the pointed arch every scene sits in, the iPhone,
@@ -44,8 +44,14 @@ export function Crescent({ cx, cy, r, className }: { cx: number; cy: number; r: 
   return <path d={crescentPath(cx, cy, r)} fill={FILL} className={className} />;
 }
 
-/** Root of every scene: the arch, its sky and inner line. Children are drawn inside; the outline goes on top. */
-export function SceneSvg({ children }: { children: ReactNode }) {
+/**
+ * Root of every scene: the arch, its sky and inner line. Children are drawn inside; the outline goes on top.
+ * `clipped` is drawn clipped to the arch. Ids come from useId so several scenes on one page never share an id.
+ */
+export function SceneSvg({ children, clipped }: { children: ReactNode; clipped?: ReactNode }) {
+  const uid = useId().replace(/:/g, '');
+  const sky = `qa-sky-${uid}`;
+  const arch = `qa-arch-${uid}`;
   return (
     <svg
       viewBox="0 0 320 240"
@@ -61,16 +67,19 @@ export function SceneSvg({ children }: { children: ReactNode }) {
       strokeLinejoin="round"
     >
       <defs>
-        <linearGradient id="qa-sky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
           <stop stopColor={DUSK} />
           <stop offset="1" stopColor={NIGHT} />
         </linearGradient>
-        <clipPath id="qa-arch">
-          <path d={`${ARCH}Z`} />
-        </clipPath>
+        {clipped && (
+          <clipPath id={arch}>
+            <path d={`${ARCH}Z`} />
+          </clipPath>
+        )}
       </defs>
-      <path d={`${ARCH}Z`} fill="url(#qa-sky)" stroke="none" />
+      <path d={`${ARCH}Z`} fill={`url(#${sky})`} stroke="none" />
       <path d={ARCH_IN} stroke={GOLD2} strokeOpacity=".4" strokeWidth="1.5" />
+      {clipped && <g clipPath={`url(#${arch})`}>{clipped}</g>}
       {children}
       <path d={`${ARCH}Z`} />
     </svg>

@@ -86,15 +86,18 @@ function DhikrApps() {
 /** 5. Horizon and a rising sun behind an iPhone. */
 function Morning() {
   return (
-    <SceneSvg>
-      <g clipPath="url(#qa-arch)">
-        <g className="qa-loop qa-rise">
-          <path d="M96 176A64 64 0 0 1 224 176Z" fill={FILL} />
-          <path d="M160 92v-9M118 108l-6-6M202 108l6-6M96 150l-9-2M224 150l9-2" strokeOpacity=".7" />
-        </g>
-        <path d="M40 176h240" />
-        <path d="M70 192h60M190 192h60M110 206h100M130 220h60" strokeOpacity=".45" />
-      </g>
+    <SceneSvg
+      clipped={
+        <>
+          <g className="qa-loop qa-rise">
+            <path d="M96 176A64 64 0 0 1 224 176Z" fill={FILL} />
+            <path d="M160 92v-9M118 108l-6-6M202 108l6-6M96 150l-9-2M224 150l9-2" strokeOpacity=".7" />
+          </g>
+          <path d="M40 176h240" />
+          <path d="M70 192h60M190 192h60M110 206h100M130 220h60" strokeOpacity=".45" />
+        </>
+      }
+    >
       <Phone x={130} y={66} w={60}>
         <Lock w={60} clock={false} />
       </Phone>
