@@ -9,7 +9,7 @@ import { faqPageSchema } from '../data/faqs';
 const URL = 'https://quranwall.com/support';
 const TITLE = 'Support | QuranWall';
 const DESC =
-  'Need help with QuranWall? Email our team or browse answers to common questions about setup, supported iPhones, and billing.';
+  'Need help with QuranWall? Email our team or browse answers to common questions about setup, supported iPhones, and privacy.';
 
 const SUPPORT_EMAIL = 'iosnotewall@gmail.com';
 
@@ -29,7 +29,7 @@ const helpTopics = [
   {
     icon: ShieldCheck,
     title: 'Your privacy',
-    body: 'How we handle information, and how billing is handled by Apple.',
+    body: 'How we handle your information.',
     to: '/privacy-policy',
   },
 ];
