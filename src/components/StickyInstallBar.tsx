@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useStaticChrome from '../lib/useStaticChrome';
 import { X } from 'lucide-react';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import { useIsAndroid } from '../hooks/useIsAndroid';
@@ -42,6 +43,8 @@ export default function StickyInstallBar({ kind }: { kind: InstallBarKind }) {
   const [entered, setEntered] = useState(false);
   const [covered, setCovered] = useState(false);
   const isAndroid = useIsAndroid();
+  // No fixed bar while pinch-zoomed or on a short viewport (landscape): it would cover the page.
+  const isStatic = useStaticChrome();
 
   useEffect(() => {
     setMounted(true);
@@ -57,7 +60,7 @@ export default function StickyInstallBar({ kind }: { kind: InstallBarKind }) {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const enabled = mounted && isMobile && !dismissed && !isAndroid;
+  const enabled = mounted && isMobile && !dismissed && !isAndroid && !isStatic;
 
   useEffect(() => {
     if (!enabled) return;

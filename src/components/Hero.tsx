@@ -10,10 +10,11 @@ import { ReviewScreen } from './mockup/AppScreens';
 import type { WallpaperVariant } from './mockup/Wallpaper';
 import { usePrefersReducedMotion } from './mockup/utils';
 
+// The review avatars the iOS app shows in onboarding, in the app's order (3, 2, 1). 96 px exports of the 400 px originals.
 const avatars = [
-  '/assets/avatars/avatar-1.jpg',
-  '/assets/avatars/avatar-2.jpg',
-  '/assets/avatars/avatar-3.jpg',
+  '/assets/avatars/review-3.jpg',
+  '/assets/avatars/review-2.jpg',
+  '/assets/avatars/review-1.jpg',
 ];
 
 const WALLPAPERS: WallpaperVariant[] = ['night', 'emerald', 'dusk'];
