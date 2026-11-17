@@ -39,7 +39,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
   return (
     <article
       id="post-article"
-      className="container-main !overflow-x-clip !overflow-y-visible pt-28 pb-20"
+      className="container-main !overflow-x-clip !overflow-y-visible pt-[84px] md:pt-[104px] pb-20"
     >
       {minutesOf(meta.readTime) >= PROGRESS_MIN_MINUTES && <ReadingProgress targetId="post-article" />}
 
@@ -54,20 +54,20 @@ export default function BlogPostContent({ post, slug, related }: Props) {
             ]}
           />
 
-          <header className="mt-4">
+          <header className="mt-2 md:mt-3">
             <Link
               to={topicHref}
               className="inline-flex min-h-[28px] items-center rounded-full border border-brand/25 bg-brand/10 px-3 text-[13px] font-semibold text-brand hover:bg-brand/15"
             >
               {CLUSTER_LABEL[meta.cluster]}
             </Link>
-            <h1 className="mt-3 mb-4 text-[28px] font-extrabold leading-[1.2] tracking-[-0.01em] text-white [text-wrap:balance] md:text-[36px] md:leading-[1.15] min-[1180px]:text-[44px] min-[1180px]:leading-[1.12]">
+            <h1 className="mt-2 mb-2 text-[28px] font-extrabold leading-[1.15] tracking-[-0.01em] text-white [text-wrap:balance] md:text-[36px] md:leading-[1.15] min-[1180px]:text-[44px] min-[1180px]:leading-[1.12]">
               {meta.title}
             </h1>
-            <p className="mb-5 text-[20px] leading-[1.45] text-white/85 line-clamp-3 md:text-[21px] min-[1180px]:text-[22px] min-[1180px]:line-clamp-2">
+            <p className="mb-2 text-[20px] leading-[1.4] md:mb-4 text-white/85 line-clamp-3 md:text-[21px] min-[1180px]:text-[22px] min-[1180px]:line-clamp-2">
               {meta.description}
             </p>
-            <p className="text-[14px] leading-relaxed text-white/65 md:text-[15px]">
+            <p className="text-[14px] leading-[1.4] text-white/65 md:text-[15px] md:leading-relaxed">
               By{' '}
               <Link to="/about/karol-billik" className="underline underline-offset-2 hover:text-white">
                 Karol Billik
@@ -86,7 +86,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
           </header>
 
           {hasHero && (
-            <figure className="mt-5 md:-mx-[60px] lg:-mx-[84px] min-[1180px]:-mr-16">
+            <figure className="mt-4 md:-mx-[60px] lg:-mx-[84px] min-[1180px]:-mr-16">
               <div className="overflow-hidden rounded-2xl">
                 <ResponsiveImage
                   src={meta.image}
@@ -98,7 +98,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
                 />
               </div>
               {meta.imageAttribution && (
-                <figcaption className="mt-2 text-right text-[14px] text-white/65">
+                <figcaption className="mt-1.5 text-right text-[14px] leading-snug text-white/65">
                   Photo by{' '}
                   <a
                     href={meta.imageAttribution.photographerUrl}
@@ -124,7 +124,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
 
           {showToc && <TableOfContents entries={toc} variant="details" />}
 
-          <div className="mt-6">
+          <div className="mt-3 md:mt-4">
             <BlogRenderer sections={sections} />
           </div>
 

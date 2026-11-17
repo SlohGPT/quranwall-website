@@ -51,7 +51,7 @@ export default function TableOfContents({ entries, variant }: { entries: TocEntr
 
   if (variant === 'details') {
     return (
-      <details ref={detailsRef} data-toc className="group mt-8 rounded-2xl border border-surface-border bg-surface-card min-[1180px]:hidden">
+      <details ref={detailsRef} data-toc className="group mt-3 rounded-2xl border border-surface-border bg-surface-card min-[1180px]:hidden">
         <summary className="flex h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-[16px] font-semibold text-white [&::-webkit-details-marker]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand rounded-2xl">
           {label}
           <ChevronDown className="h-5 w-5 shrink-0 text-white/65 transition-transform group-open:rotate-180" aria-hidden="true" />
