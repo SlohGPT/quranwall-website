@@ -1,9 +1,9 @@
-import { motion } from 'framer-motion';
 import { useMemo, type CSSProperties } from 'react';
 import { SHOWCASE_VERSES, type ShowcaseVerse } from '../../data/showcaseVerses';
 import Wallpaper, { type WallpaperVariant } from './Wallpaper';
 import { referenceOf, refDir } from './QuranWidget';
 import { useLayers } from './utils';
+import FadeLayer from './FadeLayer';
 
 type Props = {
   verse?: ShowcaseVerse;
@@ -15,7 +15,7 @@ type Props = {
   edition?: Edition;
   /** Text colour (the user picks one in the app). Default: gold for Arabic, white for a translation. */
   accent?: string;
-  /** Translation face: Lora serif (default) or the page sans. */
+  /** Translation face: the verse serif (default) or the page sans. */
   serif?: boolean;
   className?: string;
 };
@@ -59,15 +59,9 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
   return (
     <div className={`absolute inset-0 overflow-hidden text-white ${className}`} style={{ containerType: 'inline-size' }}>
       {wallLayers.map((l) => (
-        <motion.div
-          key={l.id}
-          className="absolute inset-0"
-          initial={l.id === 0 ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: 'easeInOut' }}
-        >
+        <FadeLayer key={l.id} show initiallyVisible={l.id === 0} seconds={0.9} className="absolute inset-0">
           <Wallpaper variant={l.value} />
-        </motion.div>
+        </FadeLayer>
       ))}
       {/* legibility veil */}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom,rgba(0,0,0,0.12),rgba(0,0,0,0) 35%,rgba(0,0,0,0.28))' }} aria-hidden="true" />
@@ -100,14 +94,14 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
         {verseLayers.map((l, i) => {
           const latest = i === verseLayers.length - 1;
           return (
-            <motion.div
+            <FadeLayer
               key={l.id}
+              show={latest}
+              initiallyVisible={l.id === 0}
+              seconds={0.9}
+              ariaHidden={!latest}
               className="absolute inset-x-0 flex flex-col items-center text-center"
               style={{ padding: '0 7cqw', ...textStyle }}
-              initial={l.id === 0 ? false : { opacity: 0 }}
-              animate={{ opacity: latest ? 1 : 0 }}
-              transition={{ duration: 0.9, ease: 'easeInOut' }}
-              aria-hidden={latest ? undefined : true}
             >
               {l.value.edition === 'arabic' ? (
                 <p lang="ar" dir="rtl" className="font-quran" style={{ fontSize: '8.4cqw', lineHeight: 1.75, color: l.value.accent ?? GOLD }}>
@@ -133,7 +127,7 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
                   {referenceOf(l.value.verse)}
                 </p>
               )}
-            </motion.div>
+            </FadeLayer>
           );
         })}
       </div>

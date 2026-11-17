@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
+import Reveal from '../components/ui/Reveal';
 import { Sparkles, BookOpen, Smartphone, Heart, ShieldCheck, Check, type LucideIcon } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
@@ -72,11 +72,7 @@ export default function FeaturesPage() {
             <div className="mb-8 flex justify-center">
               <Breadcrumbs crumbs={[{ label: 'Home', to: '/' }, { label: 'Features' }]} />
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="animate-fade-up">
               <p className="text-brand font-medium mb-4 tracking-wide uppercase text-sm">Features</p>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05]">
                 Your lock screen,
@@ -96,7 +92,7 @@ export default function FeaturesPage() {
                   Explore features
                 </a>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -106,13 +102,11 @@ export default function FeaturesPage() {
             {featureNav.map((feature) => {
               const Icon = ICONS[feature.id] ?? Sparkles;
               return (
-                <motion.section
+                <Reveal
+                  as="section"
                   key={feature.id}
                   id={feature.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-80px' }}
-                  transition={{ duration: 0.5 }}
+                  y={24}
                   className="scroll-mt-28 py-12 md:py-16 grid md:grid-cols-[auto_1fr] gap-6 md:gap-10"
                 >
                   <div className="flex md:block items-center gap-4">
@@ -145,7 +139,7 @@ export default function FeaturesPage() {
                       ))}
                     </ul>
                   </div>
-                </motion.section>
+                </Reveal>
               );
             })}
           </div>

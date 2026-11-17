@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { useInView, animate, useReducedMotion } from 'framer-motion';
+import { useInViewOnce } from '../hooks/useInViewOnce';
+import { usePrefersReducedMotion } from './mockup/utils';
 import Reveal from './ui/Reveal';
 import StarPattern from './ui/StarPattern';
 
@@ -23,8 +24,8 @@ function formatCount(n: number, decimals: number, suffix: string) {
 
 function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
-  const reduceMotion = useReducedMotion();
+  const isInView = useInViewOnce(ref, 0.5);
+  const reduceMotion = usePrefersReducedMotion();
   // Render the FINAL value ("92%" / "1,000+" / "114") in SSR so crawlers and
   // AI bots that don't execute JS read the real numbers, not "0.0". The
   // count-up still runs on the client when the section scrolls into view
@@ -34,14 +35,18 @@ function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?:
 
   useEffect(() => {
     if (!isInView || reduceMotion) return;
-    const controls = animate(0, value, {
-      duration: 1.6,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate(latest) {
-        setDisplay(formatCount(latest, decimals, suffix));
-      },
-    });
-    return () => controls.stop();
+    // rAF tween 0 -> value over 1.6 s with an ease-out curve (same feel as the old cubic-bezier(0.22, 1, 0.36, 1)).
+    const duration = 1600;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 4);
+      setDisplay(formatCount(value * eased, decimals, suffix));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [isInView, reduceMotion, value, decimals, suffix]);
 
   return (

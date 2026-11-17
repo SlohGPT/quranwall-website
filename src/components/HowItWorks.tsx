@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import Reveal from './ui/Reveal';
 
 const steps = [
   {
@@ -26,19 +26,14 @@ export default function HowItWorks() {
 
       <div className="container-main relative z-10">
         <div className="text-center mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <Reveal>
             <p className="text-brand font-medium mb-3 tracking-wide uppercase text-sm">How It Works</p>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]">
               From the App Store
               <br />
               <span className="text-white/40">to your Lock Screen</span>
             </h2>
-          </motion.div>
+          </Reveal>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative max-w-6xl mx-auto">
@@ -46,14 +41,7 @@ export default function HowItWorks() {
           <div className="hidden md:block absolute top-[2.25rem] left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
 
           {steps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2, duration: 0.6 }}
-              className="relative text-center"
-            >
+            <Reveal key={step.number} delay={i * 0.2} className="relative text-center">
               <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-surface-card border border-white/10 shadow-xl mb-8 group hover:border-brand/40 transition-colors duration-300">
                 <span className="text-3xl font-bold text-brand">{step.number}</span>
                 <div className="absolute inset-0 rounded-3xl bg-brand/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -65,7 +53,7 @@ export default function HowItWorks() {
               <p className="text-lg text-white/60 leading-relaxed max-w-xs mx-auto">
                 {step.description}
               </p>
-            </motion.div>
+            </Reveal>
           ))}
         </div>
       </div>

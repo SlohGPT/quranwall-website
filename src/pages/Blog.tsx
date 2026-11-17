@@ -4,7 +4,7 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import BlogListing from '../components/BlogListing';
 import Breadcrumbs from '../components/Breadcrumbs';
-import { PILLAR_SLUGS, getPillar } from '../lib/posts';
+import { PILLAR_SLUGS, getPillar } from '../lib/pillars';
 import { CLUSTER_HEADING, listingsByCluster } from '../lib/clusters';
 
 const breadcrumbSchema = {

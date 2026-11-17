@@ -1,7 +1,9 @@
 import postsRegistry from '../data/blogPosts.json';
-import pillarsData from '../data/pillars.json';
-import type { BlogPost, BlogPostListing, PillarConfig, BlogCluster } from '../types/blog';
+import type { BlogPost, BlogPostListing } from '../types/blog';
 import { orderedListings } from './clusters';
+import { getPillar } from './pillars';
+
+export { PILLAR_SLUGS, getPillar } from './pillars';
 
 const postModules = import.meta.glob<{ default: BlogPost }>('../data/posts/*.json', { eager: true });
 
@@ -35,11 +37,6 @@ export function getRelated(slug: string, limit = 3): BlogPostListing[] {
   return Array.from({ length: n }, (_, i) => ordered[(at + 1 + i) % ordered.length]);
 }
 
-export function getPillar(slug: string): PillarConfig | null {
-  const data = (pillarsData as Record<string, PillarConfig>)[slug];
-  return data ?? null;
-}
-
 export function getPillarFeatured(slug: string): BlogPostListing[] {
   const pillar = getPillar(slug);
   if (!pillar) return [];
@@ -56,7 +53,3 @@ export function getPillarFeatured(slug: string): BlogPostListing[] {
 export function allSlugs(): string[] {
   return allListings.map((p) => p.slug);
 }
-
-// Populated once pillar (topic-hub) pages exist in pillars.json + App.tsx routes.
-// Empty at launch so the /blog page renders cleanly with no broken topic links.
-export const PILLAR_SLUGS: BlogCluster[] = [];

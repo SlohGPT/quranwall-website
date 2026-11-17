@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { BlogPostListing } from '../types/blog';
 import { CLUSTER_LABEL } from '../lib/clusters';
+import ResponsiveImage from './ResponsiveImage';
 
 export default function BlogCard({ post }: { post: BlogPostListing }) {
   return (
@@ -9,13 +10,12 @@ export default function BlogCard({ post }: { post: BlogPostListing }) {
       className="group block rounded-2xl overflow-hidden bg-surface-card border border-surface-border hover:border-brand/40 transition-all duration-300 hover:-translate-y-1"
     >
       <div className="aspect-[16/9] overflow-hidden bg-surface-elevated">
-        <img
+        <ResponsiveImage
           src={post.thumbnail}
           alt={post.title}
-          width={1600}
-          height={900}
+          sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 100vw"
+          widths={[480, 640, 800]}
           loading="lazy"
-          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
       </div>

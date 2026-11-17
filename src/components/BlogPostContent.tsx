@@ -4,6 +4,8 @@ import BlogRenderer from './BlogRenderer';
 import AuthorBio from './AuthorBio';
 import { CLUSTER_LABEL, clusterHref } from '../lib/clusters';
 import Breadcrumbs from './Breadcrumbs';
+import ResponsiveImage from './ResponsiveImage';
+import { GENERIC_CARD, HERO_SIZES, HERO_WIDTHS } from '../lib/covers';
 import type { BlogPost, BlogPostListing } from '../types/blog';
 
 interface Props {
@@ -49,16 +51,15 @@ export default function BlogPostContent({ post, slug: _slug, related }: Props) {
           </div>
         </header>
 
-        {meta.image && (
+        {meta.image && meta.image !== GENERIC_CARD && (
           <figure className="mb-10 rounded-2xl overflow-hidden">
-            <img
+            <ResponsiveImage
               src={meta.image}
               alt={meta.title}
-              width={1600}
-              height={900}
+              sizes={HERO_SIZES}
+              widths={HERO_WIDTHS}
               className="w-full aspect-[16/9] object-cover"
-              loading="eager"
-              decoding="async"
+              priority
             />
             {meta.imageAttribution && (
               <figcaption className="mt-2 text-xs text-white/40 text-right">
@@ -110,13 +111,12 @@ export default function BlogPostContent({ post, slug: _slug, related }: Props) {
                 key={p.slug}
                 className="relative rounded-2xl overflow-hidden bg-surface-card border border-surface-border hover:border-brand/40 transition-colors"
               >
-                <img
+                <ResponsiveImage
                   src={p.thumbnail}
                   alt=""
-                  width={1600}
-                  height={900}
+                  sizes="(min-width: 768px) 360px, 100vw"
+                  widths={[480, 640, 800]}
                   loading="lazy"
-                  decoding="async"
                   className="w-full aspect-[16/9] object-cover"
                 />
                 <div className="p-5">

@@ -1,5 +1,4 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { motion, MotionConfig } from 'framer-motion';
 import { Ban, Image as ImageIcon, Plane, Search, WifiOff } from 'lucide-react';
 import { APP_LANGUAGES, SHOWCASE_VERSES, VERSE_94_6_TRANSLATIONS } from '../data/showcaseVerses';
 import PhoneFrame from './mockup/PhoneFrame';
@@ -7,16 +6,7 @@ import LockScreen from './mockup/LockScreen';
 import QuranWidget, { referenceOf } from './mockup/QuranWidget';
 import Wallpaper, { type WallpaperVariant } from './mockup/Wallpaper';
 import { usePrefersReducedMotion } from './mockup/utils';
-
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.09 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
-};
+import Reveal from './ui/Reveal';
 
 type TileProps = {
   title: string;
@@ -27,14 +17,16 @@ type TileProps = {
   /** Absolutely positioned art that is allowed to bleed to the tile edges. */
   backdrop?: ReactNode;
   children?: ReactNode;
+  /** Position in the grid: staggers the entrance by 90 ms per tile. */
+  index: number;
 };
 
-function Tile({ title, description, className = '', textClassName = '', backdrop, children }: TileProps) {
+function Tile({ title, description, className = '', textClassName = '', backdrop, children, index }: TileProps) {
+  // The wrapper carries the grid placement and the entrance; the article keeps the card look and the hover lift.
   return (
-    <motion.article
-      variants={item}
-      whileHover={{ y: -3 }}
-      className={`group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors duration-300 hover:border-brand/30 sm:p-7 ${className}`}
+    <Reveal delay={index * 0.09} y={24} className={`flex ${className}`}>
+    <article
+      className="group relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-[transform,border-color] duration-300 hover:-translate-y-[3px] hover:border-brand/30 sm:p-7"
     >
       <div
         aria-hidden="true"
@@ -47,7 +39,8 @@ function Tile({ title, description, className = '', textClassName = '', backdrop
         <p className="mt-1.5 max-w-md text-sm leading-relaxed text-white/55 sm:text-[15px]">{description}</p>
       </div>
       {children && <div className="relative z-10 mt-6 flex flex-1 flex-col justify-end">{children}</div>}
-    </motion.article>
+    </article>
+    </Reveal>
   );
 }
 
@@ -394,31 +387,22 @@ export default function Features() {
         style={{ background: 'radial-gradient(60% 100% at 50% 0%,rgba(217,185,104,0.06),transparent 70%)' }}
       />
       <div className="container-main relative">
-        <MotionConfig reducedMotion="user">
+        <>
           <div className="mb-14 text-center sm:mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <Reveal>
               <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-brand">Features</p>
               <h2 className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Made for the screen
                 <br />
                 <span className="text-white/40">you see most</span>
               </h2>
-            </motion.div>
+            </Reveal>
           </div>
 
-          <motion.div
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-80px' }}
+          <div
             className="grid gap-4 sm:gap-5 md:grid-cols-2 md:grid-flow-dense lg:auto-rows-[minmax(280px,auto)] lg:grid-cols-4"
           >
-            <Tile
+            <Tile index={0}
               title="The Quran on your Lock Screen"
               description="The ayah you choose, as your iPhone Lock Screen wallpaper, in Arabic or a translation."
               className="min-h-[540px] md:col-span-2 md:min-h-[480px] lg:row-span-2 lg:min-h-[620px]"
@@ -427,7 +411,7 @@ export default function Features() {
               backdrop={<LockScreenArt />}
             />
 
-            <Tile
+            <Tile index={1}
               title="A Home Screen widget"
               description="Add the widget to your Home Screen or Lock Screen. Turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour."
               className="lg:col-span-2"
@@ -435,15 +419,15 @@ export default function Features() {
               <WidgetArt />
             </Tile>
 
-            <Tile title="Ten languages" description="Read it in Arabic or a translation: 10 languages." className="lg:col-span-2">
+            <Tile index={2} title="Ten languages" description="Read it in Arabic or a translation: 10 languages." className="lg:col-span-2">
               <LanguagesArt />
             </Tile>
 
-            <Tile title="All 114 surahs, searchable" description="Search all 114 surahs by surah, ayah or keyword.">
+            <Tile index={3} title="All 114 surahs, searchable" description="Search all 114 surahs by surah, ayah or keyword.">
               <SearchArt />
             </Tile>
 
-            <Tile
+            <Tile index={4}
               title="Your background, font and colours"
               description="Pick a gradient, a photo from the gallery or your own photo, then choose the font and text colour you like."
               className="md:col-span-2 lg:col-span-2"
@@ -451,11 +435,11 @@ export default function Features() {
               <CustomiserArt />
             </Tile>
 
-            <Tile title="No ads. Offline browsing." description="QuranWall shows no ads. Browse and search all 114 surahs offline.">
+            <Tile index={5} title="No ads. Offline browsing." description="QuranWall shows no ads. Browse and search all 114 surahs offline.">
               <OfflineArt />
             </Tile>
-          </motion.div>
-        </MotionConfig>
+          </div>
+        </>
       </div>
     </section>
   );

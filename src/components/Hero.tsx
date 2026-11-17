@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ChevronRight, Languages, BookOpen, Smartphone, type LucideIcon } from 'lucide-react';
-import { motion, MotionConfig } from 'framer-motion';
 import AppStoreButton from './AppStoreButton';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import { SHOWCASE_VERSES } from '../data/showcaseVerses';
@@ -153,16 +152,15 @@ type Cycle = ReturnType<typeof useDemoLoop>;
 
 function Chip({ icon: Icon, label, className, delay, reduced }: { icon: LucideIcon; label: string; className: string; delay: number; reduced: boolean }) {
   return (
-    <motion.div
+    <div
       className={`inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-[#241647]/90 py-1.5 pl-1.5 pr-3.5 text-[13px] font-medium text-white/90 shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.08)] ${className}`}
-      animate={reduced ? undefined : { y: [0, -6, 0] }}
-      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay }}
+      style={reduced ? undefined : { animation: `chipFloat 6s ease-in-out ${delay}s infinite` }}
     >
       <span className="grid h-6 w-6 place-items-center rounded-full bg-brand/15 text-brand">
         <Icon size={14} strokeWidth={2.2} />
       </span>
       {label}
-    </motion.div>
+    </div>
   );
 }
 
@@ -214,7 +212,7 @@ function PhoneStage({ cycle }: { cycle: Cycle }) {
   const { front, back, pressed, tapKey, reduced } = cycle;
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <div
         role="img"
         aria-label="QuranWall example: the Make It Mine screen of the app and an iPhone Lock Screen that shows the chosen ayah in Arabic or a translation"
@@ -253,7 +251,7 @@ function PhoneStage({ cycle }: { cycle: Cycle }) {
         <div aria-hidden="true" className="hero-fade bg-gradient-to-t from-surface to-transparent" />
         <StepPill cycle={cycle} />
       </div>
-    </MotionConfig>
+    </>
   );
 }
 
@@ -300,7 +298,7 @@ export default function Hero() {
               With QuranWall, pick any ayah, tap Make It Mine, and it becomes your iPhone Lock Screen wallpaper. Change it whenever you like.
             </p>
 
-            <div className="hero-ctas flex flex-row flex-wrap gap-3 items-center animate-fade-up-d4">
+            <div className="hero-ctas flex flex-row flex-wrap gap-x-4 gap-y-3 items-center animate-fade-up-d4">
               <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} size="lg" />
               <a
                 href={appStoreUrl(CAMPAIGNS.home)}

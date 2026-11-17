@@ -234,10 +234,10 @@ export default function Navigation() {
             <div className="flex items-center justify-between pl-5 pr-2 py-1.5 md:pl-7 md:pr-3 md:py-2">
               <Link to="/" className="flex items-center gap-2.5 group pl-1.5">
                 <img
-                  src="/icon-app-256.png"
-                  alt="QuranWall"
-                  width={256}
-                  height={256}
+                  src="/icon-app-96.webp"
+                  alt=""
+                  width={96}
+                  height={96}
                   className="w-11 h-11 md:w-12 md:h-12 rounded-[22%] ring-1 ring-white/10 shadow-lg shadow-black/30 group-hover:scale-105 transition-transform duration-300"
                   loading="eager"
                 />

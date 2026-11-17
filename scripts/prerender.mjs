@@ -11,6 +11,7 @@
 import { mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { gzipSync } from 'zlib';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -50,8 +51,35 @@ function helmetToString(helmet) {
     .join('\n');
 }
 
+/** Inline the built stylesheet only up to this size (gzip); above it, load it without blocking render. */
+const INLINE_CSS_MAX_GZIP = 16 * 1024;
+let inlined = false;
+
+/**
+ * Take the render-blocking <link rel="stylesheet"> out of the template. Small stylesheet: inline it as <style> so first
+ * paint needs no CSS request (the /assets file stays in dist for client-side route changes). Larger than the limit:
+ * keep the file but load it with media="print" + onload, with a <noscript> link.
+ */
+function inlineStylesheet(html) {
+  const re = /<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/;
+  const m = re.exec(html);
+  if (!m) throw new Error('no /assets stylesheet link in dist/index.html');
+  const css = readFileSync(join(distDir, m[1]), 'utf-8');
+  const gz = gzipSync(css).length;
+  if (gz <= INLINE_CSS_MAX_GZIP) {
+    console.log(`  CSS inlined (${(gz / 1024).toFixed(1)} KB gzip, ${m[1]})`);
+    inlined = true;
+    return html.replace(re, () => `<style>${css.replace(/<\/style/gi, '<\\/style')}</style>`);
+  }
+  console.log(`  CSS ${(gz / 1024).toFixed(1)} KB gzip is over the inline limit: print/onload swap (${m[1]})`);
+  return html.replace(
+    re,
+    () => `<link rel="stylesheet" href="${m[1]}" media="print" onload="this.media='all'">\n  <noscript><link rel="stylesheet" href="${m[1]}"></noscript>`,
+  );
+}
+
 async function prerender() {
-  const template = readFileSync(join(distDir, 'index.html'), 'utf-8');
+  const template = inlineStylesheet(readFileSync(join(distDir, 'index.html'), 'utf-8'));
   const { render } = await import(pathToFileURL(ssrEntry).href);
 
   let succeeded = 0;
@@ -71,6 +99,7 @@ async function prerender() {
         .replace(/\0/g, '');
 
       const outDir = route === '/' ? distDir : join(distDir, route.slice(1));
+      if (inlined && finalHtml.includes('rel="stylesheet"')) throw new Error('render-blocking stylesheet left in the page');
       mkdirSync(outDir, { recursive: true });
       writeFileSync(join(outDir, 'index.html'), finalHtml);
 
@@ -98,6 +127,7 @@ async function prerender() {
     if (!notFoundHtml.includes('data-not-found="1"') || !notFoundHtml.includes('<meta name="robots" content="noindex"')) {
       throw new Error('404 page missing data-not-found or noindex meta');
     }
+    if (inlined && notFoundHtml.includes('rel="stylesheet"')) throw new Error('render-blocking stylesheet left in 404.html');
     writeFileSync(join(distDir, '404.html'), notFoundHtml);
     console.log(`  ✓ /404.html (${(notFoundHtml.length / 1024).toFixed(1)}KB)`);
   } catch (err) {

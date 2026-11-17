@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Mail, LifeBuoy, BookOpen, ShieldCheck } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
@@ -59,11 +58,7 @@ export default function Support() {
         <section className="relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
           <div className="container-main relative z-10 pt-32 md:pt-40 pb-12 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="animate-fade-up">
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05]">
                 Support
               </h1>
@@ -93,7 +88,7 @@ export default function Support() {
                 </a>
                 .
               </p>
-            </motion.div>
+            </div>
           </div>
         </section>
 

@@ -54,7 +54,8 @@
 
 /* The app's own type, so mockups match it: Amiri Quran (Uthmani Arabic, OFL, see
    /fonts/AmiriQuran-OFL.txt) subset to the ayat in src/data/showcaseVerses.ts, and
-   Lora (OFL) for translations. Re-run the subset when an ayah is added (journal 02). */
+   QW Verse Serif for translations and verse blocks: Lora (OFL) subset, renamed because Lora is a reserved font
+   name (see /fonts/QWVerseSerif-OFL.txt). Re-run the Amiri subset when an ayah is added (journal 02). */
 @font-face {
   font-family: 'Amiri Quran';
   font-style: normal;
@@ -63,11 +64,22 @@
   src: url('/fonts/amiri-quran-subset.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Lora';
+  font-family: 'QW Verse Serif';
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
-  src: url('/fonts/lora-latin-var.woff2') format('woff2');
+  src: url('/fonts/qw-verse-serif-latin-var.woff2') format('woff2');
+}
+
+/* Metrics-matched stand-in for DM Sans (Arial scaled to DM Sans' average glyph width and line box), so the swap from
+   fallback to the web font moves no line. Values computed from the DM Sans latin file and Arial's hmtx/hhea. */
+@font-face {
+  font-family: 'DM Sans Fallback';
+  src: local('Arial');
+  size-adjust: 106.03%;
+  ascent-override: 93.56%;
+  descent-override: 29.24%;
+  line-gap-override: 0%;
 }
 
 @layer base {
@@ -141,21 +153,32 @@
   /* SSR-safe entrance animations: element renders visible in HTML, animation
      enhances on client. Avoids the blank-until-hydrate problem framer-motion's
      `initial` causes when prerendered. */
+  /* Transform-only on purpose: text above the fold is never at opacity 0, so it paints at first render. */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { transform: translateY(14px); }
+    to { transform: translateY(0); }
   }
   @keyframes fadeInSlide {
     from { opacity: 0; transform: translateX(20px) scale(0.95); }
     to { opacity: 1; transform: translateX(0) scale(1); }
   }
-  .animate-fade-up { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-  .animate-fade-up-d1 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
-  .animate-fade-up-d2 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
-  .animate-fade-up-d3 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
-  .animate-fade-up-d4 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both; }
-  .animate-fade-up-d6 { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
+  @keyframes chipFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .animate-fade-up { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .animate-fade-up-d1 { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .animate-fade-up-d2 { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .animate-fade-up-d3 { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .animate-fade-up-d4 { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .animate-fade-up-d6 { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
   .animate-fade-in-slide { animation: fadeInSlide 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+
+  /* Below-the-fold entrance (components/ui/Reveal.tsx): visible by default, hidden only after mount while off screen. */
+  .reveal {
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+  }
+  .reveal.reveal-pending { opacity: 0; transform: translateY(var(--reveal-y, 20px)); }
 
   /* Layered top padding for the fixed nav:
        - base 1.25rem (mobile) / 1.5rem (desktop), the design spec
@@ -184,6 +207,7 @@
 html.vv-zoomed .chrome-pin { position: absolute; }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal.reveal-pending { transform: none; }
   *,
   *::before,
   *::after {

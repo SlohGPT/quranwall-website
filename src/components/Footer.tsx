@@ -1,7 +1,4 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import { CLUSTER_HEADING, clusterHref, listingsByCluster } from '../lib/clusters';
@@ -26,27 +23,20 @@ const footerLinks = {
     { name: 'EULA', href: '/eula' },
     { name: 'Contact', href: 'mailto:iosnotewall@gmail.com' },
   ],
-  socials: [
-    { name: 'Instagram', href: '#' },
-    { name: 'TikTok', href: '#' },
-    { name: 'X', href: '#' },
-  ],
 };
 
 export default function Footer() {
-  const [showModal, setShowModal] = useState(false);
-
   return (
     <footer data-site-footer className="bg-surface border-t border-surface-border relative">
       <div className="container-main py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-16">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <img
-                src="/icon-app-256.png"
-                alt="QuranWall"
-                width={256}
-                height={256}
+                src="/icon-app-96.webp"
+                alt=""
+                width={96}
+                height={96}
                 className="w-12 h-12 rounded-[22%] ring-1 ring-white/10 shadow-lg shadow-black/30"
                 loading="lazy"
               />
@@ -130,22 +120,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          <div>
-            <h4 className="font-semibold text-white mb-4">Socials</h4>
-            <ul className="space-y-3">
-              {footerLinks.socials.map((link) => (
-                <li key={link.name}>
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="text-white/50 hover:text-white transition-colors text-sm text-left"
-                  >
-                    {link.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <nav aria-label="Guides" className="mb-16 pt-12 border-t border-surface-border">
@@ -202,52 +176,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {showModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-sm bg-surface-card border border-white/10 p-8 rounded-3xl shadow-2xl text-center"
-            >
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 p-2 text-white/40 hover:text-white transition-colors"
-              >
-                <X size={20} />
-              </button>
-
-              <div className="w-12 h-12 bg-brand/10 text-brand rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🌱</span>
-              </div>
-
-              <h3 className="text-xl font-bold text-white mb-3">
-                Growing Together
-              </h3>
-              <p className="text-white/70 leading-relaxed mb-6">
-                We're a new app and haven't launched our social channels just yet. Check back soon!
-              </p>
-
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full py-3 bg-brand hover:bg-brand-light text-white font-bold rounded-xl transition-colors"
-              >
-                Got it
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </footer>
   );
 }

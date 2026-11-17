@@ -6,6 +6,7 @@ import StickyInstallBar from '../components/StickyInstallBar';
 import BlogPostContent from '../components/BlogPostContent';
 import NotFound from './NotFound';
 import { getPost, getListing, getRelated } from '../lib/posts';
+import { GENERIC_CARD, HERO_SIZES, HERO_WIDTHS, coverSize, coverSrcSet } from '../lib/covers';
 
 export default function BlogPost() {
   const { slug = '' } = useParams<{ slug: string }>();
@@ -16,9 +17,25 @@ export default function BlogPost() {
 
   const related = getRelated(slug);
   const url = `https://quranwall.com/blog/${slug}`;
-  const imageUrl = post.meta.image.startsWith('http')
-    ? post.meta.image
-    : `https://quranwall.com${post.meta.image}`;
+  // A post whose own image is the generic site card shares that image with every other page, so its listing cover
+  // (a dedicated 1600 x 1067 card) is the og:image / twitter:image / Article image instead. The post JSON is untouched.
+  const imagePath = post.meta.image === GENERIC_CARD ? listing.thumbnail : post.meta.image;
+  const imageUrl = imagePath.startsWith('http') ? imagePath : `https://quranwall.com${imagePath}`;
+  // Real pixel size from the generated size map; an unknown image gets no width/height rather than a guess.
+  const imageSize = coverSize(imagePath);
+  // The hero is the page's LCP image: preload it from the prerendered <head> (AVIF, same srcset and sizes as the <picture>).
+  const hasHero = post.meta.image !== GENERIC_CARD;
+  const heroSets = hasHero ? coverSrcSet(post.meta.image, HERO_WIDTHS) : null;
+  const heroPreload = heroSets
+    ? ({
+        rel: 'preload',
+        as: 'image',
+        type: 'image/avif',
+        imagesrcset: heroSets.avif,
+        imagesizes: HERO_SIZES,
+        fetchpriority: 'high',
+      } as Record<string, string>)
+    : null;
   const dateModified = post.meta.dateModified || post.meta.datePublished;
   // Google appends the site name itself when the document title is long;
   // keep the post title as-is to avoid SERP truncation when titles run past ~55 chars.
@@ -33,8 +50,7 @@ export default function BlogPost() {
     image: {
       '@type': 'ImageObject',
       url: imageUrl,
-      width: 1200,
-      height: 675,
+      ...(imageSize ? { width: imageSize.width, height: imageSize.height } : {}),
     },
     datePublished: post.meta.datePublished,
     dateModified,
@@ -78,8 +94,8 @@ export default function BlogPost() {
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content={imageUrl} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="675" />
+        {imageSize && <meta property="og:image:width" content={String(imageSize.width)} />}
+        {imageSize && <meta property="og:image:height" content={String(imageSize.height)} />}
         <meta name="twitter:title" content={post.meta.title} />
         <meta name="twitter:description" content={post.meta.description} />
         <meta name="twitter:image" content={imageUrl} />
@@ -89,6 +105,7 @@ export default function BlogPost() {
         {post.meta.keywords.map((k) => (
           <meta key={k} property="article:tag" content={k} />
         ))}
+        {heroPreload && <link {...heroPreload} />}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>

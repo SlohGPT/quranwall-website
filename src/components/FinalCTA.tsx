@@ -21,10 +21,10 @@ export default function FinalCTA() {
                 <div aria-hidden="true" className="absolute -inset-5 rounded-full border border-brand/25" />
                 <div aria-hidden="true" className="absolute -inset-10 rounded-full border border-brand/10" />
                 <img
-                  src="/icon-app-256.png"
+                  src="/icon-app-224.webp"
                   alt="QuranWall app icon"
-                  width={112}
-                  height={112}
+                  width={224}
+                  height={224}
                   className="relative h-full w-full rounded-[22%] shadow-[0_12px_40px_rgba(0,0,0,0.45),0_0_0_1px_rgba(217,185,104,0.35)]"
                   loading="lazy"
                   decoding="async"

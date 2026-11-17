@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion';
 import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { SHOWCASE_VERSES, type ShowcaseVerse } from '../../data/showcaseVerses';
 import LockScreen, { StatusBarIcons, type Edition } from './LockScreen';
 import { referenceOf, refDir } from './QuranWidget';
 import Wallpaper, { type WallpaperVariant } from './Wallpaper';
 import { useLayers, usePrefersReducedMotion } from './utils';
+import FadeLayer from './FadeLayer';
 
 // Coded mini versions of the QuranWall app screens for the How it works storyboard. Purely presentational:
 // no focusable elements, no motion, every size in container-query units so they scale with the phone they
@@ -183,16 +183,16 @@ function Faded<T>({ layers, className, style, render }: { layers: { id: number; 
       {layers.map((l, i) => {
         const latest = i === layers.length - 1;
         return (
-          <motion.div
+          <FadeLayer
             key={l.id}
+            show={latest}
+            initiallyVisible={l.id === 0}
+            seconds={0.7}
+            ariaHidden={!latest}
             className="absolute inset-x-0 top-0"
-            initial={l.id === 0 ? false : { opacity: 0 }}
-            animate={{ opacity: latest ? 1 : 0 }}
-            transition={{ duration: 0.7, ease: 'easeInOut' }}
-            aria-hidden={latest ? undefined : true}
           >
             {render(l.value)}
-          </motion.div>
+          </FadeLayer>
         );
       })}
     </div>
