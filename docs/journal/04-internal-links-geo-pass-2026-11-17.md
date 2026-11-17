@@ -94,3 +94,38 @@ No new posts.
   - lint-facts gives 0 FAIL, and `link-graph --dist` exits 0.
   - Live, the four pages carry one of each tag, and `og-image.png` returns 200 as image/png.
   - `link-graph --live` exits 0, and IndexNow accepted the four URLs.
+
+## Follow-up the same day: review avatars and the zoomed header (`4ad6d67`)
+- **Asked** (Karol, passed on by the FaithWall session):
+  - Change the three people in the "Trusted by 1,000+ believers" pill to the review images in the app folder ("we added like arabic people there").
+  - When zoomed in, "the top bar also gets there zoomed in … it looks really weird … make it really nice and not so weird behavior".
+  - The shared spec covers all three sites (FaithWall's side-session notes, `zoom-check/README.md`). While pinch-zoomed (`visualViewport.scale > 1.01`) and at `max-height: 480px`, the header stops being fixed. Behaviour at 100 % doesn't change.
+- **Root cause of the 626 px nav:** `Navigation.tsx` sets `--browser-top-inset` as `innerHeight − visualViewport.height − offsetTop`. That correction is meant for the iOS Chrome URL bar overlay, and `.nav-safe-pt` adds the variable to the nav's top padding. Pinch zoom shrinks `visualViewport.height` too. At 2.5× on 1512×890 that is 890 / 2.5 = 356, so the "inset" became 534 px, and 534 + 24 px padding + the bar ≈ 626 px of fixed nav covering 70 % of the screen.
+- **Built:**
+  - **The inset fix:** the inset is measured only while not pinch-zoomed, so it is 0 while zoomed.
+  - **A new hook, `src/lib/useStaticChrome.ts`.** It is true while pinch-zoomed or when `(max-height: 480px)` matches. It listens to `visualViewport` resize and to the media query, toggles `vv-zoomed` on `<html>`, and is SSR-safe: false on the server and on the first render.
+  - **CSS:** `.chrome-pin` (`html.vv-zoomed .chrome-pin` and the short-viewport media query) makes the nav `position: absolute` at the document top, so it scrolls away.
+  - **The floating pill:** background, blur, shadow and progress ring show only while the nav is pinned.
+  - **The sticky install bar** (phones) stays off in both cases.
+  - **Untouched:** the mobile menu, the focus order and the 100 % behaviour.
+- **Avatars:** the hero stack now uses `image-3-review`, `image-2-review` and `image-1-review` from the app's asset catalogue, the order onboarding shows them in. They are exported as 96 px JPGs (3× the 32 px rendered size, 3.5–5.4 KB). `alt=""` stays as it was. `avatar-1…3.jpg` were removed because nothing referenced them. `avatar-4…6` are the testimonial photos and stay.
+- **Verified** with the spec's two CDP scripts, using their own headless Chrome; the nav height is measured as fixed, sticky or absolute:
+
+| Header | Before (live) | After (build and live) |
+|---|---|---|
+| Pinch 2.5× at 1512×890, top and scrolled 700 px | fixed, 626 px (70 % of the viewport) | absolute, 92 px (same as scale 1); content visible |
+| Browser zoom 100 % | fixed, 92 px | fixed, 92 px (unchanged) |
+| 150 % | fixed, 88 px (15 %) | fixed, 88 px (unchanged, viewport 593 px tall) |
+| 200 % | fixed, 76 px (17 %) | not pinned |
+| 300 % | fixed, 76 px (26 %) | not pinned |
+| 400 % | fixed, 76 px (34 %) | not pinned |
+
+- **Gates:**
+  - Typecheck passes and the build prerenders 16 of 16.
+  - lint-facts gives 0 FAIL on `--diff` and on `--dist` (only the 6 known WARN).
+  - `link-graph --dist` and `--live` both exit 0.
+  - `kw check --staged` had nothing in scope.
+  - The live avatars return 200, and the old `avatar-1.jpg` returns 404.
+- **Open:**
+  - FaithWall and NoteWall get the same behaviour in their own sessions.
+  - The pill still reads "Trusted by 1,000+ believers", which is one of the p5 social-proof strings that turn into FAILs on 2026-11-23.
