@@ -243,3 +243,60 @@ FaithWall checked the live site on its own: an origin/main export, a live crawl,
 - The scenes should be more distinct; the quran-verse one is the plainest.
 - The homepage redesign waits for Karol's OK on captures.
 - `framer-motion` is unused but still in `package.json`.
+
+### Follow-up: homepage redesign push 2 live (2026-11-17, afternoon)
+
+**Asked:** FaithWall relayed Karol's "speed up" with four rules:
+- no local or repeated Lighthouse runs; static budgets before the push, then 1 live run per page after it;
+- build the homepage now and ask Karol "Ship?" with 390 and 1440 captures;
+- one adversarial review round, must-fixes only;
+- template pushes need no wait once the gates pass.
+
+Karol saw the captures and said **"Ship it"**.
+
+**Built:**
+
+| Commit | What it does |
+|---|---|
+| `c33c063` | The 11-16 homepage keeps its hero and mockups; only the gaps are filled. Arch badges with icons on the 3 stats, a line icon on each feature tile, a 5-step diagram in How it works (draws once, slow spark loop, off under reduced motion), the support scene next to the FAQ from 640 px, a scene on each Explore More card. Two sentences that repeated other sections are trimmed. Fixed: the Features grid was ~487 px wide on a 390 px phone and cut off tile text. |
+| `553c13f` | The review's must-fix: the five scenes on `/` shared the `qa-sky`/`qa-arch` ids, so `SceneSvg` now takes ids from `useId` and has a `clipped` slot. Also the first try at FaithWall's `label-content-name-mismatch` finding on posts (the avatar link's visible "KB" vs its label). |
+| `87d4a61` | `scripts/link-graph.mjs` 1.1.0, copied byte for byte from the shared engine. |
+| this commit | `AuthorBio`: the avatar link is `aria-hidden` and `tabIndex=-1`. Hiding only the "KB" text didn't help: axe still counted it as visible text. The "Karol Billik" text link beside it goes to the same page. Checked with axe locally on 2 posts: 0 violations for `label-content-name-mismatch`, `aria-hidden-focus` and `link-name`. |
+
+link-graph 1.1.0 adds two warn-only checks, and both fire:
+- title vs H1 mismatch on `/features`, `/blog` and 2 legal pages;
+- one `og-image.png` shared by 8 pages.
+
+**Checks before the push** (static, no Lighthouse):
+- typecheck and build (16 pages) pass. `lint-facts` gives 0 FAIL in every mode; the 2 WARNs are the old EULA ones.
+- `link-graph --dist` exits 0, and `gen-llms-guides --check` is up to date.
+- App Store links on `/`: 7 before, 7 after. JSON-LD is byte-identical.
+
+| Budget | Result |
+|---|---|
+| JS gzip on `/` | +3.8 KB |
+| Image bytes | unchanged |
+| DOM nodes | 2318 → 2506 |
+| CLS (scroll-through) | 0.016 at 390, 0.007 at 1440 |
+| Duplicate ids | none |
+| Horizontal overflow | none |
+| Console or hydration errors | none |
+
+**Live** (`87d4a61`):
+- The commit status reads success, and the live HTML for `/` is identical to the local build.
+- `link-graph --live` exits 0. IndexNow got 200 for `/`. The annotation row is outside the repo.
+- One Lighthouse mobile run each, after a warm-up:
+
+  | Page | Perf / LCP s | TBT ms | CLS | a11y |
+  |---|---|---|---|---|
+  | `/` | 95 / 1.99 | 222 | 0.001 | 100 |
+  | dhikr post | 99 / 1.90 | 10 | 0 | 100 |
+
+- The `/` TBT is over the 200 ms budget. Its biggest long task (344 ms) is not attributed to any script, and the machine's load average was about 20 during the run, so I read it as load. Per Karol's rule I didn't repeat the run. Check it again on a quiet machine.
+
+**Captures:** `home-fold-m/d.png` and `home-full-m/d.png` are with the FaithWall review captures. They are viewport slices with the header shown once.
+
+**Open:**
+- The push-2 nits from the earlier follow-up are still open.
+- Titles vs H1 on `/features` and `/blog`, and the shared og:image, are for the SEO machine or Karol.
+- The "92%" stat and the "first waitlist member" testimonials are older copy. This pass didn't touch them.
