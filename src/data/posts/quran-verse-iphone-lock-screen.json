@@ -4,7 +4,7 @@
     "description": "A step-by-step guide to showing a daily Quran verse on your iPhone lock screen using widgets, wallpapers, and iOS Focus modes. Lock Screen widgets need iOS 16 or later.",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-11-17",
+    "dateModified": "2026-11-16",
     "readTime": "6 min read",
     "image": "/og-image.png",
     "keywords": [
@@ -44,7 +44,7 @@
       "type": "list",
       "items": [
         "An iPhone running **iOS 16 or later** (lock-screen widgets and per-screen wallpapers arrived in iOS 16).",
-        "The **QuranWall** app, which places the ayah for you, or a saved verse image if you want to do it by hand.",
+        "The **QuranWall** app for the automatic method, or a saved verse image if you want to do it by hand.",
         "Access to your lock-screen editor: touch and hold your lock screen to open it."
       ]
     },
@@ -55,7 +55,7 @@
     },
     {
       "type": "paragraph",
-      "text": "A lock-screen widget sits quietly below or above the clock. With QuranWall's widget you can turn on auto-rotate, and it shows a new ayah every day, every 8 hours or every hour. This is the lowest-effort way to keep Quran in front of you."
+      "text": "A lock-screen widget shows a fresh verse each day, updates on its own, and sits quietly below or above the clock. This is the lowest-effort way to keep Quran in front of you."
     },
     {
       "type": "steps",
@@ -64,7 +64,7 @@
         "Choose your translation language, background, font and colours.",
         "Touch and hold your lock screen, tap **Customize**, then select **Lock Screen**.",
         "Tap the widget area under the clock and add the **QuranWall** widget.",
-        "Tap **Done**. Turn on auto-rotate in QuranWall and the widget shows a new ayah every day."
+        "Tap **Done**. A new verse now appears on your lock screen each day."
       ]
     },
     {
@@ -101,7 +101,7 @@
     {
       "type": "list",
       "items": [
-        "**Widget** is best for a fresh verse every day with almost no effort. Turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour, and stays out of your way.",
+        "**Widget** is best for a fresh verse every day with almost no effort. It shows a new ayah each day and stays out of your way.",
         "**Wallpaper with Focus** is best when you want a calmer phone at set times, with the verse taking the whole screen.",
         "**Both** works well too: run a verse wallpaper inside a Quiet Time Focus and keep the widget on your everyday lock screen."
       ]
@@ -156,7 +156,7 @@
       "type": "callout",
       "icon": "sparkles",
       "title": "The short version",
-      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** (turn on auto-rotate for a fresh verse every day), or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both need iOS 16 or later for the Lock Screen features."
+      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** for a fresh verse every day, or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both need iOS 16 or later for the Lock Screen features."
     },
     {
       "type": "paragraph",
@@ -165,7 +165,7 @@
     {
       "type": "cta",
       "title": "Put the Quran on your lock screen today",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, in Uthmani Arabic or a translation. Turn on auto-rotate and the widget shows a new ayah every day.",
+      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }
