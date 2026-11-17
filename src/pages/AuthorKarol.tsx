@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { breadcrumbSchema } from '../lib/breadcrumbs';
 
 const NAME = 'Karol Billik';
 const URL = 'https://quranwall.com/about/karol-billik';
@@ -31,6 +32,11 @@ const personSchema = {
   sameAs: ['https://www.karchi.xyz/'],
 };
 
+const breadcrumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Karol Billik', path: '/about/karol-billik' },
+]);
+
 export default function AuthorKarol() {
   return (
     <div className="min-h-screen bg-surface">
@@ -47,6 +53,7 @@ export default function AuthorKarol() {
         <meta name="twitter:description" content={DESC} />
         <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(personSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbs)}</script>
       </Helmet>
       <Navigation />
       <main className="container-main pt-28 md:pt-32 pb-20">
@@ -55,7 +62,6 @@ export default function AuthorKarol() {
             <Breadcrumbs
               crumbs={[
                 { label: 'Home', to: '/' },
-                { label: 'About' },
                 { label: 'Karol Billik' },
               ]}
             />

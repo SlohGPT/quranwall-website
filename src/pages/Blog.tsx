@@ -4,7 +4,8 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import BlogListing from '../components/BlogListing';
 import Breadcrumbs from '../components/Breadcrumbs';
-import { allListings, PILLAR_SLUGS, getPillar } from '../lib/posts';
+import { PILLAR_SLUGS, getPillar } from '../lib/posts';
+import { CLUSTER_HEADING, listingsByCluster } from '../lib/clusters';
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -71,10 +72,14 @@ export default function Blog() {
           </section>
         )}
 
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-5">Latest posts</h2>
-          <BlogListing posts={allListings} />
-        </section>
+        {listingsByCluster().map(({ cluster, posts }) => (
+          <section key={cluster} aria-labelledby={cluster} className="mb-14 last:mb-0">
+            <h2 id={cluster} className="scroll-mt-28 text-2xl md:text-3xl font-bold text-white mb-5">
+              {CLUSTER_HEADING[cluster]}
+            </h2>
+            <BlogListing posts={posts} />
+          </section>
+        ))}
       </main>
       <Footer />
     </div>
