@@ -8,12 +8,17 @@ import { starPath, GOLD } from './visuals/primitives';
  * The blog hub drawn as a diagram: the hub as a khatam star in the middle, each topic around it, each post a node
  * on the outer ring. Every node is a real HTML link (to the post, or to the topic's section on this page), so the
  * text is crawlable. One DOM, two layouts: from 1024 px a radial map (nodes absolutely placed over an SVG of thin
- * lines, in the same 960x560 coordinates); below that a horizontal mini-map, a swipeable row of topic cards.
+ * lines, in the same 960x560 coordinates); below that a horizontal mini-map, a swipeable row of topic cards. The post nodes scale with the box (container query) so neighbours keep a gap
+ * between 1024 and 960 px of box width.
  */
 const W = 960;
 const H = 560;
 const CX = W / 2;
 const CY = H / 2;
+// Ring radii (px in the 960x560 box). The post ring is wide enough that a wide topic label on the 9 and 3 o'clock
+// side keeps a clear gap to its post node.
+const HUB_RX = 184;
+const POST_RX = 366;
 const pct = (v: number, of: number) => `${Math.round((v / of) * 1000) / 10}%`;
 const at = (rx: number, ry: number, deg: number) => ({
   x: CX + rx * Math.cos((deg * Math.PI) / 180),
@@ -23,9 +28,9 @@ const at = (rx: number, ry: number, deg: number) => ({
 const groups = listingsByCluster();
 const nodes = groups.map((g, i) => {
   const deg = -90 + (i * 360) / groups.length;
-  const hub = at(185, 138, deg);
+  const hub = at(HUB_RX, 138, deg);
   const spread = 27;
-  const posts = g.posts.map((p, k) => ({ ...p, ...at(345, 232, deg + (k - (g.posts.length - 1) / 2) * spread) }));
+  const posts = g.posts.map((p, k) => ({ ...p, ...at(POST_RX, 232, deg + (k - (g.posts.length - 1) / 2) * spread) }));
   // The line to the hub starts at the star's edge, not at its centre.
   const len = Math.hypot(hub.x - CX, hub.y - CY);
   const edge = { x: CX + ((hub.x - CX) / len) * 60, y: CY + ((hub.y - CY) / len) * 60 };
@@ -43,7 +48,7 @@ export default function ClusterMap() {
       <h2 id="topic-map" className="sr-only">
         Blog topic map
       </h2>
-      <div ref={ref} className="relative lg:mx-auto lg:aspect-[960/560] lg:max-w-[960px]">
+      <div ref={ref} className="relative lg:mx-auto lg:aspect-[960/560] lg:max-w-[960px] lg:[container-type:inline-size]">
         <svg
           aria-hidden="true"
           focusable="false"
@@ -54,8 +59,8 @@ export default function ClusterMap() {
           strokeLinecap="round"
           strokeWidth="1.5"
         >
-          <ellipse cx={CX} cy={CY} rx="185" ry="138" strokeOpacity=".15" strokeDasharray="2 8" />
-          <ellipse cx={CX} cy={CY} rx="345" ry="232" strokeOpacity=".15" strokeDasharray="2 8" />
+          <ellipse cx={CX} cy={CY} rx={HUB_RX} ry="138" strokeOpacity=".15" strokeDasharray="2 8" />
+          <ellipse cx={CX} cy={CY} rx={POST_RX} ry="232" strokeOpacity=".15" strokeDasharray="2 8" />
           {nodes.map((n) => (
             <g key={n.cluster} strokeOpacity=".4">
               <path d={`M${n.edge.x.toFixed(1)} ${n.edge.y.toFixed(1)}L${n.x} ${n.y}`} />
@@ -98,7 +103,7 @@ export default function ClusterMap() {
                     <Link
                       to={`/blog/${p.slug}`}
                       style={pos(p.x, p.y)}
-                      className={`flex min-h-[44px] items-center text-[14px] leading-snug text-white/85 hover:text-brand lg:z-[1] lg:min-h-0 lg:w-[150px] lg:justify-center lg:rounded-xl lg:border lg:border-white/10 lg:bg-surface lg:px-3 lg:py-2 lg:text-center lg:text-[13px] ${NODE} ${FOCUS}`}
+                      className={`flex min-h-[44px] items-center text-[14px] leading-snug text-white/85 hover:text-brand lg:z-[1] lg:min-h-0 lg:w-[clamp(120px,15.6cqw,150px)] lg:justify-center lg:rounded-xl lg:border lg:border-white/10 lg:bg-surface lg:px-3 lg:py-2 lg:text-center lg:text-[13px] ${NODE} ${FOCUS}`}
                     >
                       <span className="line-clamp-2 lg:line-clamp-3">{p.title}</span>
                     </Link>

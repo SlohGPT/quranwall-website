@@ -40,11 +40,11 @@ function DotGrid({ n }: { n: number }) {
   );
 }
 
-function Figure({ shape, label }: { shape: StatShape; label: string }) {
+function Figure({ shape }: { shape: StatShape }) {
   if (shape.kind === 'ring') {
     const C = 2 * Math.PI * 48;
     return (
-      <svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label={label} className="mx-auto mb-4 block h-[120px] w-[120px]" fill="none">
+      <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true" focusable="false" className="mx-auto mb-4 block h-[120px] w-[120px]" fill="none">
         <circle cx="60" cy="60" r="48" stroke={GOLD2} strokeOpacity=".3" strokeWidth="10" />
         <circle
           cx="60"
@@ -63,7 +63,7 @@ function Figure({ shape, label }: { shape: StatShape; label: string }) {
   if (shape.kind === 'segments') {
     const w = shape.n * 52 - 8;
     return (
-      <svg viewBox={`0 0 ${w} 12`} width={w} height="12" role="img" aria-label={label} className="mx-auto mb-4 block h-3 max-w-full" fill={GOLD}>
+      <svg viewBox={`0 0 ${w} 12`} width={w} height="12" aria-hidden="true" focusable="false" className="mx-auto mb-4 block h-3 max-w-full" fill={GOLD}>
         {Array.from({ length: shape.n }, (_, i) => (
           <rect key={i} x={i * 52} width="44" height="12" rx="6" className="qa-in" style={stepVar(i)} />
         ))}
@@ -74,7 +74,7 @@ function Figure({ shape, label }: { shape: StatShape; label: string }) {
   const w = cols * CELL;
   const h = Math.ceil(shape.n / cols) * CELL;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} role="img" aria-label={label} className="mx-auto mb-4 block max-w-full" style={{ height: 'auto' }} fill="none">
+    <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden="true" focusable="false" className="mx-auto mb-4 block max-w-full" style={{ height: 'auto' }} fill="none">
       <DotGrid n={shape.n} />
     </svg>
   );
@@ -86,7 +86,7 @@ export function StatBlock({ section, className }: { section: Stat; className: st
   const shape = statShape(section.number);
   return (
     <div ref={ref} className={className}>
-      {shape && <Figure shape={shape} label={`${section.number} ${section.label}`} />}
+      {shape && <Figure shape={shape} />}
       <p className="text-4xl md:text-5xl font-black text-brand">{section.number}</p>
       <p className="text-white font-semibold mt-2">{section.label}</p>
       {section.description && <p className="text-white/65 text-[15px] mt-2">{section.description}</p>}
@@ -94,15 +94,19 @@ export function StatBlock({ section, className }: { section: Stat; className: st
   );
 }
 
-/** The verse as a lock screen: iPhone frame, island, a crescent, the existing text and reference as real HTML. */
+/** The verse as a portrait lock screen: fixed 9:19.5 iPhone frame, island on top, home bar below, the existing text and reference as real HTML. */
 export function VerseCard({ section }: { section: Verse }) {
+  // Long verses step the type down so the fixed portrait box never overflows.
+  const long = section.text.length > 120;
   return (
-    <blockquote className="relative mx-auto my-8 w-full max-w-[360px] rounded-[2.75rem] border-[6px] border-brand-ink bg-surface-card px-6 pb-10 pt-12 text-center ring-2 ring-brand/45">
+    <blockquote className="relative mx-auto my-8 flex aspect-[9/19.5] w-full max-w-[300px] flex-col items-center justify-center overflow-hidden rounded-[2.75rem] border-[6px] border-brand-ink bg-surface-card px-6 py-14 text-center ring-2 ring-brand/45">
       <span aria-hidden="true" className="absolute left-1/2 top-3 h-[18px] w-16 -translate-x-1/2 rounded-full bg-brand-ink" />
-      <svg aria-hidden="true" focusable="false" viewBox="0 0 28 28" width="28" height="28" className="mx-auto mb-4 block" fill="rgba(217,185,104,.15)" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 28 28" width="28" height="28" className="mx-auto mb-4 block shrink-0" fill="rgba(217,185,104,.15)" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round">
         <path d={crescentPath(14, 14, 10)} />
       </svg>
-      <p dir="auto" className="font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">"{section.text}"</p>
+      <p dir="auto" className={`font-serif leading-[1.5] text-white ${long ? 'text-[16px]' : 'text-[20px]'}`}>
+        {`\u201C${section.text}\u201D`}
+      </p>
       <footer className="mt-3 text-[15px] font-semibold tracking-wide text-brand">{section.reference}</footer>
       <span aria-hidden="true" className="absolute bottom-3 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-white/40" />
     </blockquote>
