@@ -1,8 +1,10 @@
+import { Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import BlogListing from '../components/BlogListing';
+import ClusterMap from '../components/ClusterMap';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { PILLAR_SLUGS, getPillar } from '../lib/pillars';
 import { CLUSTER_HEADING, CLUSTER_LABEL, listingsByCluster } from '../lib/clusters';
@@ -102,16 +104,17 @@ export default function Blog() {
         )}
 
         {groups.map(({ cluster, posts }, gi) => (
-          <section
-            key={cluster}
-            aria-labelledby={cluster}
-            className="cv-auto mb-6 md:mb-14 last:mb-0"
-          >
-            <h2 id={cluster} className="scroll-mt-36 md:scroll-mt-44 text-[22px] md:text-3xl font-bold text-white mb-2 md:mb-5">
-              {CLUSTER_HEADING[cluster]}
-            </h2>
-            <BlogListing posts={posts} offset={offset[gi]} />
-          </section>
+          <Fragment key={cluster}>
+            {/* The first topic is on the fold, so it is laid out at once; only the later ones skip rendering (cv-auto). */}
+            <section aria-labelledby={cluster} className={`${gi === 0 ? '' : 'cv-auto '}mb-6 md:mb-14 last:mb-0`}>
+              <h2 id={cluster} className="scroll-mt-36 md:scroll-mt-44 text-[22px] md:text-3xl font-bold text-white mb-2 md:mb-5">
+                {CLUSTER_HEADING[cluster]}
+              </h2>
+              <BlogListing posts={posts} offset={offset[gi]} />
+            </section>
+            {/* The topic map comes after the first topic, so the first cards keep their place on the fold. */}
+            {gi === 0 && groups.length > 1 && <ClusterMap />}
+          </Fragment>
         ))}
       </main>
       <Footer />
