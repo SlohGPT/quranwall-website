@@ -86,3 +86,24 @@ Karol gave his yes on 2026-11-17: "ship everything to the other apps as well". T
 ## Open
 - **Karol:** TODO question 7 (what the wallpaper shows, audio, the EULA), the `CLAUDE.md` line 21, the licence lines, and p8's three device checks in `TODO-KAROL.md`.
 - **2026-11-23:** p5 rewords the social proof, and the grandfathered strings turn into FAILs.
+
+## Follow-up the same day: the App Store badge next to the button (`745260b`)
+- **Asked:** Karol, looking at quranwall.com on a 14-inch MacBook (passed on by the FaithWall session): the hero's "Download on the App Store" badge looks too small next to "Get Started". The badge and the primary button should be the same height and look balanced, about 56–60 px at lg and up and about 48 px on phones. The badge scales by height only, keeps its aspect ratio and is never stretched. Apply it wherever the badge sits next to a button. The "Trusted by 1,000+ believers" avatar pill stays as it is, because Karol is deciding how social-proof avatars should look on all three sites.
+- **Found:** both were already 44 px tall (badge 132×44, "Get Started" 174×44 at 1512 px wide). The gold fill, the shadow and the extra width made the button read heavier. On /features the badge was 44 px next to a 58 px "Explore features" button.
+- **Built:**
+  - `AppStoreButton` has a new option, `size="lg"`: `h-12 lg:h-14 w-auto`, so the width follows the SVG's aspect ratio. The `width`/`height` attributes stay, so the space is still reserved before the image loads.
+  - The hero, the final CTA, the features hero, the install cards (`AppNudge`), the compare CTA and the guide closing block use it.
+  - The hero button is now `h-12 lg:h-14`, with larger text and padding at lg. The features "Explore features" button is now `h-12 lg:h-14`.
+  - The footer badge stays at 44 px.
+  - The clear-space comment now says a quarter of the height is 12 or 14 px.
+- **Verified:** headless Chromium (Playwright) on the local build.
+
+  | Where | 1512×982, before | 1512×982, after | iPhone 13 (390 wide, DPR 3), before | iPhone 13, after |
+  |---|---|---|---|---|
+  | Hero badge | 132×44 | 167.5×56 | 132×44 | 143.6×48 |
+  | "Get Started" | 174×44 | 193.5×56 | 166×44 | 166×48 |
+  | /features badge | 44 tall | 56 tall | 44 tall | 48 tall |
+  | "Explore features" | 58 tall | 56 tall | 58 tall | 48 tall |
+  | Final CTA and install cards | 44 tall | 56 tall | 44 tall | 48 tall |
+
+  On the iPhone the hero row stays on one line. Typecheck passes, the build prerenders 16 of 16, and lint-facts `--diff` gives 0 FAIL and `--dist` 0 FAIL. It was live about 30 s after the push, and the same measurements on quranwall.com match the table. No IndexNow ping: no text changed.
