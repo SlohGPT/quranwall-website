@@ -356,3 +356,26 @@ link-graph 1.1.0 adds two warn-only checks, and both fire:
 **Open:**
 - `/features` has no phone mockup for the corner test.
 - The corner fix can only be proven on a device that showed the leak. QuranWall's mockups didn't show it in the simulator, before or after.
+
+### Follow-up: three autopilot fixes before the queue runs dry (2026-11-17, ~16:00)
+
+**Asked:** the FaithWall top session relayed three findings from its audit of the autopilots, each confirmed by a second agent. Karol wants all three autopilots to run cleanly on their own.
+
+**Found and fixed:**
+1. **The autopilot's empty-queue fallback wrote a post with no demand test (medium).** Step 3 of the `quranwall-seo-autopilot-local` task prompt said: if no item is eligible and the week has fewer than 2 `blog:` commits, write a classic post from `seo-keywords.json`. That skips the §5 v3 demand test and the day-one links. p9–p12 are eligible 11-18 to 11-21, and nothing else is until p16 (12-07). So on 11-22, and again on 11-23 before the Monday refresh, it would have written a post nobody had shown demand for.
+   - Now step 3 says: no eligible item, report "queue empty, nothing to do" and go to CLEANUP. New posts come only from a queued `new-post` item that records the demand test and its day-one links.
+   - The report line and the close-out step lost their fallback wording too.
+   - SEO-STRATEGY §6 step 1 still allows the cadence-cap fallback post. §5 v3 wins (the doc says so at the top) and the prompt now says so as well, so I left the strategy text alone.
+2. **The pending queue notes carried the old product facts (low).** p9, p10, p11, p12 and p16 still said "a new ayah each day or a pinned favourite, Arabic (Uthmani) beside a translation" and "No audio recitation". p11 also asked for "the free-download-plus-subscription wording from p3", right after its own NO PRICING line.
+   - Those sentences now point to `src/data/facts.json` and `npm run lint-facts`, and audio reads as disputed (TODO-KAROL Q7). The p3 pricing clause is gone.
+   - The file does not round-trip through `JSON.stringify(…, 2)`, so this was a minimal textual edit inside those five items only. A parse check confirmed that only their `notes` changed (5 lines).
+   - Done items keep their old notes, since they are history.
+3. **The merge gate's facts paragraph was stale (low).** `quranwall-merge-bot` described the app as "Uthmani Arabic beside a translation" and failed any audio mention.
+   - Now it carries the autopilot's PRODUCT FACTS sentence, plus "facts.json and `npm run lint-facts` win over this paragraph".
+   - Audio is a WARN: a denial or a "Listen in Arabic"/read-along mention is reported and merges. A plain claim that QuranWall has audio recitation still fails, because lint-facts (`invented-audio`) fails it and the lint wins.
+
+The two task prompts live outside the repo (`~/.claude/scheduled-tasks/`), with backups in this session's scratchpad. Only the queue file and this entry are in the commit.
+
+**Verified:** the queue JSON parses; `lint-facts --diff origin/main --worktree` gives 0 FAIL and 0 WARN; `--self-test` gives 0 FAIL.
+
+**Open:** SEO-STRATEGY §6 step 1 still describes the old fallback post. A later strategy edit could align it with §5 v3, which wins in the meantime.
