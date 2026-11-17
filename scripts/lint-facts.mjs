@@ -224,10 +224,11 @@ const rules = [
   ['invented-prayer-times', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:prayer times?|salah times?|salat times?|adhan|azan|qibla|qiblah|prayer reminders?|athan)\\b|\\b(?:prayer times?|qibla|qiblah|adhan)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-hifz', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:hifz|hifdh|memori[sz]ation (?:tracking|tracker|tools?|progress|plans?|features?|mode)|memori[sz]ing (?:progress|tools?)|track\\w*\\s+(?:your\\s+)?(?:hifz|memori[sz]ation|memori[sz]ing|progress)|hifz (?:tracker|tools?|plans?|mode|features?))\\b`, 'i'), null, DENY],
   ['invented-ai', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:AI|A\\.I\\.|artificial intelligence|machine learning|chatbot|AI-powered|AI-assisted)\\b|\\b(?:AI|artificial intelligence|chatbot)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
-  // NOT CONFIRMED: any social proof or user count. The site carries none (queue item p5 removed the old
-  // "1,000+ believers" lines; see GRANDFATHER below). The one allowed number is the App Store Connect downloads floor
-  // from facts.json ("Downloaded <downloadsFloor> times", rule social-proof-downloads). Stats whose label names users,
-  // believers, people or Muslims are linted separately (lintStat); this rule covers prose and tag-stripped HTML.
+  // NOT CONFIRMED: any social proof or user count. The one allowed number is the App Store Connect downloads floor
+  // from facts.json: "Downloaded <downloadsFloor> times" (rule social-proof-downloads) and, since Karol's 2026-11-17
+  // decision, "Trusted by <floor> believers", "Join <floor> believers" and the stat "<floor> Believers using QuranWall"
+  // (see allowedProofStripped). Stats whose label names users, believers, people or Muslims are linted separately
+  // (lintStat); this rule covers prose and tag-stripped HTML.
   ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\b(?:used|loved|trusted|chosen|relied on|picked) by\\s+${QUAL}(?:(?:tens|hundreds) of\\s+)?(?:thousands|millions|hundreds)\\b|\\b(?:used|loved|chosen|relied on|picked) by\\s+${QUAL}(?:${COUNT}|${WCOUNT})|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|[km]\\b\\+?)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|[km]\\b\\+?)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
   // Two phrasings are allowed, both only with exactly facts.downloadsFloor (commas ignored, the "+" must match):
   // "Downloaded <floor> times" and "<floor> downloads". Any other download count FAILs (see downloadHits).
@@ -274,6 +275,24 @@ const PLAN_VERBS = /\b(?:reword|rewrite|remove[sd]?|delete[sd]?|replace[sd]?|gra
 
 /** A download count as a comparable string: commas and spaces dropped, so "1,000+" == "1000+" but "1,000" != "1,000+". */
 const normCount = (v) => String(v).replace(/[,\s]/g, '').toLowerCase();
+
+/**
+ * Allowed social proof, all tied to facts.downloadsFloor (Karol decided on 2026-11-17 to keep these lines; before that they were
+ * grandfathered until queue item p5 would have removed them). Returns `s` with the allowed phrasings blanked out (same length,
+ * so match indexes still line up), so the social-proof rule only sees what is left. The number must equal the floor exactly
+ * (normCount: commas ignored, the "+" must match) and nothing may sit between the verb and the number ("Trusted by over
+ * 1,000+ believers" and "Join 1,000 believers" stay FAIL):
+ *   "Trusted by <floor> believers", "Join <floor> believers", the stat "<floor> Believers using QuranWall",
+ *   and the stat "92% Early users feel closer to Allah" (real waitlist responses, Karol confirmed 2026-11-17).
+ */
+function allowedProofStripped(s) {
+  const floor = normCount(facts.downloadsFloor);
+  const blank = (m) => ' '.repeat(m.length);
+  return s
+    .replace(/\b(?:trusted by|join)\s+(\d[\d,]*\+?)\s+believers\b/gi, (m, n) => (normCount(n) === floor ? blank(m) : m))
+    .replace(/(?<![\w.,])(\d[\d,]*\+?)\s+Believers using QuranWall\b/gi, (m, n) => (normCount(n) === floor ? blank(m) : m))
+    .replace(/(?<![\w.,])92%\s+Early users feel closer to Allah\b/gi, blank);
+}
 
 const DL_NUM = String.raw`\d[\d,.]*(?:[km]\b)?\+?`;
 // Installs are counted like downloads, but never allowed (even the floor: the floor is a download count).
@@ -325,7 +344,7 @@ function lintText(text, out, opts = {}) {
       if (id === 'pricing-mention' && PRICING_EXEMPT.test(opts.relPath || '')) continue;
       let found;
       if (id === 'social-proof-downloads') found = downloadHits(s);
-      else { const m = re.exec(s); found = m ? [m] : []; }
+      else { const m = re.exec(id === 'social-proof' ? allowedProofStripped(s) : s); found = m ? [m] : []; }
       for (const m of found) {
         // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
         const scope = opts.wholeSentenceNeg ? s : s.slice(clauseStart(s, m.index), m.index + m[0].length);
@@ -353,7 +372,12 @@ const STAT_INSTALLS_LABEL = /\binstall(?:s|ed|ations?)\b/i;
 /** Stat-specific rules on {value|number, suffix, label}; `joined` is the rendered "<n><suffix> <label>". */
 function lintStat(label, joined, out) {
   const s = joined.replace(/\s+/g, ' ').slice(0, 190);
-  if (STAT_PEOPLE_LABEL.test(label)) out.push({ id: 'social-proof', s });
+  // Karol's 2026-11-17 decision: these two stats stay. "Believers using QuranWall" only with the downloads floor as its value;
+  // "Early users feel closer to Allah" only as 92% (real waitlist responses). Any other value or label is social proof.
+  const shownValue = joined.slice(0, Math.max(0, joined.length - label.length)).trim();
+  const keptStat = (/^Believers using QuranWall$/i.test(label) && normCount(shownValue) === normCount(facts.downloadsFloor))
+    || (/^Early users feel closer to Allah$/i.test(label) && normCount(shownValue) === '92%');
+  if (STAT_PEOPLE_LABEL.test(label) && !keptStat) out.push({ id: 'social-proof', s });
   if (STAT_SETUP_LABEL.test(label)) out.push({ id: 'setup-time', s });
   if (STAT_INSTALLS_LABEL.test(label)) out.push({ id: 'social-proof-downloads', s });
   if (STAT_DOWNLOADS_LABEL.test(label)) {
@@ -599,43 +623,11 @@ const results = []; // { level: 'FAIL' | 'WARN', rule, where, msg }
 const fail = (rule, where, msg) => results.push({ level: 'FAIL', rule, where, msg });
 const warn = (rule, where, msg) => results.push({ level: 'WARN', rule, where, msg });
 
-/**
- * GRANDFATHERED social proof. The live site still carries these lines until queue item p5 (seo-priorities.json)
- * removes them on 2026-11-23: Hero.tsx "Trusted by 1,000+ believers", FinalCTA.tsx "Join 1,000+ believers"
- * (rendered on / and /features), and two SocialProof.tsx stats. Until GRANDFATHER_UNTIL a hit that is exactly one
- * of these (matched in source and in built HTML) is a WARN naming p5; from that date it is a FAIL. p5 deletes these
- * entries together with the copy. If Karol's dated answer in TODO-KAROL.md keeps one of them, p5 moves that entry
- * to a documented permanent allowlist with his date instead. LINT_FACTS_TODAY=YYYY-MM-DD overrides the clock (tests).
- */
-const GRANDFATHER_UNTIL = '2026-11-23';
-const GRANDFATHER = [
-  /Trusted by 1,000\+ believers/i,                  // src/components/Hero.tsx
-  /Join 1,000\+ believers/i,                        // src/components/FinalCTA.tsx
-  /(?:1,?000\+?\s+)?Believers using QuranWall/i,    // src/components/SocialProof.tsx stat {1000, '+'}
-  /(?:92%?\s+)?Early users feel closer to Allah/i,  // src/components/SocialProof.tsx stat {92, '%'}
-];
-const todayIso = () => process.env.LINT_FACTS_TODAY || new Date().toISOString().slice(0, 10);
-
-/** Report a text hit; a social-proof hit that is only grandfathered copy is a WARN until GRANDFATHER_UNTIL. */
 /** Legal pages (Karol's own text): the two 2026-11-17 wallpaper rules WARN there instead of FAIL, so a wrong sentence stays visible. */
 const LEGAL_PAGES = /^(?:src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)(?:\s|$)/;
 const WARN_IN_LEGAL = new Set(['arabic-beside-translation', 'wallpaper-automatic']);
 function emit(h, where) {
   if (WARN_RULES.has(h.id) || (WARN_IN_LEGAL.has(h.id) && LEGAL_PAGES.test(where))) { warn(h.id, where, h.s); return; }
-  if (h.id === 'social-proof' && GRANDFATHER.some((g) => g.test(h.s))) {
-    let rest = h.s;
-    for (const g of GRANDFATHER) rest = rest.replace(new RegExp(g.source, 'gi'), ' ');
-    const left = [];
-    lintText(rest, left);
-    if (!left.some((x) => x.id === 'social-proof')) {
-      if (todayIso() < GRANDFATHER_UNTIL) {
-        warn('social-proof', where, `${h.s}  [grandfathered until ${GRANDFATHER_UNTIL}: queue item p5 removes it]`);
-      } else {
-        fail('social-proof', where, `${h.s}  [grandfather expired ${GRANDFATHER_UNTIL}: queue item p5 should have removed it]`);
-      }
-      return;
-    }
-  }
   fail(h.id, where, h.s);
 }
 
@@ -1095,6 +1087,39 @@ const SELF_TEST = [
   ['FAIL', 'site', 'Chosen by millions.', 'social-proof'],
   ['PASS', 'site', 'Downloaded ' + facts.downloadsFloor + ' times'],
   ['PASS', 'site', facts.downloadsFloor + ' downloads'],
+  // Karol's 2026-11-17 decision: "Trusted by / Join <floor> believers" and the stat "<floor> Believers using QuranWall" stay,
+  // only with exactly the floor (commas ignored, "+" must match). The 92% waitlist stat stays too.
+  ['PASS', 'site', 'Trusted by 1,000+ believers'],
+  ['PASS', 'site', 'Join 1,000+ believers'],
+  ['PASS', 'site', 'Trusted by ' + facts.downloadsFloor + ' believers'],
+  ['PASS', 'site', 'Join ' + facts.downloadsFloor + ' believers.'],
+  ['PASS', 'site', 'Join ' + String(facts.downloadsFloor).replace(',', '') + ' believers and set your first ayah.'],
+  ['PASS', 'tsx', '<p>Trusted by <span className="font-semibold">1,000+</span> believers</p>'],
+  ['PASS', 'tsx', '<p>Join <span className="text-gold">1,000+</span> believers</p>'],
+  ['PASS', 'tsx', "{ value: 1000, label: 'Believers using QuranWall', suffix: '+' },"],
+  ['PASS', 'tsx', "{ value: 92, label: 'Early users feel closer to Allah', suffix: '%' },"],
+  ['PASS', 'stat', { value: 1000, suffix: '+', label: 'Believers using QuranWall' }],
+  ['PASS', 'stat', { value: facts.downloadsFloor, label: 'Believers using QuranWall' }],
+  ['PASS', 'stat', { value: 92, suffix: '%', label: 'Early users feel closer to Allah' }],
+  ['FAIL', 'site', 'Trusted by 2,000+ believers', 'social-proof'],
+  ['FAIL', 'site', 'Join 1,000 believers', 'social-proof'],
+  ['FAIL', 'site', 'Join 10,000+ believers', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by over 1,000+ believers', 'social-proof'],
+  ['FAIL', 'site', 'Join over 1,000+ believers', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by 1,000+ Muslims', 'social-proof'],
+  ['FAIL', 'site', 'Join 1,000+ users', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by 1,000+ believers and loved by 5,000+ users', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by ' + facts.downloadsFloor.replace('+', '0+') + ' believers', 'social-proof'],
+  ['FAIL', 'site', 'Join ' + facts.downloadsFloor.replace('+', '') + ' believers', 'social-proof'],
+  ['FAIL', 'tsx', '<p>Trusted by <span className="font-semibold">2,000+</span> believers</p>', 'social-proof'],
+  ['FAIL', 'tsx', '<p>Join <span className="text-gold">1,000</span> believers</p>', 'social-proof'],
+  ['FAIL', 'tsx', "{ value: 2000, label: 'Believers using QuranWall', suffix: '+' },", 'social-proof'],
+  ['FAIL', 'tsx', "{ value: 1000, label: 'Believers using QuranWall' },", 'social-proof'],
+  ['FAIL', 'tsx', "{ value: 1000, label: 'Muslims using QuranWall', suffix: '+' },", 'social-proof'],
+  ['FAIL', 'stat', { value: 5000, suffix: '+', label: 'Believers using QuranWall' }, 'social-proof'],
+  ['FAIL', 'stat', { value: 1000, label: 'Believers using QuranWall' }, 'social-proof'],
+  ['FAIL', 'stat', { value: 93, suffix: '%', label: 'Early users feel closer to Allah' }, 'social-proof'],
+  ['FAIL', 'stat', { value: 92, suffix: '%', label: 'Users feel closer to Allah' }, 'social-proof'],
   // setup-time: "<time> with QuranWall" needs a setup verb
   ['FAIL', 'site', 'Done in 2 minutes with QuranWall.', 'setup-time'],
   ['FAIL', 'site', 'Ready in 30 seconds with QuranWall.', 'setup-time'],
