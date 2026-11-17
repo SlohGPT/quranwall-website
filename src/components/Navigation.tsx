@@ -379,6 +379,7 @@ export default function Navigation() {
                 onClick={() => setIsMobileGuidesOpen((v) => !v)}
                 className={`w-full flex items-center justify-between ${mobileLinkClass}`}
                 aria-expanded={isMobileGuidesOpen}
+                aria-controls="mobile-guides"
               >
                 Guides
                 <ChevronDown
@@ -386,20 +387,18 @@ export default function Navigation() {
                   aria-hidden="true"
                 />
               </button>
-              {isMobileGuidesOpen && (
-                <div className="mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col">
+              <div id="mobile-guides" className={`mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col ${isMobileGuidesOpen ? '' : 'hidden'}`}>
                   {guideNav.map((g) => (
                     <Link
                       key={g.label}
                       to={g.to}
-                      className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                      className="px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
                       onClick={closeMobileMenu}
                     >
                       {g.label}
                     </Link>
                   ))}
                 </div>
-              )}
             </div>
 
             {/* Features: collapsible group of section deep-links */}
@@ -408,6 +407,7 @@ export default function Navigation() {
                 onClick={() => setIsMobileFeaturesOpen((v) => !v)}
                 className={`w-full flex items-center justify-between ${mobileLinkClass}`}
                 aria-expanded={isMobileFeaturesOpen}
+                aria-controls="mobile-features"
               >
                 Features
                 <ChevronDown
@@ -415,11 +415,10 @@ export default function Navigation() {
                   aria-hidden="true"
                 />
               </button>
-              {isMobileFeaturesOpen && (
-                <div className="mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col">
+              <div id="mobile-features" className={`mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col ${isMobileFeaturesOpen ? '' : 'hidden'}`}>
                   <Link
                     to="/features"
-                    className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                    className="px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
                     onClick={closeMobileMenu}
                   >
                     All features
@@ -428,14 +427,13 @@ export default function Navigation() {
                     <Link
                       key={f.id}
                       to={`/features#${f.id}`}
-                      className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                      className="px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
                       onClick={closeMobileMenu}
                     >
                       {f.label}
                     </Link>
                   ))}
                 </div>
-              )}
             </div>
 
             <Link to="/support" className={mobileLinkClass} onClick={closeMobileMenu}>
