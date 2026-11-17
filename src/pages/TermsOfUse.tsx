@@ -13,6 +13,8 @@ export default function TermsOfUse() {
                 <meta property="og:title" content="Terms of Use | QuranWall" />
                 <meta property="og:description" content="QuranWall's terms of use. Read the legal terms governing your use of our iOS app and services." />
                 <meta property="og:url" content="https://quranwall.com/terms-of-use" />
+                <meta property="og:image" content="https://quranwall.com/og-image.png" />
+                <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
             </Helmet>
             <Navigation />
             <main className="container-main pt-32 pb-16">

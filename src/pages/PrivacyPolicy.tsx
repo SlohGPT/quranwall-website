@@ -13,6 +13,8 @@ export default function PrivacyPolicy() {
                 <meta property="og:title" content="Privacy Policy | QuranWall" />
                 <meta property="og:description" content="QuranWall's privacy policy. We don't collect sensitive personal information, don't require an account, and your verse selections stay on your device." />
                 <meta property="og:url" content="https://quranwall.com/privacy-policy" />
+                <meta property="og:image" content="https://quranwall.com/og-image.png" />
+                <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
             </Helmet>
             <Navigation />
             <main className="container-main pt-32 pb-16">

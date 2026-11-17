@@ -32,6 +32,8 @@ export default function Blog() {
           content="Practical guides on putting Quran on your iPhone lock screen, building a prayer life, and using your phone to grow in faith."
         />
         <meta property="og:url" content="https://quranwall.com/blog" />
+        <meta property="og:image" content="https://quranwall.com/og-image.png" />
+        <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>

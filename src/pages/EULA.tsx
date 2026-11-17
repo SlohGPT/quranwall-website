@@ -13,6 +13,8 @@ export default function EULA() {
                 <meta property="og:title" content="EULA | QuranWall" />
                 <meta property="og:description" content="QuranWall's End-User License Agreement. Read the terms under which QuranWall is licensed to you." />
                 <meta property="og:url" content="https://quranwall.com/eula" />
+                <meta property="og:image" content="https://quranwall.com/og-image.png" />
+                <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
             </Helmet>
             <Navigation />
             <main className="container-main pt-32 pb-16">
