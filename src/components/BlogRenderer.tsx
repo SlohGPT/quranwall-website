@@ -1,12 +1,11 @@
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { Fragment } from 'react';
+import { Fragment, createElement } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, Lightbulb, BookOpen, AlertCircle, Sparkles } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
 import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
 import { headingIds } from '../lib/headings';
+import { renderMarkdown, type MdComponents } from '../lib/markdown';
 import type { BlogSection } from '../types/blog';
 
 /**
@@ -31,86 +30,68 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   sparkles: Sparkles,
 };
 
-type HastNode = { type?: string; value?: string; tagName?: string; children?: HastNode[] };
-
-function hastText(n: HastNode | undefined): string {
-  if (!n) return '';
-  if (n.type === 'text') return n.value ?? '';
-  return (n.children ?? []).map(hastText).join('');
-}
-
-/** aria-label for a markdown table: its header cells, so the scroll region has a name. */
-function tableLabel(node: HastNode | undefined): string {
-  const head = (node?.children ?? []).find((c) => c.tagName === 'thead');
-  const row = (head?.children ?? []).find((c) => c.tagName === 'tr');
-  const cells = (row?.children ?? []).filter((c) => c.tagName === 'th').map((c) => hastText(c).trim()).filter(Boolean);
-  return cells.length ? `Table: ${cells.join(', ')}` : 'Table';
-}
+const MD: MdComponents = {
+  a: ({ href, children }) => {
+    const isInternal = href.startsWith('/') || href.startsWith('https://quranwall.com');
+    const internalPath = isInternal ? href.replace(/^https:\/\/quranwall\.com/, '') : href;
+    if (isInternal) {
+      return (
+        <Link to={internalPath} className="text-brand hover:text-brand-light underline underline-offset-2">
+          {children}
+        </Link>
+      );
+    }
+    // An in-body link to this app on the App Store gets the in-body token (qw-web-blog), built in code,
+    // whatever query string the post JSON carries.
+    const outHref = href.includes('apps.apple.com') && href.includes(`id${APP_STORE_ID}`) ? appStoreUrl(CAMPAIGNS.blog) : href;
+    return (
+      <a href={outHref} target="_blank" rel="noopener noreferrer" className="text-brand hover:text-brand-light underline underline-offset-2">
+        {children}
+      </a>
+    );
+  },
+  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+  p: ({ children }) => <p className="text-white/80">{children}</p>,
+  // Elements the posts do not use yet. Styled now so a future table, list or quote renders properly.
+  h: ({ level, children }) =>
+    level === 3 ? (
+      <h3 className="!mt-9 mb-2 text-[21px] font-bold leading-[1.3] text-white min-[1180px]:text-[23px]">{children}</h3>
+    ) : (
+      createElement(`h${level}`, { className: 'font-bold text-white' }, children)
+    ),
+  ul: ({ children }) => <ul className="my-3 list-disc space-y-2 pl-6 marker:text-brand">{children}</ul>,
+  ol: ({ start, children }) => <ol start={start} className="my-3 list-decimal space-y-2 pl-6 marker:text-brand">{children}</ol>,
+  li: ({ children }) => <li className="pl-1 text-inherit [&>ul]:mt-1.5 [&>ol]:mt-1.5 [&>ul]:space-y-1.5 [&>ol]:space-y-1.5">{children}</li>,
+  blockquote: ({ children }) => (
+    <blockquote className="my-4 border-l-4 border-brand pl-5 font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">{children}</blockquote>
+  ),
+  code: ({ children }) => <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-[15px] text-white">{children}</code>,
+  table: ({ label, children }) => (
+    <div className="relative my-4">
+      <div
+        role="region"
+        tabIndex={0}
+        aria-label={label}
+        className="overflow-x-auto rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+      >
+        <table className="min-w-[520px] w-full border-collapse text-left text-[16px] leading-[1.5] min-[1180px]:text-[17px]">{children}</table>
+      </div>
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent" />
+      <p className="mt-2 text-[14px] text-white/65 sm:hidden">Swipe to compare</p>
+    </div>
+  ),
+  thead: ({ children }) => <thead className="bg-surface-elevated">{children}</thead>,
+  tbody: ({ children }) => <tbody className="[&>tr:nth-child(even)]:bg-white/[0.03]">{children}</tbody>,
+  th: ({ align, children }) => (
+    <th style={align ? { textAlign: align } : undefined} className="sticky left-0 border-b border-white/10 bg-surface-elevated px-[14px] py-3 font-semibold text-white first:z-10">{children}</th>
+  ),
+  td: ({ align, children }) => (
+    <td style={align ? { textAlign: align } : undefined} className="border-b border-white/[0.06] px-[14px] py-3 text-white/80 first:sticky first:left-0 first:z-10 first:bg-surface">{children}</td>
+  ),
+};
 
 function Markdown({ text }: { text: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        a: ({ href = '', children }) => {
-          const isInternal = href.startsWith('/') || href.startsWith('https://quranwall.com');
-          const internalPath = isInternal
-            ? href.replace(/^https:\/\/quranwall\.com/, '')
-            : href;
-          if (isInternal) {
-            return (
-              <Link to={internalPath} className="text-brand hover:text-brand-light underline underline-offset-2">
-                {children}
-              </Link>
-            );
-          }
-          // An in-body link to this app on the App Store gets the in-body token (qw-web-blog), built in code,
-          // whatever query string the post JSON carries.
-          const outHref = href.includes('apps.apple.com') && href.includes(`id${APP_STORE_ID}`) ? appStoreUrl(CAMPAIGNS.blog) : href;
-          return (
-            <a href={outHref} target="_blank" rel="noopener noreferrer" className="text-brand hover:text-brand-light underline underline-offset-2">
-              {children}
-            </a>
-          );
-        },
-        strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
-        p: ({ children }) => <p className="text-white/80">{children}</p>,
-        // Elements the posts do not use yet (remark-gfm is on). Styled now so a future table, list or quote renders properly.
-        h3: ({ children }) => <h3 className="!mt-9 mb-2 text-[21px] font-bold leading-[1.3] text-white min-[1180px]:text-[23px]">{children}</h3>,
-        ul: ({ children }) => <ul className="my-3 list-disc space-y-2 pl-6 marker:text-brand">{children}</ul>,
-        ol: ({ children }) => <ol className="my-3 list-decimal space-y-2 pl-6 marker:text-brand">{children}</ol>,
-        li: ({ children }) => <li className="pl-1 text-inherit [&>ul]:mt-1.5 [&>ol]:mt-1.5 [&>ul]:space-y-1.5 [&>ol]:space-y-1.5">{children}</li>,
-        blockquote: ({ children }) => (
-          <blockquote className="my-4 border-l-4 border-brand pl-5 font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">{children}</blockquote>
-        ),
-        code: ({ children }) => <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-[15px] text-white">{children}</code>,
-        table: ({ node, children }) => (
-          <div className="relative my-4">
-            <div
-              role="region"
-              tabIndex={0}
-              aria-label={tableLabel(node)}
-              className="overflow-x-auto rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-            >
-              <table className="min-w-[520px] w-full border-collapse text-left text-[16px] leading-[1.5] min-[1180px]:text-[17px]">{children}</table>
-            </div>
-            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent" />
-            <p className="mt-2 text-[14px] text-white/65 sm:hidden">Swipe to compare</p>
-          </div>
-        ),
-        thead: ({ children }) => <thead className="bg-surface-elevated">{children}</thead>,
-        tbody: ({ children }) => <tbody className="[&>tr:nth-child(even)]:bg-white/[0.03]">{children}</tbody>,
-        th: ({ children }) => (
-          <th className="sticky left-0 border-b border-white/10 bg-surface-elevated px-[14px] py-3 font-semibold text-white first:z-10">{children}</th>
-        ),
-        td: ({ children }) => (
-          <td className="border-b border-white/[0.06] px-[14px] py-3 text-white/80 first:sticky first:left-0 first:z-10 first:bg-surface">{children}</td>
-        ),
-      }}
-    >
-      {text}
-    </ReactMarkdown>
-  );
+  return renderMarkdown(text, MD);
 }
 
 /** Characters of reader-facing text in a section (links do not count). */

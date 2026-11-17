@@ -7,6 +7,8 @@ export default defineConfig(({ isSsrBuild }) => ({
   build: {
     target: 'es2020',
     cssMinify: true,
+    // scripts/prerender.mjs reads the client manifest to add a modulepreload for each route's lazy chunk (client build only).
+    manifest: !isSsrBuild,
     // Client-only chunk splitting. The SSR bundle is a single file consumed by
     // scripts/prerender.mjs, so we skip manualChunks for it.
     rollupOptions: isSsrBuild

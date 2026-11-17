@@ -8,7 +8,7 @@
  * No headless browser, no system Chromium dependency. Works identically on
  * macOS and Vercel's Linux build image.
  */
-import { mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { gzipSync } from 'zlib';
@@ -28,12 +28,48 @@ const posts = JSON.parse(
   readFileSync(join(root, 'src/data/blogPosts.json'), 'utf-8'),
 ).filter((p) => p.isPublished !== false);
 
+/** Lazy page chunk per route (the page components App.tsx loads with React.lazy). Home and the 404 are in the entry. */
+const ROUTE_PAGE = {
+  '/features': 'src/pages/FeaturesPage.tsx',
+  '/support': 'src/pages/Support.tsx',
+  '/privacy-policy': 'src/pages/PrivacyPolicy.tsx',
+  '/terms-of-use': 'src/pages/TermsOfUse.tsx',
+  '/eula': 'src/pages/EULA.tsx',
+  '/about/karol-billik': 'src/pages/AuthorKarol.tsx',
+  '/blog': 'src/pages/Blog.tsx',
+};
+const POST_PAGE = 'src/pages/BlogPost.tsx';
+
 const routes = [
   ...STATIC_ROUTES,
   ...PILLARS,
   ...COMPARISONS,
   ...posts.map((p) => `/blog/${p.slug}`),
 ];
+
+const manifestPath = join(distDir, '.vite', 'manifest.json');
+const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf-8')) : null;
+
+/** Files to modulepreload for a route: its lazy page chunk plus the chunks that chunk imports, minus what the template already loads. */
+function routeChunks(route, template) {
+  if (!manifest) return [];
+  const page = route.startsWith('/blog/') ? POST_PAGE : ROUTE_PAGE[route];
+  if (!page) return [];
+  const entry = manifest[page];
+  if (!entry) throw new Error(`${page} is not in the Vite manifest (route ${route})`);
+  const files = [];
+  const seen = new Set();
+  const visit = (key) => {
+    if (seen.has(key)) return;
+    seen.add(key);
+    const chunk = manifest[key];
+    if (!chunk) return;
+    for (const dep of chunk.imports ?? []) visit(dep);
+    if (!chunk.isEntry && !template.includes(`/${chunk.file}`)) files.push(`/${chunk.file}`);
+  };
+  visit(page);
+  return files;
+}
 
 function helmetToString(helmet) {
   if (!helmet) return '';
@@ -93,8 +129,11 @@ async function prerender() {
       // React 18.3.1's stream writer can flush its whole 2048-byte buffer when a
       // multi-byte char (Arabic, em dash) straddles a chunk, emitting unused NUL
       // bytes. Real content never contains NUL, so strip them before every write.
+      const preloads = routeChunks(route, template)
+        .map((f) => `<link rel="modulepreload" crossorigin href="${f}">`)
+        .join('\n');
       const finalHtml = template
-        .replace('</head>', `${helmetTags}\n</head>`)
+        .replace('</head>', () => `${preloads ? `${preloads}\n` : ''}${helmetTags}\n</head>`)
         .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
         .replace(/\0/g, '');
 
@@ -135,6 +174,9 @@ async function prerender() {
     console.error(`  ✗ /404.html: ${err.message}`);
     if (err.stack) console.error(err.stack);
   }
+
+  // The manifest is a build input only; keep it out of what gets deployed.
+  rmSync(join(distDir, '.vite'), { recursive: true, force: true });
 
   console.log(`\nPrerender complete: ${succeeded} succeeded, ${failed} failed (of ${routes.length}).`);
   if (failed > 0) process.exit(1);

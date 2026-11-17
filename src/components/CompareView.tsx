@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Calendar, Zap, Check, X as XIcon } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { renderMarkdown } from '../lib/markdown';
 import Navigation from './Navigation';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrumbs';
@@ -44,17 +43,10 @@ function formatDate(iso: string): string {
 }
 
 function Inline({ text }: { text: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
-        p: ({ children }) => <p className="text-white/85 leading-relaxed">{children}</p>,
-      }}
-    >
-      {text}
-    </ReactMarkdown>
-  );
+  return renderMarkdown(text, {
+    strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+    p: ({ children }) => <p className="text-white/85 leading-relaxed">{children}</p>,
+  });
 }
 
 export default function CompareView({ config }: { config: CompareConfig }) {
