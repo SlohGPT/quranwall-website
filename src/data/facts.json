@@ -7,8 +7,7 @@
   "providerToken": "128303795",
   "minIOS": "15.0",
   "minIOSText": "iOS 15.0 or later",
-  "installLine": "Free to download, with an in-app subscription.",
-  "subscriptionLine": "With an in-app subscription.",
+  "installLine": "Free to download.",
   "rating": {
     "value": "4.5",
     "count": 2,

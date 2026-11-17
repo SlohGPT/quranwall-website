@@ -9,7 +9,7 @@
  *   --diff <base> [--worktree]  lint whole changed files, report only hits that overlap lines added in
  *                               `git diff <base>...HEAD -U0`; --worktree adds uncommitted and untracked work
  *   --dist [dir]                check the built site (default dist/): App Store links, JSON-LD, NUL bytes,
- *                               404, sitemap, Smart App Banner, public/llms.txt + public/pricing.md vs facts.json
+ *                               404, sitemap, Smart App Banner, public/llms.txt vs facts.json
  *                               plus the visible text of every built page (same prose rules) and the email check
  *   --prompts [files...]        lint ~/.claude/scheduled-tasks/quranwall-* /SKILL.md (read-only) and
  *                               .claude/skills/quranwall-blog/SKILL.md, plus any extra files given
@@ -17,7 +17,9 @@
  *   --all                       lint every source file (src, index.html, public/*.txt|md, .claude/skills/**)
  *                               and check that every email address equals facts.contactEmail
  *
- * pricing-mention: QuranWall's price model is never described on the website (see PRICING_EXEMPT for the files that may).
+ * pricing-mention / free-download-prose / free-use-bare (Karol, 2026-11-17): the website never mentions the subscription, paywall, trial or
+ * price, and never says that using QuranWall is free; legal pages are exempt (PRICING_EXEMPT). "Free to download.", "Download for free" and
+ * "Free download" are allowed only as a standalone line (a button, an install card, a CTA), never inside running prose.
  *
  * Exit code 1 on any FAIL. WARN never fails.
  *
@@ -177,6 +179,9 @@ const ARABIC_OTHER = /\b(?:Muslim Pro|Quran Majeed|Quran\.com|Tarteel|Athan|iQur
 const READALONG = /\bListen in Arabic\b|\bread[- ]?along\b/i;
 const WARN_RULES = new Set(['audio-readalong']);
 
+// A sentence that is only a download CTA (JSX tags, quotes and punctuation around it are ignored).
+const STANDALONE_DOWNLOAD = /^(?:\s|<[^>]*>|[{}'"`*_.!:|-])*(?:free to download|download for free|free download)(?:\s|<[^>]*>|[{}'"`*_.!:|-])*$/i;
+
 // Each rule: [id, regex, unused, allow?]. `allow` rescues a sentence that matches it (a RegExp, DENY for a clause-scoped
 // negation, or an array of them).
 const rules = [
@@ -187,11 +192,30 @@ const rules = [
   // "is a free app" with no brand in the sentence (a bare claim in a QuranWall page or post; search-intent
   // wording such as "looking for a free Quran app" is not a claim).
   ['free-app-bare', /\b(?:is|it'?s|it is|this is|that'?s|was|are)\s+(?:a|an)\s+(?:totally\s+|completely\s+|100%\s+)?free\s+(?:\w+\s+){0,2}app\b/i, null],
-  // No pricing on the website at all (Karol, 2026-11-16): QuranWall's own price model is never described on a page,
-  // post, CTA or install card; the App Store shows it. Bare phrases (every page and post is about QuranWall).
-  // Exempt, by file (see PRICING_EXEMPT): public/llms.txt, public/pricing.md (machine files), the legal pages and
-  // src/data/facts.json (feeds those machine files). JSON-LD is not visible text and is never scanned.
-  ['pricing-mention', /\bfree to (?:download|install|get)\b|\bfree downloads?\b|\bin-app subscriptions?\b|\bwith (?:a|an) (?:in-app )?subscription\b|\b(?:app store|apple) (?:listing )?shows (?:you )?(?:what is offered|the price|the prices|pricing)\b|\bshows? the price\b|\bbefore you (?:subscribe|pay)\b/i, null],
+  // No subscription, paywall, trial or price wording on the website (Karol, 2026-11-16, widened 2026-11-17). Bare phrases
+  // (every page and post is about QuranWall). Competitor facts ("Logos sells packs by subscription") do not match: the patterns
+  // need "required/needed/unlocks", "in-app", a trial, a price or a billing period. Exempt, by file: the legal pages only
+  // (see PRICING_EXEMPT). JSON-LD is not visible text and is never scanned.
+  ['pricing-mention', new RegExp([
+    String.raw`\bsubscri(?:ption|bing|be|bed|ber)s?\b[^.]{0,40}\b(?:required|needed|necessary|unlocks?|unlocked)\b`,
+    String.raw`\b(?:requires?|needs?|needed|requiring)\s+(?:a|an|the)\s+(?:\w+\s+)?subscription\b`,
+    String.raw`\bwith (?:a|an) (?:in-app )?subscription\b`,
+    String.raw`\bin-app (?:subscriptions?|purchases?)\b`,
+    String.raw`\bfree trials?\b|\b\d+[- ]days?\s+(?:free\s+)?trial\b|\btrial (?:period|offer)\b`,
+    String.raw`\bsee (?:the )?price\b|\bprices? (?:in|on|inside) (?:the )?app\b`,
+    String.raw`\b(?:app store|apple) (?:listing )?shows? (?:you )?(?:what is offered|the (?:exact )?prices?|pricing)\b|\bshows? the (?:exact )?price\b`,
+    String.raw`\btoday['’]?s terms\b`,
+    String.raw`\bbefore you (?:subscribe|pay)\b`,
+    String.raw`\bauto-?renew\w*`,
+    String.raw`\bpaywall\b`,
+    String.raw`\b(?:costs?|prices?|priced|billed|pay|paid|charged?|plans?|subscriptions?)\b[^.]{0,40}\bper (?:week|month|year)\b|\bper (?:week|month|year)\b[^.]{0,20}\b(?:billed|after)\b|\b(?:weekly|monthly|yearly|annual)\s+(?:plan|subscription|billing)\b|\d\s?/\s?(?:wk|week|mo|month|yr|year)\b`,
+    String.raw`(?<![\w'"\x60])[$€£]\s?\d`,
+  ].join('|'), 'i'), null],
+  // "Free to download", "Download for free", "Free download": allowed only as a standalone line (App Store button, install card, hero
+  // or final CTA). Inside running prose (a post paragraph, a guide, an FAQ answer, a sentence with other words) it is a FAIL.
+  ['free-download-prose', /\bfree to (?:download|install|get)\b|\bdownload (?:it |the app |quranwall )?for free\b|\bfree downloads?\b/i, null, STANDALONE_DOWNLOAD],
+  // Saying that using the app is free, without naming it ("all features for free", "use it for free").
+  ['free-use-bare', /\b(?:all|every|full|any|the)\s+(?:the\s+|of the\s+)?(?:\w+\s+){0,2}(?:features?|functionality|access)\b[^.]{0,30}\b(?:for free|free of charge|at no cost|free)\b|\b(?:use|using|try|get|unlock|access|enjoy)\b[^.]{0,30}\b(?:for free|free of charge)\b|\bfree (?:version|tier|plan)\b|\bno[- ]cost\b|\bcosts? nothing\b/i, null],
   // NOT CONFIRMED by the listing: installing through iOS Focus modes.
   ['focus-install', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\bFocus(?:\\s+(?:modes?|filters?))?\\b|\\bFocus modes?\\b${CL}{0,60}\\b${BRAND}\\b`, 'i'), null, /\blink(?:ed|s)?\b|\bpair(?:ed|s)?\b|\bswitch(?:es|ing)?\b/i],
   // NOT CONFIRMED: verse packs or any named pack.
@@ -253,11 +277,11 @@ const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', '
 // A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
 // claim through a bare phrase, so the bare-phrase rules skip it.
 const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
-// Files where the pricing-mention rule does not apply: the machine files read by AI answer engines (they keep the
-// factual "free to download, with an in-app subscription, no prices" line on purpose), the legal pages, and the
-// facts file that feeds the machine files. Built legal pages: dist/terms-of-use, dist/eula, dist/privacy-policy.
-const PRICING_EXEMPT = /^(?:public\/(?:llms\.txt|pricing\.md)|src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|src\/data\/facts\.json|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)$/;
-const BARE_RULES = new Set(['pricing-mention', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare', 'arabic-beside-translation', 'wallpaper-automatic']);
+// Files where the pricing rules do not apply: the legal pages only (Apple requires their subscription and billing text).
+// Built legal pages: dist/terms-of-use, dist/eula, dist/privacy-policy.
+const PRICING_EXEMPT = /^(?:src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)$/;
+const PRICING_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare']);
+const BARE_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare', 'arabic-beside-translation', 'wallpaper-automatic']);
 
 /**
  * Files whose negations are rule text, not copy: skills and the SEO queue/keyword notes say "NOT CONFIRMED: do not
@@ -346,7 +370,7 @@ function lintText(text, out, opts = {}) {
   for (const s of text.split(/(?<=[.!?])["']?\s+/)) {
     for (const [id, re, , allow] of rules) {
       if (aboutOtherApp && BARE_RULES.has(id)) continue;
-      if (id === 'pricing-mention' && PRICING_EXEMPT.test(opts.relPath || '')) continue;
+      if (PRICING_RULES.has(id) && PRICING_EXEMPT.test(opts.relPath || '')) continue;
       let found;
       if (id === 'social-proof-downloads') found = downloadHits(s);
       else { const sp = id === 'social-proof' ? allowedProofStripped(s) : s; const m = re.exec(sp) || (id === 'social-proof' ? STAT_LABEL_FIRST_DRIFT.exec(sp) : null); found = m ? [m] : []; }
@@ -614,7 +638,6 @@ function checkSourceEmails() {
   const files = [
     join(ROOT, 'index.html'),
     join(ROOT, 'public/llms.txt'),
-    join(ROOT, 'public/pricing.md'),
     ...walk(join(ROOT, 'src')).filter((f) => /\.tsx?$/.test(f) || (/\.json$/.test(f) && rel(f).startsWith('src/data/'))),
   ];
   for (const abs of files) {
@@ -739,9 +762,9 @@ function checkAppLink(href, where, expectCt) {
   return true;
 }
 
-/** public/llms.txt and public/pricing.md must agree with facts.json: minimum iOS, no price, own campaign token. */
+/** public/llms.txt must agree with facts.json: minimum iOS, no price, own campaign token. */
 function checkMachineFiles() {
-  const files = [['public/llms.txt', CAMPAIGNS.llms], ['public/pricing.md', CAMPAIGNS.pricing]];
+  const files = [['public/llms.txt', CAMPAIGNS.llms]];
   const minNum = parseFloat(facts.minIOS);
   for (const [r, expectCt] of files) {
     const abs = join(ROOT, r);
@@ -757,9 +780,6 @@ function checkMachineFiles() {
       }
       for (const m of ln.matchAll(/https:\/\/apps\.apple\.com\/[^\s)<>"']+/g)) checkAppLink(m[0], `${r} L${i + 1}`, expectCt);
     });
-    if (!txt.includes(facts.installLine.replace(/\.$/, '')) && !/free to download, with an in-app subscription/i.test(txt)) {
-      warn('dist-machine-file', r, `does not state "${facts.installLine}"`);
-    }
   }
 }
 
@@ -981,7 +1001,33 @@ const SELF_TEST = [
   ['PASS', 'site', 'Twenty-four hours a day'],
   ['PASS', 'site', 'in 10 languages'],
   ['PASS', 'site', 'Step 2 installs the widget.'],
-  ['PASS', 'site', 'QuranWall is free to download, with an in-app subscription.', null, 'public/llms.txt'],
+  // 2026-11-17 (Karol): no subscription, paywall, trial or price wording on the site; legal pages exempt.
+  ['FAIL', 'site', 'A subscription is required to use QuranWall.', 'pricing-mention'],
+  ['FAIL', 'site', 'Free to download; a subscription unlocks it.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall: See price in app.', 'pricing-mention'],
+  ['FAIL', 'site', 'Open the App Store and see today\'s terms in the App Store.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall is free to download, with an in-app subscription.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall is free to download, with an in-app subscription.', 'pricing-mention', 'public/llms.txt'],
+  ['FAIL', 'site', 'QuranWall offers an in-app purchase.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall has a 3-day free trial.', 'pricing-mention'],
+  ['FAIL', 'site', 'The App Store shows the price before you subscribe.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall costs $4.99 per month and auto-renews.', 'pricing-mention'],
+  ['FAIL', 'site', 'QuranWall is a free app.', 'free-claim'],
+  ['FAIL', 'site', 'You can use QuranWall for free.', 'free-claim'],
+  ['FAIL', 'site', 'Get all features for free.', 'free-use-bare'],
+  ['FAIL', 'site', 'QuranWall is the free way to see an ayah on your Lock Screen, and it is free to download.', 'free-download-prose'],
+  ['FAIL', 'site', 'Set it up in two taps. Free to download on the App Store.', 'free-download-prose'],
+  ['FAIL', 'site', 'You can download QuranWall for free and pick an ayah.', 'free-download-prose'],
+  ['FAIL', 'tsx', '<p>QuranWall is a free download from the App Store.</p>', 'free-download-prose'],
+  ['PASS', 'site', 'Free to download.'],
+  ['PASS', 'site', 'Download for free'],
+  ['PASS', 'site', 'Free download'],
+  ['PASS', 'tsx', '<span className="text-sm">Free to download.</span>'],
+  ['PASS', 'site', 'Logos sells resource packs by subscription, and Athan is free.'],
+  ['PASS', 'site', '**Athan** gives free prayer-time alerts, so it is a solid pick if you do not want to pay.'],
+  ['PASS', 'site', 'Your subscription renews automatically unless you cancel it at least 24 hours before the period ends. Free trial terms are shown in the App Store.', null, 'src/pages/TermsOfUse.tsx'],
+  ['PASS', 'site', 'The price, billing period and any free trial are shown in the App Store.', null, 'src/pages/EULA.tsx'],
+  ['PASS', 'prompt', ['Never mention the subscription, the paywall, a trial or a price on the site.']],
   ['PASS', 'site', 'Downloaded 1,000+ times'],
   ['PASS', 'site', 'Downloaded 1000+ times'],
   ['PASS', 'site', '1,000+ downloads'],

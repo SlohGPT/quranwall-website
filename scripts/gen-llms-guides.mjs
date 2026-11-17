@@ -1,6 +1,6 @@
 /**
  * Rewrites the "Guides" section of public/llms.txt from src/data/blogPosts.json, between the two marker lines.
- * Everything outside the markers (the curated header, key facts, pricing wording) is left alone.
+ * Everything outside the markers (the curated header and key facts) is left alone.
  * Runs first in `npm run build`; idempotent, so the committed file only changes when the post data does.
  *
  *   node scripts/gen-llms-guides.mjs          rewrite public/llms.txt

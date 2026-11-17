@@ -32,9 +32,8 @@ export const CAMPAIGNS = {
   compare: 'qw-web-compare',
   about: 'qw-web-about',
   features: 'qw-web-features',
-  pricing: 'qw-web-pricing',
   // Machine-readable files cannot import this module; they carry the literal URL.
-  // public/llms.txt uses `llms`; public/pricing.md uses `pricing`.
+  // public/llms.txt uses `llms`.
   llms: 'qw-web-llms',
 } as const;
 
