@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import BlogRenderer from './BlogRenderer';
+import BlogRenderer, { Callout } from './BlogRenderer';
+import SpotScene from './visuals';
 import AuthorBio from './AuthorBio';
 import { CLUSTER_HEADING, CLUSTER_LABEL, clusterHref, topicNeighbours } from '../lib/clusters';
 import { tocEntries } from '../lib/headings';
@@ -30,6 +31,8 @@ export default function BlogPostContent({ post, slug, related }: Props) {
   const { meta, sections } = post;
   const toc = tocEntries(sections);
   const showToc = toc.length >= 3;
+  // Answer first: when the post opens with its Quick Answer callout it goes right under the byline, above the cover.
+  const lead = sections[0]?.type === 'callout' ? sections[0] : null;
   const hasHero = Boolean(meta.image) && meta.image !== GENERIC_CARD;
   const { prev, next } = topicNeighbours(slug);
   const topicHref = clusterHref(meta.cluster);
@@ -85,6 +88,8 @@ export default function BlogPostContent({ post, slug, related }: Props) {
             </p>
           </header>
 
+          {lead && <Callout section={lead} className="mt-5" />}
+
           {hasHero && (
             <figure className="mt-4 md:-mx-[60px] lg:-mx-[84px] min-[1180px]:-mr-16">
               <div className="overflow-hidden rounded-2xl">
@@ -125,7 +130,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
           {showToc && <TableOfContents entries={toc} variant="details" />}
 
           <div className="mt-3 md:mt-4">
-            <BlogRenderer sections={sections} />
+            <BlogRenderer sections={sections} skipLead={Boolean(lead)} scene={<SpotScene slug={slug} cluster={meta.cluster} />} />
           </div>
 
           <AuthorBio />

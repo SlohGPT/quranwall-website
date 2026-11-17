@@ -223,3 +223,29 @@ html.vv-zoomed .chrome-pin { position: absolute; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Visual layer: scenes, stat figures, verse cards, cluster map. CSS only. One shared IntersectionObserver
+   (src/lib/inview.ts) adds .is-inview while a figure is on screen and .is-seen once. Loops sit paused at their
+   rest pose until then, so with no JS every figure shows its finished state. Nothing starts at opacity 0 above the fold. */
+.qa-scene { display: block; width: 100%; height: auto; }
+.qa-loop {
+  animation-duration: 7s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+.is-inview .qa-loop { animation-play-state: running; }
+.qa-glow { animation-name: qa-glow; }
+.qa-drift { animation-name: qa-drift; animation-duration: 9s; }
+.qa-sway { animation-name: qa-sway; animation-duration: 12s; transform-origin: 160px 124px; }
+.qa-rise { animation-name: qa-rise; animation-duration: 10s; }
+@keyframes qa-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes qa-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes qa-sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(2.5deg); } }
+@keyframes qa-rise { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+/* Entrance, once, 1 s: only after the figure scrolls into view (below the fold). */
+.is-seen .qa-in { animation: qa-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+@keyframes qa-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .qa-loop, .is-seen .qa-in { animation: none !important; }
+}

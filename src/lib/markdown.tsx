@@ -33,7 +33,8 @@ export interface MdComponents {
   tbody?: (p: Kids) => ReactElement;
   tr?: (p: Kids) => ReactElement;
   th?: (p: Kids & { align?: Align }) => ReactElement;
-  td?: (p: Kids & { align?: Align }) => ReactElement;
+  /** `label` is the header text of the column, for stacked (phone) layouts. */
+  td?: (p: Kids & { align?: Align; label?: string }) => ReactElement;
 }
 type Align = 'left' | 'right' | 'center';
 
@@ -505,7 +506,9 @@ function blocks(lines: string[], c: Ctx): ReactNode[] {
           rows.push(head.map((_, n) => cells[n] ?? ''));
           i++;
         }
-        const cell = (C: typeof c.th, text: string, n: number) => el(C, { align: aligns[n] }, n, inline(text, c));
+        const heads = head.map((h) => plainText(inline(h, c)).trim());
+        const cell = (C: typeof c.th, text: string, n: number) =>
+          el(C, C === c.td ? { align: aligns[n], label: heads[n] } : { align: aligns[n] }, n, inline(text, c));
         const thead = el(c.thead, {}, 0, el(c.tr, {}, 0, head.map((t, n) => cell(c.th, t, n))));
         const tbody = rows.length ? el(c.tbody, {}, 1, rows.map((r, ri) => el(c.tr, {}, ri, r.map((t, n) => cell(c.td, t, n))))) : null;
         add(el(c.table, { label: label.length ? `Table: ${label.join(', ')}` : 'Table' }, key++, tbody ? [thead, tbody] : [thead]));

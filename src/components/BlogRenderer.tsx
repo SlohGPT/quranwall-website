@@ -1,6 +1,7 @@
-import { Fragment, createElement } from 'react';
+import { Fragment, createElement, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Lightbulb, BookOpen, AlertCircle, Sparkles } from 'lucide-react';
+import Icon, { type IconName } from './visuals/icons';
+import { StatBlock, VerseCard } from './visuals/blocks';
 import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
 import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
@@ -22,13 +23,14 @@ const BODY = 'text-[18px] leading-[1.7] min-[1180px]:text-[19px] min-[1180px]:le
 /** Callout family: 16 px padding on phones, 24 px from md up. */
 const CALLOUT_PAD = 'p-4 md:p-6';
 
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  zap: Zap,
-  lightbulb: Lightbulb,
-  book: BookOpen,
-  alert: AlertCircle,
-  sparkles: Sparkles,
-};
+/** Icon tile of a callout: one 24-grid line icon per block type, gold on a soft gold tile. */
+function IconTile({ name }: { name: IconName }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/15 text-brand">
+      <Icon name={name} className="h-6 w-6" />
+    </span>
+  );
+}
 
 const MD: MdComponents = {
   a: ({ href, children }) => {
@@ -66,6 +68,7 @@ const MD: MdComponents = {
     <blockquote className="my-4 border-l-4 border-brand pl-5 font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">{children}</blockquote>
   ),
   code: ({ children }) => <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-[15px] text-white">{children}</code>,
+  // From 640 px up a scrolling table; under 640 px every row is a stacked card (cells carry their column header).
   table: ({ label, children }) => (
     <div className="relative my-4">
       <div
@@ -74,19 +77,27 @@ const MD: MdComponents = {
         aria-label={label}
         className="overflow-x-auto rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
       >
-        <table className="min-w-[520px] w-full border-collapse text-left text-[16px] leading-[1.5] min-[1180px]:text-[17px]">{children}</table>
+        <table className="min-w-[520px] w-full border-collapse text-left text-[16px] leading-[1.5] max-sm:block max-sm:min-w-0 min-[1180px]:text-[17px]">{children}</table>
       </div>
-      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent" />
-      <p className="mt-2 text-[14px] text-white/65 sm:hidden">Swipe to compare</p>
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent max-sm:hidden" />
     </div>
   ),
-  thead: ({ children }) => <thead className="bg-surface-elevated">{children}</thead>,
-  tbody: ({ children }) => <tbody className="[&>tr:nth-child(even)]:bg-white/[0.03]">{children}</tbody>,
+  thead: ({ children }) => <thead className="bg-surface-elevated max-sm:sr-only">{children}</thead>,
+  tbody: ({ children }) => <tbody className="[&>tr:nth-child(even)]:bg-white/[0.03] max-sm:block">{children}</tbody>,
+  tr: ({ children }) => (
+    <tr className="max-sm:mb-3 max-sm:block max-sm:rounded-xl max-sm:border max-sm:border-white/10 max-sm:bg-surface-card max-sm:p-3">{children}</tr>
+  ),
   th: ({ align, children }) => (
     <th style={align ? { textAlign: align } : undefined} className="sticky left-0 border-b border-white/10 bg-surface-elevated px-[14px] py-3 font-semibold text-white first:z-10">{children}</th>
   ),
-  td: ({ align, children }) => (
-    <td style={align ? { textAlign: align } : undefined} className="border-b border-white/[0.06] px-[14px] py-3 text-white/80 first:sticky first:left-0 first:z-10 first:bg-surface">{children}</td>
+  td: ({ align, label, children }) => (
+    <td
+      data-label={label}
+      style={align ? { textAlign: align } : undefined}
+      className="border-b border-white/[0.06] px-[14px] py-3 text-white/80 first:sticky first:left-0 first:z-10 first:bg-surface max-sm:static max-sm:flex max-sm:justify-between max-sm:gap-4 max-sm:border-0 max-sm:bg-transparent max-sm:px-1 max-sm:py-1.5 max-sm:text-right max-sm:before:shrink-0 max-sm:before:text-left max-sm:before:font-semibold max-sm:before:text-white max-sm:before:content-[attr(data-label)] max-sm:first:bg-transparent"
+    >
+      {children}
+    </td>
   ),
 };
 
@@ -149,8 +160,29 @@ function midCardIndex(sections: BlogSection[], h2Indexes: number[]): number {
   return -1;
 }
 
+type CalloutSection = Extract<BlogSection, { type: 'callout' }>;
+
+/** The "Quick Answer" callout. Exported so the post page can lift it above the cover. */
+export function Callout({ section, className = 'my-8' }: { section: CalloutSection; className?: string }) {
+  return (
+    <div className={`${className} ${CALLOUT_PAD} flex gap-3 rounded-2xl border border-brand/30 bg-brand/10 sm:gap-4`}>
+      <IconTile name="answer" />
+      <div className="min-w-0 flex-1">
+        {section.title && <p className="mb-2 text-lg font-bold text-white">{section.title}</p>}
+        <div className={`text-white/85 ${BODY}`}>
+          <Markdown text={section.content} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   sections: BlogSection[];
+  /** The post page already rendered sections[0] (a callout) above the cover: skip it here, indexes stay the same. */
+  skipLead?: boolean;
+  /** Spot scene: drawn right before the first H2, i.e. after the opening paragraph(s), never before the first one. */
+  scene?: ReactNode;
   /**
    * 'blog' = posts: a mid card and the post's closing CTA as an install card.
    * 'pillar' = guide pages: the closing CTA keeps the plain block, no mid card.
@@ -158,7 +190,7 @@ interface Props {
   pageType?: 'blog' | 'pillar';
 }
 
-export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
+export default function BlogRenderer({ sections, skipLead = false, scene, pageType = 'blog' }: Props) {
   const isPost = pageType === 'blog';
   const h2Indexes = sections.flatMap((sec, i) => (sec.type === 'heading' && sec.level === 2 ? [i] : []));
   const midAt = isPost ? midCardIndex(sections, h2Indexes) : -1;
@@ -190,37 +222,28 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
                 </div>
               );
 
-            case 'callout': {
-              const Icon = ICONS[section.icon || 'sparkles'] || Sparkles;
+            case 'callout':
+              if (skipLead && i === 0) return null;
+              return <Callout section={section} />;
+
+            case 'tip':
               return (
-                <div className={`my-8 ${CALLOUT_PAD} rounded-2xl bg-brand/10 border border-brand/30 flex flex-col gap-3 sm:flex-row sm:gap-4`}>
-                  <Icon className="w-6 h-6 text-brand shrink-0 sm:mt-1" />
-                  <div className="flex-1 min-w-0">
-                    {section.title && <p className="font-bold text-white text-lg mb-2">{section.title}</p>}
+                <div className={`my-6 flex gap-3 ${CALLOUT_PAD} rounded-xl border-l-4 border-brand bg-surface-card sm:gap-4`}>
+                  <IconTile name="tip" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs uppercase tracking-widest text-brand font-bold mb-2">Tip</p>
                     <div className={`text-white/85 ${BODY}`}>
                       <Markdown text={section.content} />
                     </div>
                   </div>
                 </div>
               );
-            }
-
-            case 'tip':
-              return (
-                <div className={`my-6 ${CALLOUT_PAD} rounded-xl bg-surface-card border-l-4 border-brand`}>
-                  <p className="text-xs uppercase tracking-widest text-brand font-bold mb-2">Tip</p>
-                  <div className={`text-white/85 ${BODY}`}>
-                    <Markdown text={section.content} />
-                  </div>
-                </div>
-              );
 
             case 'highlight':
               return (
-                <div
-                  className={`my-6 ${CALLOUT_PAD} rounded-xl bg-gradient-to-br from-brand/15 to-brand-dark/10 border border-brand/20`}
-                >
-                  <div className={`text-white/90 ${BODY}`}>
+                <div className={`my-6 flex gap-3 ${CALLOUT_PAD} rounded-xl border border-brand/20 bg-brand/10 sm:gap-4`}>
+                  <IconTile name="highlight" />
+                  <div className={`min-w-0 flex-1 text-white/90 ${BODY}`}>
                     <Markdown text={section.content} />
                   </div>
                 </div>
@@ -228,29 +251,30 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'important':
               return (
-                <div className={`my-6 ${CALLOUT_PAD} rounded-xl bg-surface-card border-l-4 border-yellow-500/70`}>
-                  <p className="text-xs uppercase tracking-widest text-yellow-400 font-bold mb-2">Important</p>
-                  <div className={`text-white/85 ${BODY}`}>
-                    <Markdown text={section.content} />
+                <div className={`my-6 flex gap-3 ${CALLOUT_PAD} rounded-xl border-l-4 border-yellow-500/70 bg-surface-card sm:gap-4`}>
+                  <IconTile name="important" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs uppercase tracking-widest text-yellow-400 font-bold mb-2">Important</p>
+                    <div className={`text-white/85 ${BODY}`}>
+                      <Markdown text={section.content} />
+                    </div>
                   </div>
                 </div>
               );
 
             case 'stat':
-              return (
-                <div className={`my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center ${BREAKOUT}`}>
-                  <p className="text-4xl md:text-5xl font-black text-brand">{section.number}</p>
-                  <p className="text-white font-semibold mt-2">{section.label}</p>
-                  {section.description && <p className="text-white/65 text-[15px] mt-2">{section.description}</p>}
-                </div>
-              );
+              return <StatBlock section={section} className={`my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center ${BREAKOUT}`} />;
 
             case 'steps':
+              // A numbered rail: the steps are a real sequence, so a line runs from badge to badge.
               return (
-                <ol className="my-4 space-y-3 list-none pl-0 counter-reset-steps">
+                <ol className="my-4 list-none pl-0">
                   {section.items.map((item, idx) => (
-                    <li key={idx} className="flex gap-4 items-start">
-                      <span className="shrink-0 w-8 h-8 rounded-full bg-brand text-brand-ink font-bold flex items-center justify-center text-sm">
+                    <li key={idx} className="relative flex items-start gap-4 pb-5 last:pb-0">
+                      {idx < section.items.length - 1 && (
+                        <span aria-hidden="true" className="absolute bottom-0 left-4 top-9 -ml-px w-0.5 rounded-full bg-brand/45" />
+                      )}
+                      <span className="relative z-[1] flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-ink">
                         {idx + 1}
                       </span>
                       <div className={`text-white/85 ${BODY} pt-0.5 flex-1 min-w-0`}>
@@ -273,14 +297,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
               );
 
             case 'verse':
-              return (
-                <blockquote className={`my-8 rounded-2xl bg-surface-card border-l-4 border-brand py-5 pl-5 pr-5 md:pr-6 ${BREAKOUT}`}>
-                  <p dir="auto" className="font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">"{section.text}"</p>
-                  <footer className="mt-3 text-[15px] font-semibold tracking-wide text-white/70">
-                    , {section.reference}
-                  </footer>
-                </blockquote>
-              );
+              return <VerseCard section={section} />;
 
             case 'cta':
               if (isPost) {
@@ -316,6 +333,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
         return (
           <Fragment key={i}>
+            {scene && i === h2Indexes[0] && scene}
             {i === midAt && <AppNudge placement="mid" campaign={CAMPAIGNS.blogMid} className="!mt-10 mb-10" />}
             {block}
           </Fragment>
