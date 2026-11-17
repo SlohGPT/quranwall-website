@@ -3,6 +3,8 @@
 Public repo: qualitative only, never raw Search Console numbers.
 
 ## Status (2026-11-17)
+**2026-11-17 (journal 05):** the blog design and Core Web Vitals pass and Karol's no-price order are live together (`8ce9cc1`). Live Lighthouse mobile is 98–99 on `/`, `/blog`, a post and `/features` (it was 91–96), LCP is about 1.9 s, and accessibility is 100. Post template: TOC, 4-level breadcrumbs, prev/next. Covers are AVIF/WebP, and framer-motion and react-markdown are out of the bundle. `pricing.md` is gone, `llms.txt` states no subscription or price, and `lint-facts` now forbids that wording (self-test 255). The CLAUDE.md, SEO-STRATEGY and skill wording for the no-price rule waits for Karol's OK.
+
 **2026-11-17 (journal 04):** the internal-link and SEO/GEO pass is live (`3c7c459`):
 - every post links the next 3 guides in cluster order, plus its `/blog` cluster;
 - `/blog` lists all posts by cluster, and the footer links every post in cluster columns;
@@ -39,3 +41,4 @@ Append-only, one entry per manual session; next number = highest + 1. The SEO ma
 - [02 — Homepage redesign, 2026-11-16](journal/02-homepage-redesign-2026-11-16.md): hero phone mockup built in code, six-tile features bento, section pass (round 1); no pricing on the site, viewport-fit hero, How it works (round 2); the app's real flow and limits read from the iOS source, hero and copy made truthful, dry-run merge with main (round 3); merged after an 8-agent review, live, prompts updated.
 - [03 — Verified fixes and keyword engine 1.2.0, 2026-11-17](journal/03-verified-fixes-engine-120-2026-11-17.md): the wallpaper and translation copy fixed on six posts, their install cards, the manifest and the nav (`e91e8e5`); new lint rules (`a9f8a3e`); doctrine and TODO question 7 (`c582e3c`); engine 1.2.0 (`a7eb67d`); regex families (`c29e20b`); p8 merged (`558ef9f`); live as `eeba4a2`. Includes the iOS caller trace (file:line) and the corrections to journal 01.
 - [04 — Internal links and SEO/GEO pass, 2026-11-17](journal/04-internal-links-geo-pass-2026-11-17.md): link-graph 1.0.0; related block, hub, footer cluster columns, breadcrumbs, in-body links, answer-first openings, shorter titles, generated llms.txt Guides (`f9e9b6c`, live as `3c7c459`); before/after table; the footer-template caveat on the median.
+- [05 — Blog design, Core Web Vitals and no-price pass, 2026-11-17](journal/05-blog-design-cwv-no-price-2026-11-17.md): post template, blog index, Guides menu, covers, no framer-motion or react-markdown, lazy routes (`ebfdd0c`…`99b0f6e`); no subscription or price wording and the lint flip (`8ce9cc1`); one deploy after Vercel skipped `99b0f6e`; live before/after Lighthouse table and fold check; the Vercel challenge and usage warning.
