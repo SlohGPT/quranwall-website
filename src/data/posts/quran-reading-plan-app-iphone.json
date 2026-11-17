@@ -4,7 +4,7 @@
     "description": "Choosing a quran reading plan app iphone setup that survives past week two — how to pick a pace, track your streak, and keep it visible on your iPhone.",
     "date": "July 02, 2026",
     "datePublished": "2026-07-02",
-    "dateModified": "2026-11-16",
+    "dateModified": "2026-11-17",
     "readTime": "6 min read",
     "image": "/blog-thumbnails/quran-reading-plan-app-iphone.jpg",
     "imageAttribution": {
@@ -84,7 +84,7 @@
     },
     {
       "type": "paragraph",
-      "text": "This is where **QuranWall** earns its place next to a reading-plan app rather than instead of one. It puts an ayah of the Quran on your lock screen, with a new ayah each day — the one screen you check before opening any app — so the Quran is already in front of you before you've even decided whether today is a reading day. Pair it with a **Quiet Time Focus mode**, and the moment you sit down to read, your phone is already quiet and already pointed at the Quran. The full walkthrough is in our guide to [building a Quran Focus mode on iPhone](/blog/quran-focus-mode-iphone)."
+      "text": "This is where **QuranWall** earns its place next to a reading-plan app rather than instead of one. It puts an ayah of the Quran on your lock screen — the one screen you check before opening any app — so the Quran is already in front of you before you've even decided whether today is a reading day. Pair it with a **Quiet Time Focus mode**, and the moment you sit down to read, your phone is already quiet and already pointed at the Quran. The full walkthrough is in our guide to [building a Quran Focus mode on iPhone](/blog/quran-focus-mode-iphone)."
     },
     {
       "type": "verse",
@@ -133,7 +133,7 @@
     {
       "type": "cta",
       "title": "Stop choosing the reminder yourself",
-      "description": "QuranWall puts a new ayah on your lock screen each day, Arabic beside a translation, so your reading plan has a daily cue that never asks to be remembered.",
+      "description": "QuranWall puts an ayah on your lock screen, in Uthmani Arabic or a translation, so your reading plan has a daily cue you see without opening an app.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }

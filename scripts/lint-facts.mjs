@@ -69,7 +69,10 @@ const QLEAD = String.raw`(?:(?:in|within|under|just|only|about|around|roughly|le
 // What counts as "setting up" in the setup-time rule.
 // Objects that may sit between "set" and "up" ("Set it up", "set QuranWall up").
 const SETOBJ = String.raw`(?:it|this|everything|Quran ?Wall|the app|your lock screen)`;
-const SETUPV = String.raw`(?:set(?:s|ting)?[- ]?up|set(?:s|ting)?\s+${SETOBJ}\s+up|install\w*|ready|get(?:ting)? started|up and running)`;
+// 2026-11-17: the "<time> with QuranWall" branch of setup-time needs a setup verb in the clause ("Done in 2 minutes with
+// QuranWall" is a setup claim, "Just 5 minutes with QuranWall each morning" is a habit).
+const SETVERB = String.raw`(?:done|ready|set(?:[- ]?up)?|finished|installed|started|sorted)`;
+const SETUPV =String.raw`(?:set(?:s|ting)?[- ]?up|set(?:s|ting)?\s+${SETOBJ}\s+up|install\w*|ready|get(?:ting)? started|up and running)`;
 // A head count: "1,000+", "50,000", "10k", "3 million" (social-proof rules).
 const COUNT = String.raw`\d[\d,.]*(?:\s?(?:k|m|million|thousand)\b)?\+?`;
 // A count in words: "a thousand", "one million", "a hundred thousand", "5 thousand", "thousands of", "hundreds of".
@@ -83,7 +86,99 @@ const PEOPLE = String.raw`(?:believers|muslims|users|people)`;
 // tafsir on your lock screen" is an invented claim), and "not only" is an addition, not a denial.
 const DENY = /\b(?:no|not(?!\s+only\b)|never|without|lacks?|has no|(?:don|doesn|didn|isn|aren|wasn|weren|won|can|couldn|hasn|haven)'?t|do not|does not|did not|cannot|not confirmed)\b/i;
 
-// Each rule: [id, regex, unused, allow?]. `allow` rescues a sentence that matches it.
+// ---- wallpaper-automatic (2026-11-17), the idea of FaithWall's wallpaper-automatic / wallpaper-widget-combo rules.
+// App truth (iOS source): the user picks an ayah, taps "Make It Mine", and Apple's Shortcuts app applies it to the Lock Screen
+// wallpaper, which then NEVER changes by itself. Only the widget can rotate, and only if the user turns on auto-rotate
+// (daily / every 8 hours / hourly). So "a new ayah each day", "automatic", "on its own", "nothing to change by hand" about the
+// wallpaper or Lock Screen are wrong; the same words about the widget with the opt-in are true. The rule is a detector object
+// (exec like a RegExp) because it needs per-clause logic: a clause is a sentence part between ';'.
+const TIME_S = String.raw`(?:every|each)\s+(?:day|morning|night|evening|hour|few\s+(?:hours|minutes)|\d+\s*(?:minutes?|mins?|hours?|hrs?))\b|\bdaily\b|\bonce\s+(?:a|per)\s+day\b|\bat\s+night\b|\bovernight\b|\bnightly\b|\bhourly\b|\bwhile\s+you(?:['’]re|\s+are)?\s+(?:sleep\w*|asleep)\b`;
+const AUTO_TIME = new RegExp(String.raw`\b(?:${TIME_S})`, 'i');
+// "a new ayah", "fresh verse", "the next ayah", "a different wallpaper".
+const NEW_AYAH = new RegExp(String.raw`\b(?:brand[- ]new|new|fresh|different|next|another)\s+(?:(?:Quran|Quranic|lock[- ]?screen|wallpaper)\s+)*(?:ayah|ayahs|ayat|verse|verses|passage|surah|wallpaper)\b`, 'i');
+// Clear claims of an automatic change, in any QuranWall-ish clause (the widget opt-in does not rescue them).
+const AUTO_STRONG = new RegExp(String.raw`\bnothing to (?:change|update|swap|refresh|do)\b[^.;]{0,15}\b(?:by hand|manually|yourself)\b|\bno opening required\b|\b(?:runs?|works?|updates?|changes?|refreshes|rotates?|applies|sets?|swaps?)\b[^.;]{0,50}\b(?:in the background|behind the scenes)\b|\bwhile the app is closed\b|\bShortcuts?\s+automations?\b[^.;]{0,60}\b(?:change|swap|update|new (?:ayah|verse)|different (?:ayah|verse)|rotat)`, 'i');
+// "nothing to tap/open" is only a claim about the wallpaper, the app or the ayah.
+const AUTO_STRONG_CTX = /\bnothing to (?:tap|open)\b/i;
+// Weak phrases: a claim only when the clause is about QuranWall, the Lock Screen, the wallpaper, an ayah or verse, AND
+// says something appears or changes ("The Quran shows up on its own", "a lock screen that changes automatically").
+const AUTO_WEAK = /\bautomatic(?:ally)?\b|\bautomated\b|\bon auto-?pilot\b|\bset[- ]and[- ]forget\b|\bset it and forget it\b|\bhands[- ](?:free|off)\b|\bby itself\b|\bon its own\b(?!\s+(?:lock|home)[- ]screen)|\bon a schedule\b|\b(?:updates?|changes?|refreshes|swaps?|rotates?|renews?)\s+itself\b|\bself-(?:updating|refreshing|changing)\b|\bkeeps?\s+(?:rotating|changing|updating|refreshing|cycling|shuffling|swapping)\b|\bstays\s+fresh\b|\bnever\s+(?:gets?|goes|grows?|becomes?)\s+(?:stale|old|boring)\b|\bwhile\s+you(?:['’]re|\s+are)?\s+(?:sleep\w*|asleep)\b|\bwithout\s+(?:you\s+)?lifting a finger\b/i;
+const AUTO_CTX = new RegExp(String.raw`\b(?:${BRAND}|lock[- ]?screens?|wallpapers?|ayah|ayahs|ayat|verses?|Quran)\b`, 'i');
+const AUTO_CHANGEISH = /\b(?:appears?|shows?|displays?|chang\w*|updat\w*|refresh\w*|swaps?|swapp\w*|rotat\w*|switch\w*|renew\w*|replac\w*|shuffl\w*|cycl\w*|arriv\w*|deliver\w*|sends?|pushe?s?|puts?|places?|appl(?:y|ies|ied)|loads?|comes?|pops?|sets?)\b/i;
+// A subject-verb-time claim with no QuranWall in the sentence: "your lock screen changes every day".
+const WP_SUBJ = String.raw`(?:lock[- ]?screen|wallpaper)(?:\s+(?:ayah|verse))?`;
+const AUTO_CHG = String.raw`(?:changes?|updates?|shuffles?|cycles?|rotates?|refreshes|switches|swaps?|renews?|replaces?)`;
+const AUTO_SUBJ_TIMED = new RegExp(String.raw`\b${WP_SUBJ}\s+(?:(?:is|gets?)\s+(?:automatically\s+)?)?(?:${AUTO_CHG}|updated|refreshed|changed|swapped|replaced|renewed|rotated)\b[^.;]{0,40}\b(?:${TIME_S})|\b(?:${TIME_S})[^.;]{0,50}\b${WP_SUBJ}\s+(?:is|looks|feels)\s+(?:different|new|fresh)\b|\b${AUTO_CHG}\s+(?:your|the)\s+(?:${WP_SUBJ}|ayah|verse)s?\b[^.;]{0,40}\b(?:${TIME_S})|\b(?:${TIME_S})[^.;]{0,40}\b${AUTO_CHG}\s+(?:your|the)\s+${WP_SUBJ}\b`, 'i');
+// The user acts first or the copy is about the user's own reading habit: the time phrase belongs to the user.
+const AUTO_USER_ACTS = /\b(?:when|after|once|whenever|until|if)\s+you\b|\byou\s+(?:(?:can|could|may|might|should|would|will|must|need\s+to|want\s+to)\s+|['’]ll\s+)?(?:pick|choose|select|edit|tap|open|change|switch|update|set|read|recite|memori[sz]e|reflect|learn|study)\b|\byou['’]ll\s+(?:pick|choose|select|edit|tap|open|change|switch|update|set)\b|^\W*(?:pick|choose|select|edit|tap|save|change|read|recite|memori[sz]e|reflect|learn|study|spend|try|aim|commit|start|begin|take)\b|\b(?:read(?:ing)?|recit(?:e|ing)|memori[sz](?:e|ing)|reflect(?:ing)?|ponder(?:ing)?|study(?:ing)?|learn(?:ing)?)\b/i;
+// "after you pick, QuranWall applies it automatically" is true: the app runs the Shortcut itself after a pick or edit.
+const AUTO_USER_LEAD = /\b(?:after|when|once|whenever|if)\s+you\b|^\W*(?:pick|edit|choose|select|save|change|tap)\b|\b(?:pick|edit|choose|select|save|tap)s?\s+(?:a|an|the|your|another|new|that|it|Make It Mine)\b[^.;]{0,40}\b(?:and|then)\b|\bMake It Mine\b|\byou\s+(?:might\s+|may\s+|can\s+)?(?:pick|edit|choose|select|save|tap)\b/i;
+const AUTO_NEGATED = /\b(?:is\s+not|isn['’]t|not|never|far\s+from)\s+(?:fully\s+|completely\s+|totally\s+)?(?:hands[- ](?:free|off)|automatic(?:ally)?|automated|set[- ]and[- ]forget)\b/gi;
+// Legal, billing, privacy and sync words: "renews automatically", "collected automatically" are not about the wallpaper.
+const AUTO_SKIP = /\b(?:renew\w*\b(?!\s+(?:your|the|a)\s+(?:\w+\s+)?(?:wallpaper|lock|ayah|verse))|subscri\w+|billed|billing|cancel\w*|trial|sync\w*|iCloud|backup|terminat\w*|licen[sc]e\w*|collect\w*|privacy|cookies?|analytics|crash)\b/i;
+// iOS Focus modes and OS behaviour switch things on by themselves; that is iOS, not QuranWall.
+const AUTO_OS = /\b(?:Focus|iOS|Apple)\b/i;
+const AUTO_OTHER_APPS = /\b(?:Muslim Pro|Quran Majeed|Quran\.com|Tarteel|Athan|Quranly|iQuran|Al-?Quran|YouVersion|Hallow|competitors?|other apps?|another app|most apps)\b/i;
+// A widget clause is exempt when it states the opt-in, or when it does not talk about the wallpaper
+// ("The widget can switch to a new ayah every day"; "Turn on auto-rotate and the widget shows ...").
+const WIDGET_OPT_IN = /\b(?:turn(?:s|ed)?\s+on|turning\s+on|switch(?:es|ed)?\s+on|enable[sd]?|opt(?:s|ed)?[- ]in|optional(?:ly)?(?!\?)|off by default|toggle|auto-?rotate|(?:only\s+)?(?:if|when)\s+you\s+(?:want|choose|decide|ask)|only\s+(?:if|when))\b/i;
+function autoClaimInClause(c) {
+  if (AUTO_SKIP.test(c)) return null;
+  if (AUTO_OTHER_APPS.test(c) && !new RegExp(BRAND, 'i').test(c)) return null;
+  const cc = c.replace(/\b(?:lock|home)[- ]?screen\s+widgets?\b/gi, 'widget');
+  const widget = /\bwidgets?\b/i.test(cc);
+  const wall = /\bwallpapers?\b/i.test(cc);
+  const lock = /\block[- ]?screens?\b/i.test(cc);
+  const optIn = WIDGET_OPT_IN.test(cc);
+  // exempt from the timed and weak phrases: a widget clause (opt-in, or no wallpaper) or an opt-in clause about neither wallpaper nor Lock Screen
+  const exempt = (widget && (optIn || !wall)) || (optIn && !wall && !lock);
+  const userLed = AUTO_USER_ACTS.test(c);
+  const ctx = AUTO_CTX.test(c);
+  let m = AUTO_STRONG.exec(c);
+  if (m) return m.index;
+  if (ctx && (m = AUTO_STRONG_CTX.exec(c))) return m.index;
+  if (exempt) return null;
+  if (ctx && !AUTO_OS.test(c) && AUTO_CHANGEISH.test(c)) {
+    let t = c.replace(AUTO_NEGATED, (x) => ' '.repeat(x.length));
+    if (AUTO_USER_LEAD.test(t)) t = t.replace(/\bautomatic(?:ally)?\b/gi, (x) => ' '.repeat(x.length));
+    if ((m = AUTO_WEAK.exec(t))) return m.index;
+  }
+  if (userLed) return null;
+  const a = NEW_AYAH.exec(c);
+  const t = AUTO_TIME.exec(c);
+  if (a && t) return Math.min(a.index, t.index);
+  if ((m = AUTO_SUBJ_TIMED.exec(c))) return m.index;
+  return null;
+}
+const WALLPAPER_AUTOMATIC = {
+  exec(s) {
+    if (/\?["'’)\]}`,\s]*$/.test(s)) return null; // a question (also one quoted in a TS/JSON string: 'Does it ...?',)
+    let from = 0;
+    for (const c of s.split(/;\s+/)) {
+      const base = s.indexOf(c, from);
+      from = base + c.length;
+      const at = autoClaimInClause(c);
+      if (at !== null) return Object.assign([s.slice(base + at, from)], { index: base + at });
+    }
+    return null;
+  },
+};
+// ---- arabic-beside-translation (2026-11-17): the wallpaper shows ONE edition per ayah, Uthmani Arabic OR a translation,
+// never both. Strong phrases ("beside / alongside / next to a translation", "Arabic and English side by side") are bare;
+// the weak connector ("Arabic with / and a translation") counts only in a sentence about the wallpaper, Lock Screen,
+// widget or QuranWall (a blog post may say "read the Arabic with a translation" about reading).
+const TRANS = String.raw`(?:(?:a|an|the|its|your|one|each|every)\s+)?(?:\w+\s+){0,2}translations?\b`;
+const ARABIC_BESIDE = new RegExp(String.raw`\b(?:beside|alongside|next to|together with)\s+(?:a|an|the|its|your|one)\s+(?:\w+\s+){0,2}translations?\b|\b(?:Uthmani\s+)?Arabic\b[^.;]{0,40}\b(?:beside|alongside|next to)\s+(?:${TRANS}|English\b)|\bArabic\b[^.;]{0,30}\b(?:and|with|plus)\s+(?:${TRANS}|English\b)[^.;]{0,30}\bside[- ]by[- ]side\b|\bArabic\b[^.;]{0,30}\bside[- ]by[- ]side\b[^.;]{0,30}\b(?:${TRANS}|English\b)|\bArabic\b[^.;]{0,30}\b(?:and|with|plus|&)\s+(?:English|an? English|its English)\b[^.;]{0,20}\bside[- ]by[- ]side\b|^(?=[\s\S]*\b(?:lock[- ]?screen|wallpaper|widget|Quran ?Wall)\b)[\s\S]*?\bArabic\b[^.;]{0,25}\b(?:and|with|plus|&|together with)\s+${TRANS}`, 'i');
+// Another app's feature ("Muslim Pro shows Arabic beside a translation") is not a QuranWall claim.
+const ARABIC_OTHER = /\b(?:Muslim Pro|Quran Majeed|Quran\.com|Tarteel|Athan|iQuran|Al-?Quran|competitors?|other apps?|another app|most apps|many apps|print(?:ed)? mushafs?|mushafs?)\b/i;
+
+// Read-along recitation is real in the app (Listen in Arabic); Karol's decision on wording is pending (TODO-KAROL question 7),
+// so it WARNs instead of FAILing (2026-11-17). Other audio claims stay invented-audio FAILs.
+const READALONG = /\bListen in Arabic\b|\bread[- ]?along\b/i;
+const WARN_RULES = new Set(['audio-readalong']);
+
+// Each rule: [id, regex, unused, allow?]. `allow` rescues a sentence that matches it (a RegExp, DENY for a clause-scoped
+// negation, or an array of them).
 const rules = [
   // A stated price, trial length or plan name about QuranWall.
   ['price-or-trial', new RegExp(`\\b${BRAND}\\b[^.]{0,120}(?:\\$\\s?\\d|€\\s?\\d|£\\s?\\d|\\b\\d+[- ]days?\\s+(?:free\\s+)?trial|\\bfree trial\\b|\\b\\d+\\s+days?\\s+free\\b|\\bper (?:week|month|year)\\b|/(?:wk|week|mo|month|yr|year)\\b|\\b(?:weekly|monthly|yearly|annual|lifetime)\\s+(?:plan|subscription|premium|pass|membership)\\b)`, 'i'), null],
@@ -106,7 +201,7 @@ const rules = [
   ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
   // NOT CONFIRMED: the name "Premium". The listing's in-app purchases are called QuranWall+ Weekly / Yearly;
   // write "an in-app subscription" instead. Case-sensitive on purpose ("premium" as an adjective is fine).
-  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:[Ss]ubscription|[Pp]lan)\b|\bPremium\s+(?:[Ss]ubscription|[Pp]lan|[Tt]ier|[Vv]ersion|[Mm]embership|SUBSCRIPTION|PLAN|TIER|VERSION|MEMBERSHIP)\b/, null],
+  ['premium-name', /\bPremium\s+is\s+(?:a|an|the)\s+(?:in-app\s+)?(?:[Ss]ubscription|[Pp]lan)\b|\bPremium\s+(?:[Ss]ubscription|[Pp]lan|[Tt]ier|[Vv]ersion|[Ee]dition|[Mm]embership|SUBSCRIPTION|PLAN|TIER|VERSION|EDITION|MEMBERSHIP)\b/, null],
   // NOT CONFIRMED: duas inside QuranWall.
   ['duas', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:du'?as?|du'?aa|supplications?|adhkar|adhkaar)\\b|\\b(?:personal|custom|your own|saved|favou?rite)\\s+(?:du'?as?|du'?aa|supplications?)\\b`, 'i'), null, /\b(?:read|reading|recit\w+|write|writing|praying|pray|make|making|about|topic|post|guide|article)\b/i],
   // NOT CONFIRMED: a "60-second setup".
@@ -114,7 +209,7 @@ const rules = [
   // NOT CONFIRMED: any stated setup time ("Seconds to set up", "2-minute setup", "Set up in under 2 minutes",
   // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
   // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
-  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b`, 'i'), null],
+  ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b${SETVERB}\\b${CL}{0,30}?\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b|\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b${CL}{0,40}\\b${SETVERB}\\b`, 'i'), null],
   // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
   ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
   // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
@@ -122,7 +217,9 @@ const rules = [
   ['ios16-as-min', new RegExp(`\\b(?:${BRAND}|the app)\\b[^.]{0,100}\\biOS\\s?16(?:\\.0)?(?:\\+|\\s+or\\s+(?:later|newer|higher)|\\s+and\\s+(?:later|newer|up))|\\b(?:requires?|needs?|minimum|min\\.?)\\s+(?:iOS\\s*)?16(?:\\.0)?\\b|Platform\\W{1,8}iOS 16|Minimum iOS\\W{1,8}16|operatingSystem"?\\W{1,6}iOS 16|^[-*\\s]*iOS 16(?:\\.0)?(?:\\+|\\s+or later|\\s+and later)?\\s*$`, 'i'), null, /widget|Lock Screen|Focus|competitor|customi[sz]|introduced|\bsince\b/i],
   // Invented features (about QuranWall). A denial in the same sentence ("no audio", "doesn't have") is fine.
   ['invented-android-web', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:Android|Google Play|Play Store|web app|web version|browser version|desktop app|Windows|Chrome extension)\\b|\\b(?:Android|web app|web version|browser version)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with)\\s+${BRAND}\\b`, 'i'), null, DENY],
-  ['invented-audio', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:audio(?: recitation)?|recitations?|recited|reciters?|qari|qaris|listen(?:ing)? to|hear)\\b|\\b(?:audio(?: recitation)?|recitations?|reciters?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['invented-audio', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:audio(?: recitation)?|recitations?|recited|reciters?|qari|qaris|listen(?:ing)? to|hear)\\b|\\b(?:audio(?: recitation)?|recitations?|reciters?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, [DENY, READALONG]],
+  // Read-along recitation ("Listen in Arabic") is a real feature: WARN, not FAIL (2026-11-17, see READALONG).
+  ['audio-readalong', new RegExp(`\\b${BRAND}\\b[^.]{0,120}\\b(?:Listen in Arabic|read[- ]?along)\\b|\\b(?:Listen in Arabic|read[- ]?along)\\b[^.]{0,120}\\b${BRAND}\\b|\\bListen in Arabic\\b`, 'i'), null],
   ['invented-tafsir', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:tafs[iī]rs?|commentar(?:y|ies)|exegesis)\\b|\\b(?:tafs[iī]rs?|commentar(?:y|ies))\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-prayer-times', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:prayer times?|salah times?|salat times?|adhan|azan|qibla|qiblah|prayer reminders?|athan)\\b|\\b(?:prayer times?|qibla|qiblah|adhan)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-hifz', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:hifz|hifdh|memori[sz]ation (?:tracking|tracker|tools?|progress|plans?|features?|mode)|memori[sz]ing (?:progress|tools?)|track\\w*\\s+(?:your\\s+)?(?:hifz|memori[sz]ation|memori[sz]ing|progress)|hifz (?:tracker|tools?|plans?|mode|features?))\\b`, 'i'), null, DENY],
@@ -131,13 +228,19 @@ const rules = [
   // "1,000+ believers" lines; see GRANDFATHER below). The one allowed number is the App Store Connect downloads floor
   // from facts.json ("Downloaded <downloadsFloor> times", rule social-proof-downloads). Stats whose label names users,
   // believers, people or Muslims are linted separately (lintStat); this rule covers prose and tag-stripped HTML.
-  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|[km]\\b\\+?)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|[km]\\b\\+?)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
+  ['social-proof', new RegExp(`\\b(?:(?:tens|hundreds) of )?(?:thousands|hundreds|millions)(?: of)?\\s+(?:\\w+\\s+){0,2}?${PEOPLE}\\b|\\btrusted by\\s+${QUAL}(?:${COUNT}|${WCOUNT}|thousands|millions)|\\b(?:used|loved|trusted|chosen|relied on|picked) by\\s+${QUAL}(?:(?:tens|hundreds) of\\s+)?(?:thousands|millions|hundreds)\\b|\\b(?:used|loved|chosen|relied on|picked) by\\s+${QUAL}(?:${COUNT}|${WCOUNT})|\\bjoin(?:ed|ing|s)?\\s+${QUAL}(?:${COUNT}|${WCOUNT})(?:\\s+\\w+){0,2}?\\s+${PEOPLE}\\b|\\b${QUAL}${WCOUNT}(?:\\s+(?!of\\b)\\w+){0,2}?\\s+${PEOPLE}\\b|(?:\\b\\d[\\d,.]*\\s?(?:\\+|%|[km]\\b\\+?)|\\b\\d{1,3}(?:,\\d{3})+|\\b\\d{3,}\\+?)(?:\\s+(?!of\\b)\\w+)?\\s+${PEOPLE}\\b|\\b\\d[\\d,.]*\\s?(?:million|thousand|[km]\\b\\+?)\\s+(?:\\w+\\s+)?(?:users|believers)\\b|\\b\\d[\\d,.]*\\s+(?:active|daily|monthly|early|happy|total|registered)\\s+${PEOPLE}\\b`, 'i'), null],
   // Two phrasings are allowed, both only with exactly facts.downloadsFloor (commas ignored, the "+" must match):
   // "Downloaded <floor> times" and "<floor> downloads". Any other download count FAILs (see downloadHits).
   ['social-proof-downloads', null, null],
   // NOT CONFIRMED: "Premium" as a plan name ("QuranWall Premium", "upgrade to Premium", "go Premium",
   // "Premium needs ..."). Case-sensitive on Premium on purpose; "premium" as an adjective is fine.
-  ['premium-plan-word', /\bQuran ?Wall\+?\s+(?:Premium|Pro|Plus)\b|\b[Uu]pgrad(?:e|es|ed|ing)\s+to\s+(?:Pro|Plus)\b|\b(?:Pro|Plus)\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\+?\s+)?Premium\b|\bPremium\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b/, null],
+  ['premium-plan-word', /\bQuran ?Wall\+?\s+(?:Premium|Pro|Plus)\b|\b[Uu]pgrad(?:e|es|ed|ing)\s+to\s+(?:Pro|Plus)\b|\b(?:Pro|Plus)\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\b(?:[Uu]pgrad(?:e|es|ed|ing)|[Gg]o(?:es|ing)?|[Gg]et(?:s|ting)?)\s+(?:to\s+)?(?:Quran ?Wall\+?\s+)?Premium\b|\bPremium\s+(?:[Pp]lan|[Ss]ubscription|[Tt]ier|[Mm]embership)\b|\bPremium\s+(?:needs|requires|costs|unlocks|includes|features|members|access|users)\b|\bPremium\s+(?:[Vv]ersion|[Ee]dition)\b|\b(?:[Qq][Uu][Rr][Aa][Nn] ?[Ww][Aa][Ll][Ll])\+?\s+(?:Pro|PRO|pro|Plus|PLUS|PREMIUM)\b(?![-\w])|\bquranwall\+?\s+plus\b|\b[Gg][Oo]\s+(?:Pro|PRO)\b(?![-\w]|\s+tips?\b)|\b[Gg]et\s+(?:Pro|PRO|Plus)\b(?![-\w]|\s+(?:tips?|size)\b)/, null],
+  // 2026-11-17: the plan-name rule above is case-insensitive on the brand ("quranwall pro", "QuranWall PLUS") and also catches
+  // "Go Pro", "Get Pro", "Get Plus" and "Pro/Plus/Premium Version/Edition". Hyphenated words ("Pro-Quran") and "Pro tip" pass.
+  // The wallpaper shows ONE edition per ayah (Uthmani Arabic OR a translation), so "Arabic beside a translation" is wrong.
+  ['arabic-beside-translation', ARABIC_BESIDE, null, [ARABIC_OTHER, DENY]],
+  // The wallpaper never changes by itself; only the widget can rotate, and only after the user turns on auto-rotate.
+  ['wallpaper-automatic', WALLPAPER_AUTOMATIC, null, DENY],
 ];
 
 // A sentence that states the ban itself ("never write ...", "NOT CONFIRMED ...") is not a violation.
@@ -153,7 +256,7 @@ const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
 // factual "free to download, with an in-app subscription, no prices" line on purpose), the legal pages, and the
 // facts file that feeds the machine files. Built legal pages: dist/terms-of-use, dist/eula, dist/privacy-policy.
 const PRICING_EXEMPT = /^(?:public\/(?:llms\.txt|pricing\.md)|src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|src\/data\/facts\.json|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)$/;
-const BARE_RULES = new Set(['pricing-mention', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare']);
+const BARE_RULES = new Set(['pricing-mention', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare', 'arabic-beside-translation', 'wallpaper-automatic']);
 
 /**
  * Files whose negations are rule text, not copy: skills and the SEO queue/keyword notes say "NOT CONFIRMED: do not
@@ -161,7 +264,7 @@ const BARE_RULES = new Set(['pricing-mention', 'no-account-bare', 'setup-60s', '
  * (posts, components, pages, public/*.txt|md, built HTML) is site content and is linted per clause.
  */
 const negOpts = (file) => {
-  const f = String(file);
+  const f = String(file).startsWith(ROOT) ? rel(file) : String(file); // relative: a worktree lives under <repo>/.claude/worktrees/
   if (/seo-(?:priorities|keywords)\.json$/.test(f)) return { wholeSentenceNeg: true, planText: true };
   return /(?:^|[\\/])\.claude[\\/]/.test(f) ? { wholeSentenceNeg: true } : {};
 };
@@ -177,7 +280,7 @@ const DL_NUM = String.raw`\d[\d,.]*(?:[km]\b)?\+?`;
 // "Step 2 installs the widget" is a verb, not a count.
 const NOT_ORDINAL = String.raw`(?<!\b(?:step|tap|option|method|part|stage|page|no\.?|number|#)\s)`;
 const DL_RE_TIMES = new RegExp(String.raw`\b(downloaded|installed)\s+(${QUAL})(${DL_NUM}|${WCOUNT})\s+times\b`, 'gi');
-const DL_RE_COUNT = new RegExp(String.raw`(?<![\w.,])${NOT_ORDINAL}(${QUAL})(${DL_NUM}|${WCOUNT})\s+(?:\w+\s+)?(downloads|installs)\b`, 'gi');
+const DL_RE_COUNT = new RegExp(String.raw`(?<![\w.,])${NOT_ORDINAL}(${QUAL})(${DL_NUM}|${WCOUNT})\s+(?:\w+\s+)?(downloads|installs|installations)\b`, 'gi'); // 2026-11-17: "installations" counts like "installs"
 
 /**
  * Download counts in one sentence that are not the allowed phrasings. Allowed: "Downloaded <floor> times" and
@@ -227,7 +330,7 @@ function lintText(text, out, opts = {}) {
         // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
         const scope = opts.wholeSentenceNeg ? s : s.slice(clauseStart(s, m.index), m.index + m[0].length);
         if (allow) {
-          if (allow === DENY ? DENY.test(scope) : allow.test(s)) continue;
+          if ([].concat(allow).some((a) => (a === DENY ? DENY.test(scope) : a.test(s)))) continue;
         }
         if (NEG.test(scope)) continue;
         if (opts.planText && PLAN_VERBS.test(s)) continue;
@@ -317,7 +420,7 @@ function walkJson(node, loc, file, out) {
 function lintFile(abs) {
   const txt = readFileSync(abs, 'utf8');
   const hits = [];
-  if (abs.endsWith('.json')) {
+  if (abs.endsWith('.json') || abs.endsWith('.webmanifest')) {
     let data;
     try { data = JSON.parse(txt); } catch (e) {
       return [{ id: 'json-parse', loc: '', s: `JSON does not parse: ${e.message}`, lines: null }];
@@ -392,21 +495,21 @@ function walk(dir, out = []) {
   return out;
 }
 
-const LINTABLE = /\.(tsx?|json|html|md|txt)$/;
+const LINTABLE = /\.(tsx?|json|html|md|txt|webmanifest)$/; // 2026-11-17: public/manifest.webmanifest has a description shown at install
 const rel = (abs) => relative(ROOT, abs).split(sep).join('/');
 
 function isLintable(relPath) {
   if (!LINTABLE.test(relPath)) return false;
   if (relPath.startsWith('src/') || relPath.startsWith('.claude/skills/')) return true;
   if (relPath === 'index.html') return true;
-  return /^public\/[^/]+\.(txt|md)$/.test(relPath);
+  return /^public\/[^/]+\.(txt|md|webmanifest)$/.test(relPath);
 }
 
 function allFiles() {
   return [
     ...walk(join(ROOT, 'src')),
     join(ROOT, 'index.html'),
-    ...walk(join(ROOT, 'public')).filter((f) => /^public\/[^/]+\.(txt|md)$/.test(rel(f))),
+    ...walk(join(ROOT, 'public')).filter((f) => /^public\/[^/]+\.(txt|md|webmanifest)$/.test(rel(f))),
     ...walk(join(ROOT, '.claude/skills')),
   ].filter((f) => existsSync(f) && isLintable(rel(f)));
 }
@@ -514,7 +617,11 @@ const GRANDFATHER = [
 const todayIso = () => process.env.LINT_FACTS_TODAY || new Date().toISOString().slice(0, 10);
 
 /** Report a text hit; a social-proof hit that is only grandfathered copy is a WARN until GRANDFATHER_UNTIL. */
+/** Legal pages (Karol's own text): the two 2026-11-17 wallpaper rules WARN there instead of FAIL, so a wrong sentence stays visible. */
+const LEGAL_PAGES = /^(?:src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)(?:\s|$)/;
+const WARN_IN_LEGAL = new Set(['arabic-beside-translation', 'wallpaper-automatic']);
 function emit(h, where) {
+  if (WARN_RULES.has(h.id) || (WARN_IN_LEGAL.has(h.id) && LEGAL_PAGES.test(where))) { warn(h.id, where, h.s); return; }
   if (h.id === 'social-proof' && GRANDFATHER.some((g) => g.test(h.s))) {
     let rest = h.s;
     for (const g of GRANDFATHER) rest = rest.replace(new RegExp(g.source, 'gi'), ' ');
@@ -565,7 +672,8 @@ function runText(files, rangesByFile) {
         const inAdded = h.lines === null || h.lines.some((l) => ranges.some(([a, b]) => l >= a && l <= b));
         if (!inAdded) continue;
       }
-      emit(h, `${r} ${h.loc}`);
+      // JSON hits also name the candidate source line(s), so a hit can be found as file:line
+      emit(h, `${r} ${h.loc}${h.lines && !h.loc.startsWith('L') ? ` (L${h.lines.join(',')})` : ''}`);
     }
   }
 }
@@ -785,7 +893,7 @@ function runDist(distArg) {
  * --self-test: a table of probes run through the same code paths as the real modes. kind 'site' = a prose string in site
  * content (walkJson: per-clause NEG), 'stat' = a stat object (walkJson + lintStat), 'tsx' = one source line
  * (lintSourceLine: JSX tag stripping and stat objects written inline), 'prompt' = lines of a prompt/skill file
- * (lintPromptLines: whole-sentence NEG). expect FAIL = at least one hit (and one with id "rule" when given), PASS = no hit.
+ * (lintPromptLines: whole-sentence NEG). expect FAIL = at least one non-WARN hit (and one with id "rule" when given), WARN = only WARN-level hits (id "rule"), PASS = no hit.
  */
 const SELF_TEST = [
   // must FAIL: items 1-6 of the peer review
@@ -895,6 +1003,106 @@ const SELF_TEST = [
   ['PASS', 'site', 'This premium wallpaper look suits a Lock Screen.'],
   ['PASS', 'prompt', ['Never call the subscription "Premium".']],
   ['PASS', 'prompt', ['Never claim this, but QuranWall has audio recitation.']],
+
+  // ---- 2026-11-17: facts round (wallpaper shows ONE edition and never changes by itself; read-along exists; plan names; counts)
+  // arabic-beside-translation: FAIL
+  ['FAIL', 'site', 'QuranWall puts an ayah on your Lock Screen, with the Arabic beside a translation.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'An ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'Uthmani Arabic beside a translation in your choice of 10 languages', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'Every wallpaper shows the ayah alongside a translation.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'The Arabic sits next to the translation on your wallpaper.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'QuranWall shows Arabic and English side by side.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'Your Lock Screen shows the Arabic with a translation underneath.', 'arabic-beside-translation'],
+  ['FAIL', 'site', 'Put Arabic and a translation on your wallpaper.', 'arabic-beside-translation'],
+  ['FAIL', 'tsx', '<p>Arabic beside a translation, in 10 languages</p>', 'arabic-beside-translation'],
+  // arabic-beside-translation: PASS
+  ['PASS', 'site', 'QuranWall shows the ayah in Uthmani Arabic or a translation.'],
+  ['PASS', 'site', 'Choose Arabic or one of 10 translations for each wallpaper.'],
+  ['PASS', 'site', 'Each wallpaper shows one edition of the ayah, Arabic or a translation.'],
+  ['PASS', 'site', "Never write 'Arabic beside a translation' about the wallpaper."],
+  ['PASS', 'site', 'QuranWall does not show Arabic beside a translation.'],
+  ['PASS', 'site', 'Muslim Pro shows the Arabic beside a translation.'],
+  ['PASS', 'site', 'Read the Arabic with a translation to understand the ayah.'],
+  ['PASS', 'prompt', ["Never write 'Arabic beside a translation' or 'Arabic and English side by side'."]],
+  // wallpaper-automatic: FAIL
+  ['FAIL', 'site', 'QuranWall shows a new ayah each day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'QuranWall puts a new ayah on your lock screen each day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'An ayah on your Lock Screen, with a new ayah each day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'It places an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Fresh and automatic. A new verse each day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'The Quran shows up on its own.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'A lock screen that changes automatically.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'The wallpaper updates itself.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Every morning a new ayah.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'QuranWall changes your wallpaper every morning.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Nothing to tap, nothing to open: your Lock Screen has the ayah.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Pick once, then there is nothing to change by hand.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'So there is nothing to change by hand.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'QuranWall updates your Lock Screen in the background.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Your wallpaper changes every day.', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'QuranWall keeps your wallpaper fresh with a new verse every hour.', 'wallpaper-automatic'],
+  ['FAIL', 'tsx', '<p>Fresh and automatic. A new verse each day</p>', 'wallpaper-automatic'],
+  ['FAIL', 'site', 'Set it and forget it: QuranWall refreshes your Lock Screen ayah.', 'wallpaper-automatic'],
+  // wallpaper-automatic: PASS
+  ['PASS', 'site', 'The widget can change on its own: turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour.'],
+  ['PASS', 'site', 'Turn on auto-rotate and the widget shows a new ayah every day.'],
+  ['PASS', 'site', 'The widget shows a new ayah every day if you turn on auto-rotate.'],
+  ['PASS', 'site', 'Auto-rotate is optional: the Home Screen widget can show a fresh verse each day.'],
+  ['PASS', 'site', 'No. Your Lock Screen keeps the ayah you chose until you pick another one in QuranWall, which takes a few taps.'],
+  ['PASS', 'site', 'The Lock Screen wallpaper keeps the ayah you chose until you pick another; the widget can switch to a new ayah every day, every 8 hours or every hour', null, 'public/llms.txt'],
+  ['PASS', 'site', 'Pair QuranWall with an iOS Focus mode so it appears automatically.'],
+  ['PASS', 'site', 'Let iOS turn it on automatically when your Focus starts.'],
+  ['PASS', 'site', 'Your subscription renews automatically unless you cancel it in your Apple account.', null, 'src/pages/TermsOfUse.tsx'],
+  ['PASS', 'site', 'QuranWall renews automatically.'],
+  ['PASS', 'site', 'Usage data is collected automatically by Apple.'],
+  ['PASS', 'site', 'The wallpaper never changes by itself.'],
+  ['PASS', 'site', "QuranWall doesn't change your wallpaper on its own."],
+  ['PASS', 'site', 'Does QuranWall change the ayah every day?'],
+  ['PASS', 'site', 'Pick an ayah and tap Make It Mine, and QuranWall applies it automatically through Shortcuts.'],
+  ['PASS', 'site', 'Read a new ayah every day and let it sink in.'],
+  ['PASS', 'site', 'Memorise a new verse each day with a short daily habit.'],
+  ['PASS', 'site', 'Muslim Pro sends a new verse every day.'],
+  ['PASS', 'prompt', ["Never write 'automatically' or 'every morning a new ayah' about the wallpaper."]],
+  ['PASS', 'prompt', ['- never "a new ayah each day" about the Lock Screen wallpaper']],
+  // invented-audio vs read-along (WARN)
+  ['WARN', 'site', 'Tap Listen in Arabic for read-along recitation in QuranWall.', 'audio-readalong'],
+  ['WARN', 'site', 'QuranWall has read-along recitation.', 'audio-readalong'],
+  ['WARN', 'site', 'Tap Listen in Arabic to hear the ayah in QuranWall.', 'audio-readalong'],
+  ['FAIL', 'site', 'QuranWall has audio recitation by famous reciters.', 'invented-audio'],
+  ['FAIL', 'site', 'QuranWall lets you listen to your favourite qari.', 'invented-audio'],
+  // plan names
+  ['FAIL', 'site', 'Try quranwall pro today.', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall PLUS', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall PRO unlocks fonts.', 'premium-plan-word'],
+  ['FAIL', 'site', 'Go Pro', 'premium-plan-word'],
+  ['FAIL', 'site', 'Get Pro for more fonts.', 'premium-plan-word'],
+  ['FAIL', 'site', 'Get Plus today.', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall Pro Version', 'premium-plan-word'],
+  ['FAIL', 'site', 'QuranWall Plus Edition', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Edition', 'premium-plan-word'],
+  ['FAIL', 'site', 'Premium Edition', 'premium-name'],
+  ['PASS', 'site', 'Pro tip: pin the widget first.'],
+  ['PASS', 'site', 'Pro-Quran apps exist, but this is not one.'],
+  ['PASS', 'site', 'QuranWall plus a Shortcut sets your wallpaper.'],
+  ['PASS', 'site', 'Get Pro tips for your Lock Screen.'],
+  ['PASS', 'site', 'Muslim Pro is a different app.'],
+  // counts
+  ['FAIL', 'site', '5,000 installations', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Over 2,000 installations worldwide', 'social-proof-downloads'],
+  ['FAIL', 'site', 'Loved by thousands.', 'social-proof'],
+  ['FAIL', 'site', 'Trusted by millions', 'social-proof'],
+  ['FAIL', 'site', 'Used by hundreds of thousands!', 'social-proof'],
+  ['FAIL', 'site', 'Chosen by millions.', 'social-proof'],
+  ['PASS', 'site', 'Downloaded ' + facts.downloadsFloor + ' times'],
+  ['PASS', 'site', facts.downloadsFloor + ' downloads'],
+  // setup-time: "<time> with QuranWall" needs a setup verb
+  ['FAIL', 'site', 'Done in 2 minutes with QuranWall.', 'setup-time'],
+  ['FAIL', 'site', 'Ready in 30 seconds with QuranWall.', 'setup-time'],
+  ['FAIL', 'site', 'In 2 minutes with QuranWall you are set up.', 'setup-time'],
+  ['PASS', 'site', 'Just 5 minutes with QuranWall each morning.'],
+  ['PASS', 'site', 'Spend a few minutes with QuranWall and the ayah you chose.'],
+  // manifest-style description
+  ['FAIL', 'site', 'An ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation.', 'arabic-beside-translation', 'public/manifest.webmanifest'],
 ];
 
 function runSelfTest() {
@@ -905,8 +1113,8 @@ function runSelfTest() {
     else if (kind === 'stat') walkJson(input, '', join(ROOT, 'src/data/selftest.json'), found);
     else if (kind === 'tsx') found.push(...lintSourceLine(input, join(ROOT, 'src/components/SelfTest.tsx')));
     else if (kind === 'prompt') found.push(...lintPromptLines(input));
-    const got = found.length ? 'FAIL' : 'PASS';
-    const ruleOk = !rule || expect !== 'FAIL' || found.some((h) => h.id === rule);
+    const got = found.some((h) => !WARN_RULES.has(h.id)) ? 'FAIL' : found.length ? 'WARN' : 'PASS';
+    const ruleOk = !rule || expect === 'PASS' || found.some((h) => h.id === rule);
     const ok = got === expect && ruleOk;
     if (!ok) bad += 1;
     const shown = typeof input === 'string' ? input : JSON.stringify(input);

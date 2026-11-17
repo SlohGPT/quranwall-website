@@ -1,7 +1,7 @@
 {
   "name": "QuranWall - Quran on Your Lock Screen",
   "short_name": "QuranWall",
-  "description": "An ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget, with the Arabic beside a translation.",
+  "description": "An ayah of the Quran on your iPhone Lock Screen wallpaper and Home Screen widget, in Uthmani Arabic or a translation.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1E1338",

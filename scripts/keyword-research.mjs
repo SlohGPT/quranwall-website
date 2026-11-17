@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Keyword engine 1.0.0: first-party keyword analysis + a lint for the public keyword files.
+ * Keyword engine 1.2.0: first-party keyword analysis + a lint for the public keyword files.
  *
  * It never produces or invents a search volume. It reads Search Console (your own data), Google
  * Autocomplete (a few requests a day, hard capped) and your own robots.txt, writes everything to a
@@ -50,7 +50,7 @@
  *                          catches "searched" ("searched 300 times").
  *   geo-probe              fetch the live robots.txt, evaluate it per bot (RFC 9309) and send one
  *                          request per bot user agent; exit 4 if a search bot is blocked.
- *   bing | volumes | serp  stubs in 1.0.0 (no credentials, nothing is read or sent).
+ *   bing | volumes | serp  stubs in 1.2.0 (no credentials, nothing is read or sent).
  *   help                   this text
  *
  * Global: --version, --config <path>.
@@ -64,7 +64,11 @@
  *
  * Config notes: intent_rules patterns run on the NORMALISED query (lowercase, punctuation stripped,
  * so "?" never matches) and are compiled with the u flag. JavaScript's \b is ASCII-only: for words
- * that start or end in a non-ASCII letter use (?<![\p{L}\p{N}])word(?![\p{L}\p{N}]) instead.
+ * that start or end in a non-ASCII letter use (?<![\p{L}\p{N}])word(?![\p{L}\p{N}]) instead. That
+ * lookaround form is for intent_rules ONLY. gsc.regex_families are sent to Search Console as RE2, which has
+ * no lookarounds: use (?:^|[^\p{L}\p{N}])word there, with a trailing boundary only for languages that do not
+ * suffix words (Turkish needs the leading boundary only: ayetler and ayeti are real forms). doctor warns
+ * about a family pattern with \b next to a non-ASCII letter.
  * Optional config key tool_pages: array of site paths (each starting with /) that are tool pages, default
  * []. A cluster whose target is one gets content_type tool-page. Page kinds for the prune-merge test: tool
  * page, home page (/), blog post (/blog/...), any other page; only two pages of the same kind that share a
@@ -100,7 +104,7 @@ import { fileURLToPath } from 'node:url';
 
 // ---------------------------------------------------------------- constants
 
-export const ENGINE_VERSION = '1.0.0';
+export const ENGINE_VERSION = '1.2.0';
 const HARD_CAP = 15; // autocomplete requests per site per UTC day, whatever the config says
 const MIN_DAYS = 28; // days with impressions needed before "no demand" conclusions are allowed
 const ROW_LIMIT = 25000; // Search Console page size
@@ -110,6 +114,7 @@ const STRIKE_MIN = 4;
 const STRIKE_MAX = 20;
 const GAP_POSITION = 20;
 const CANNIBAL_SHARE = 0.2;
+const ASO_PAGE_MAX = 20; // an app-install cluster is flagged aso_handoff only while no page of ours shows at this position or better
 const CANNIBAL_MIN_IMPR = 5;
 const JACCARD = 0.5; // leader clustering threshold
 const NEAR_GSC = 0.5; // expand: token Jaccard for the private near_gsc hint
@@ -531,6 +536,7 @@ export function validateConfig(c) {
           ids.add(f.id);
           const e = checkRe2(f.pattern);
           if (e) problems.push(`gsc.regex_families[${i}].pattern: ${e}`);
+          else if (/\\b[^\x00-\x7F]|[^\x00-\x7F]\\b/.test(f.pattern)) warnings.push(`gsc.regex_families[${i}].pattern: \\b is ASCII-only and will not match next to a non-ASCII letter; families run as RE2 (no lookarounds), so use (?:^|[^\\p{L}\\p{N}])word`);
         });
       }
     }
@@ -578,6 +584,7 @@ export function validateConfig(c) {
     for (const k of ['paths', 'search_bots', 'training_bots']) if (!Array.isArray(c.geo[k]) || !c.geo[k].every(isStr)) problems.push(`geo.${k}: array of strings required`);
     if (Array.isArray(c.geo.paths) && !c.geo.paths.every((p) => typeof p === 'string' && p.startsWith('/'))) problems.push('geo.paths: every path must start with /');
     if (!isObj(c.geo.user_agents) || !Object.values(c.geo.user_agents).every(isStr)) problems.push('geo.user_agents: object of strings required');
+    if (c.geo.bot_settings_hint !== undefined && !isStr(c.geo.bot_settings_hint)) problems.push('geo.bot_settings_hint: must be a non-empty string');
   }
 
   if (c.seeds !== undefined) {
@@ -653,6 +660,28 @@ export function extractPaths(text) {
   // The homepage: "/" as the first token of the text, or wrapped as (/) or `/`. A "/" used as a
   // separator ("title / meta only") must not hold the homepage.
   if (/^\s*[`(]?\/[`)]?(?=$|[\s,;:.])/.test(s) || /\(\/\)|`\/`/.test(s)) out.add('/');
+  // Companion slugs: "/blog/x (+ y)", "/blog/x (+ y, z and w)", "/blog/x + y". They live in the directory
+  // of the first non-root path. A "(...)" group that does not start with "+" is a note. A token counts
+  // only if it is a bare hyphenated slug, so "none", "outreach/" and "audit only" stay out.
+  const first = [...out].find((p) => p !== '/');
+  if (first) {
+    const base = first.slice(0, first.lastIndexOf('/'));
+    const groups = [];
+    const outside = s.replace(/\(([^)]*)\)/g, (_m, inner) => {
+      const g = inner.trim();
+      if (g.startsWith('+')) groups.push(g.slice(1));
+      return ' ';
+    });
+    // Only the documented syntaxes: every token of a "(+ ...)" group, and the first word after a bare " + "
+    // outside brackets. Free text ("/blog/a, follow-up") is never scanned. Trailing . , ; : are trimmed.
+    const cands = [];
+    for (const g of groups) cands.push(...g.split(/\s*[,;+]\s*|\s+and\s+/i));
+    outside.split('+').slice(1).forEach((seg) => cands.push(seg.trim().split(/\s+/)[0] ?? ''));
+    for (const tok of cands) {
+      const slug = tok.trim().replace(/[.,;:]+$/, '');
+      if (/^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(slug)) out.add(normPath(`${base}/${slug}`));
+    }
+  }
   return [...out];
 }
 
@@ -667,7 +696,7 @@ export function detectHolds(config, priorities, today) {
     }
   }
   for (const item of priorities?.queue ?? []) {
-    if (item?.status !== 'pending' || !item.not_before || !(String(item.not_before) > today)) continue;
+    if ((item?.status !== 'pending' && item?.status !== 'gated') || !item.not_before || !(String(item.not_before) > today)) continue;
     for (const p of extractPaths(item.target_url)) {
       if (!map.has(p)) map.set(p, { reason: `queued as ${item.id} until ${item.not_before}`, until: String(item.not_before), source: 'queue' });
     }
@@ -877,6 +906,61 @@ const B6 = [
   /[0-9a-f]{32,}/gi,
 ];
 const B6_TOKEN = /[A-Za-z0-9_\-+/=]{40,}/g;
+// 1.2.0: vendor prefixes that are a secret at any length (the 40-char floor below would miss them): Stripe live keys, GitHub tokens, JWTs,
+// AWS access key ids, Google OAuth client secrets, npm tokens and Slack tokens. The lookbehind is a letter or digit, not \b, so
+// STRIPE_sk_live_... and AWS_ACCESS_KEY_ID=AKIA... are still seen. Bare words (AKIA, npm_config_registry, xoxo-love) are not matched.
+const B6_PREFIX = [
+  /(?<![A-Za-z0-9])[rs]k_live_[0-9A-Za-z]{16,}/g,
+  /(?<![A-Za-z0-9])gh[pousr]_[0-9A-Za-z]{30,}/g,
+  /(?<![A-Za-z0-9])github_pat_[0-9A-Za-z_]{40,}/g,
+  /(?<![A-Za-z0-9])eyJ[0-9A-Za-z_\-]{8,}\.eyJ[0-9A-Za-z_\-]{8,}\.[0-9A-Za-z_\-]{8,}/g,
+  /(?<![A-Za-z0-9])(?:AKIA|ASIA)[0-9A-Z]{16}(?![0-9A-Za-z])/g,
+  /(?<![A-Za-z0-9])GOCSPX-[0-9A-Za-z_-]{20,}/g,
+  /(?<![A-Za-z0-9])npm_[0-9A-Za-z]{36}(?![0-9A-Za-z])/g,
+  /(?<![A-Za-z0-9])xox[abprs]-(?=[0-9A-Za-z-]*\d)[0-9A-Za-z-]{10,}/g,
+];
+// 1.2.0: a 40+ char run that is only a URL component is not a key. Two kinds are skipped, nothing else:
+//  (a) the value of a query parameter whose name is not credential-like (ixid, ixlib, utm_*, w, q);
+//  (b) a slug or file path made of word-like parts (letters with up to 4 digits, or 1-4 digits), whose last part may be a short id (6-12 chars).
+// Never skipped: a credential parameter (key, token, secret, sig, password, auth, ... see B6_CRED_PARAM), userinfo (user:SECRET@host),
+// one random segment, or a path with a long digit or random part (Slack and Discord webhooks).
+const B6_RUN_STOP = /[\s"'`<>()\[\]{}]/;
+const B6_RUN_MAX = 2048; // longer than any URL we meet; a longer run loses its scheme, so it is not skipped (fails safe)
+const B6_URL = /^[a-z][a-z0-9+.-]*:\/\//i;
+const B6_CRED_PARAM = /[?&;][a-z0-9_.\-]*(?:key|token|tok|secret|sig|password|passwd|pwd|pw|pass|pat|auth|cred|bearer|jwt|session|sess|sid|code|nonce|ticket|otp|private|licen[sc]e|hash|hmac|mac|digest|sas|secure|cookie|pk|psk|kid|salt)[a-z0-9_.\-]*=$/i;
+// 1.2.0: a parameter value is skipped only when its name is on this short allow-list of display params. The deny-list above stays as a second
+// guard, but it cannot be complete (t, k, s, p, u, data, state, id ... are all credential-like in someone's API), so unknown names are checked.
+// s= stays out: imgix and Cloudinary use it as a signature.
+const B6_BENIGN_PARAM = /^(?:utm_[a-z]+|ixid|ixlib|w|h|q|fit|crop|auto|fm|dpr|cs|v|family|display)$/i;
+// 1.2.0: "password: <value>", "secret=<value>" ... right before the token: never a URL part, whatever the value looks like.
+const B6_CRED_CONTEXT = /(?:pass(?:word|phrase)?|pwd|secret|token|key|auth|cred)["']?\s*[:=]\s*["']?$/i;
+const B6_SEG = /^(?:[A-Za-z]{1,20}\d{0,4}|\d{1,4})$/;
+function b6IsUrlPart(text, index, tok) {
+  let start = index;
+  while (start > 0 && index - start < B6_RUN_MAX && !B6_RUN_STOP.test(text[start - 1])) start--;
+  const run = text.slice(start, index);
+  const isUrl = B6_URL.test(run);
+  if (B6_CRED_CONTEXT.test(text.slice(Math.max(0, index - 60), index))) return false;
+  if (isUrl && /\/\/[^/?#@]*:$/.test(run)) return false; // userinfo: scheme://user:SECRET@host
+  const eq = tok.indexOf('=');
+  // "ixid=..." : the token swallowed the parameter name and the "=". The name must be on the allow-list, and the value must not hold a second
+  // "=" (a nested "x-token=VALUE" is a credential parameter inside a plain one); padding "=" at the very end is fine.
+  if (eq > 0 && /[?&;]/.test(text[index - 1] ?? '') && isUrl) {
+    const rest = tok.slice(eq + 1);
+    if (/=[^=]/.test(rest) || /==.*=/.test(rest)) return false;
+    return B6_BENIGN_PARAM.test(tok.slice(0, eq)) && !B6_CRED_PARAM.test(run + tok.slice(0, eq + 1));
+  }
+  if (isUrl) {
+    const m = /[?&;]([^=?&#;]*)=$/.exec(run); // a value that starts after the "="
+    if (m) return B6_BENIGN_PARAM.test(m[1]) && !B6_CRED_PARAM.test(run);
+  }
+  // Word-like slug or file path. Only when path-shaped (a URL, a "/" or a file extension), so a dashed passphrase outside a path is still seen.
+  const pathShaped = isUrl || tok.includes('/') || run.includes('/') || /^\.[A-Za-z0-9]{1,5}(?![A-Za-z0-9])/.test(text.slice(index + tok.length));
+  if (!pathShaped) return false;
+  const parts = tok.split(/[\/_\-]/).filter(Boolean);
+  if (parts.length >= 3 && parts.slice(0, -1).every((x) => B6_SEG.test(x)) && (B6_SEG.test(parts.at(-1)) || /^[A-Za-z0-9]{6,12}$/.test(parts.at(-1)))) return true;
+  return false;
+}
 const B7_CELL = /^\s*[~≈]?\d[\d,.]*\s*[k%]?\s*$/;
 
 export const BAN_RULE_IDS = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8'];
@@ -921,8 +1005,9 @@ export function scanBan(text, opts = {}) {
   if (!skip.has('B6')) {
     const six = [];
     hits(String(text), B6, 'B6', six);
+    hits(String(text), B6_PREFIX, 'B6', six);
     B6_TOKEN.lastIndex = 0;
-    if (!skip.has('B6TOKEN')) for (const m of String(text).matchAll(B6_TOKEN)) if (/\d/.test(m[0]) && /[A-Z]/.test(m[0]) && /[a-z]/.test(m[0])) six.push({ rule: 'B6', index: m.index ?? 0 });
+    if (!skip.has('B6TOKEN')) for (const m of String(text).matchAll(B6_TOKEN)) if (/\d/.test(m[0]) && /[A-Z]/.test(m[0]) && /[a-z]/.test(m[0]) && !b6IsUrlPart(String(text), m.index ?? 0, m[0])) six.push({ rule: 'B6', index: m.index ?? 0 });
     for (const h of six) out.push({ rule: 'B6', index: h.index });
   }
   if (!skip.has('B7') && opts.table && /^\s*\|/.test(stripped)) {
@@ -1526,7 +1611,7 @@ export function suggestDecision(c, holds = new Map(), config = {}) {
     if (main.position <= 10) return { decision: 'ctr-fix' };
     if (main.position <= 20) return { decision: 'refresh' };
   }
-  if (c.intent === 'app-install' && !pages.some((p) => p.position <= 20)) return { decision: 'aso-handoff' };
+  if (c.intent === 'app-install' && !pages.some((p) => p.position <= ASO_PAGE_MAX)) return { decision: 'aso-handoff' };
   if (c.intent === 'question' && wordCount(c.head) <= 6 && main) return { decision: 'faq-add' };
   if (c.intent === 'tool') return { decision: 'new-tool' };
   if (c.intent === 'compare') return { decision: 'compare' };
@@ -1715,7 +1800,7 @@ export function analyse(input, config, holds = new Map()) {
       suggested_decision: sug.decision,
       hold_reason: sug.hold_reason ?? null,
       held_until: sug.held_until ?? null,
-      aso_handoff: intent === 'app-install',
+      aso_handoff: intent === 'app-install' && !pages.some((p) => p.position <= ASO_PAGE_MAX),
     };
   });
 
@@ -1839,7 +1924,7 @@ export function buildDraft(a, { config, today, end, existing = null }) {
       rec.hold_reason = holdReason || 'held';
       if (heldUntil && validDate(heldUntil)) rec.held_until = heldUntil;
     }
-    if (c.aso_handoff) rec.aso_handoff = true;
+    if (reuse ? reuse.aso_handoff === true : c.aso_handoff) rec.aso_handoff = true;
     rec.evidence = [{ type: 'gsc', fetched: end, note: 'Search Console queries' }];
     if (reuse && isStr(reuse.notes) && reuse.notes.length <= 300) rec.notes = reuse.notes;
     if (reuse && typeof reuse.queue_id === 'string' && /^p\d+$/.test(reuse.queue_id)) rec.queue_id = reuse.queue_id;
@@ -2364,7 +2449,7 @@ export async function runGeoProbe(ctx) {
   log(`bot | kind | rules (${config.geo.paths.join(' ')}) | live status`);
   for (const b of bots) log(`${b.bot} | ${b.kind} | ${config.geo.paths.map((p) => (b.rules[p] ? 'allow' : 'BLOCK')).join(' ')} | ${b.status === undefined ? 'no probe' : b.status ?? `error`}`);
   log(`llms.txt: ${llms ?? 'error'}`);
-  log('rules-only proof: a spoofed user agent is not the real bot; Cloudflare verifies real bots by IP. The real check is the Cloudflare dashboard.');
+  log(`rules-only proof: a spoofed user agent is not the real bot; real bots are verified by IP. The real check is ${config.geo.bot_settings_hint ?? "your host's or CDN's bot-protection settings"}.`);
 
   const badStatus = (s) => s === 401 || s === 403 || s === 429 || (typeof s === 'number' && s >= 500);
   const regressions = bots.filter((b) => b.kind === 'search' && (b.rules['/'] === false || badStatus(b.status))).map((b) => b.bot);
@@ -2462,7 +2547,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, cwd 
     const privateDir = resolvePrivateDir(config, root);
     // The stubs run after config validation like every command, but touch nothing and never read a key file.
     if (command === 'bing') {
-      console.log(bingKeyPathPresent(env) ? 'bing: key present; API calls not built in 1.0.0 (needs the 3-call spike, see TODO-KAROL)' : 'skipped: no credentials');
+      console.log(bingKeyPathPresent(env) ? 'bing: key present; API calls not built in 1.2.0 (needs the 3-call spike, see TODO-KAROL)' : 'skipped: no credentials');
       return EXIT.OK;
     }
     if (command === 'volumes' || command === 'serp') {
@@ -2586,7 +2671,7 @@ export async function runSelfTest(log = (s) => console.log(s)) {
       if (u.pathname === '/token') return send(200, 'application/json', JSON.stringify({ access_token: 'mock-access', expires_in: 3600 }));
       if (u.pathname.startsWith('/webmasters/v3/sites') && !u.pathname.endsWith('/query')) return send(200, 'application/json', JSON.stringify({ siteEntry: [{ siteUrl: 'sc-domain:example.test', permissionLevel: 'siteOwner' }] }));
       if (u.pathname.endsWith('/searchAnalytics/query')) {
-        if (mock.gscFail) return send(mock.gscFail, 'application/json', JSON.stringify({ error: { message: 'denied for key=SECRETVALUE123 Bearer abcdefabcdefabcdefabcdef' } }));
+        if (mock.gscFail) return send(mock.gscFail, 'application/json', JSON.stringify({ error: { message: 'denied for key=SECRETVALUE123 ' + 'Bear' + 'er ' + 'abcdef'.repeat(4) } }));
         const b = JSON.parse(body || '{}');
         const dims = (b.dimensions ?? []).join(',');
         const rows = mock.gsc?.[dims] ?? [];
@@ -2617,7 +2702,7 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     B3: ['a 50% jump', 'ctr of 12.5 %', 'up 5 per cent', '20 percent more'],
     B4: ['costs $9 a month', 'pay 5 eur', '€ 20 budget'],
     B5: ['see ~/.claude/secrets/x', 'file /Users/someone/x', 'service-account-key.json', 'budget.json holds it', 'in faithwall-gsc/kw', 'file /users/someone/x', 'in C:\\Users\\someone\\x', 'see %2FUsers%2Fsomeone', 'see %2fusers%2fsomeone'],
-    B6: ['-----BEGIN ' + 'PRIVATE KEY-----', '-----begin ' + 'private key-----', '"private_key": "abc"', 'AIza' + key35, 'ya29.a0AfH6SMBxxxx', 'Bearer ' + 'a'.repeat(24), 'api_key=abc', 'deadbeef'.repeat(4), 'Ab1' + 'x'.repeat(40)],
+    B6: ['-----BEGIN ' + 'PRIVATE KEY-----', '-----begin ' + 'private key-----', '"private_key": "abc"', 'AIza' + key35, 'ya29' + '.a0AfH6SMBxxxx', 'Bearer ' + 'a'.repeat(24), 'api_key=abc', 'deadbeef'.repeat(4), 'Ab1' + 'x'.repeat(40)],
     B7: ['| widget | ~340 |', '| 1,200 | x |', '| a | 5k |'],
     B8: ['Example is free to use', 'example app is totally free'],
   };
@@ -2643,6 +2728,140 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     const out = formatViolation('FAIL', 'f.md', { ...hit.find((h) => h.rule === 'B6'), line: 3, where: null });
     ok(!out.includes(secret) && !out.includes('QQQQ'), 'secret echoed');
     ok(!('snippet' in hit.find((h) => h.rule === 'B6')), 'B6 hit carries a snippet');
+  });
+  // 1.2.0: B6 and URL parts. Every key-like value is built at run time by a deterministic generator, so no realistic key is committed
+  // (GitHub secret scanning and our own B6 scan read this file). Failure messages never print a value.
+  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const ALNUM = UPPER + UPPER.toLowerCase() + '0123456789';
+  const gen = (n, alphabet = ALNUM, seed = 0) => {
+    let o = '';
+    for (let i = 0; i < n; i++) o += alphabet[(i * 7 + 3 + seed * 5 + ((i * i) % 11)) % alphabet.length];
+    return o;
+  };
+  const b6 = (s) => scanBan(s, {}).filter((h) => h.rule === 'B6').length;
+  const mixed = (s) => /\d/.test(s) && /[A-Z]/.test(s) && /[a-z]/.test(s);
+  t('ban rule B6 (1.2.0): URL components, slugs, file paths and plain repo paths are not keys', () => {
+    const must = {
+      'unsplash slug 1': '"unsplashUrl": "https://unsplash.com/photos/person-touching-prayer-beads-5oirZ5YiHEE?utm_source=quranwall&utm_medium=referral"',
+      'unsplash slug 2': '"unsplashUrl": "https://unsplash.com/photos/yellow-pillar-candle-in-black-lantern-S7mAngnWV1A?utm_source=quranwall&utm_medium=referral"',
+      'unsplash slug 3': '"unsplashUrl": "https://unsplash.com/photos/brown-beaded-necklace-on-book-page-AKFHzzr20eQ?utm_source=quranwall&utm_medium=referral"',
+      'unsplash slug 4 (id with underscore)': '"unsplashUrl": "https://unsplash.com/photos/white-ceramic-teapot-beside-brown-and-white-food-on-white-ceramic-round-plate-L_8N35hsYj8?utm_source=quranwall&utm_medium=referral"',
+      'unsplash slug 5': '"unsplashUrl": "https://unsplash.com/photos/white-book-page-on-brown-wooden-table-mt3czQ62E2M?utm_source=quranwall&utm_medium=referral"',
+      'teapot slug, bare': 'https://unsplash.com/photos/white-ceramic-teapot-beside-brown-and-white-food-on-white-ceramic-round-plate-LvQ3Zr4kH1w',
+      'images.unsplash.com ixid': '"src": "https://images.unsplash.com/photo-1517842645767-c639042777db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NDU3ODl8MHwxfHxwZXJzb24lMjBwbGFubmluZyUyMGNhbGVuZGFyJTIwcGhvbmV8ZW58MHx8fHwxNzYzMDAwMDAwfDA&ixlib=rb-4.1.0&q=80&w=1080"',
+      'ixid in markdown, html-escaped ampersand': '[img](https://images.unsplash.com/photo-1?fm=jpg&amp;ixid=M3w5NDU3ODl8MHwxfHxwZXJzb24lMjBwbGFubmluZyUyMGNhbGVuZGFyJTIwcGhvbmV8ZW58MHx8fHwxNzYzMDAwMDAwfDA)',
+      '.edu pdf path (Wharton)': '[Dai (PDF)](https://faculty.wharton.upenn.edu/wp-content/uploads/2014/06/Dai_Fresh_Start_2014_Mgmt_Sci.pdf).',
+      '.edu pdf path (USC)': 'https://dornsife.usc.edu/wendy-wood/wp-content/uploads/sites/183/2023/10/Wood.Quinn_.Kashy_.2002_Habits_in_Everyday_Life.pdf',
+      'repo path in a journal': 'see (`OTHER/docs/journal/04-some-long-topic-name-nov2026.md`)',
+      'bare sk_live': 'the Stripe sk_live setting is off',
+    };
+    const wrong = Object.entries(must).filter(([, v]) => b6(v) !== 0).map(([k]) => k);
+    ok(!wrong.length, `B6 flagged: ${wrong.join('; ')}`);
+  });
+  t('ban rule B6 (1.2.0): keys, credential parameters, userinfo, random segments and prefix keys still fail', () => {
+    const URLSAFE = ALNUM + '_-';
+    const B64 = ALNUM + '+/';
+    const b64u = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
+    const jwt = b64u({ alg: 'HS256', typ: 'JWT' }) + '.' + b64u({ sub: 'x' + gen(12) }) + '.' + gen(43, URLSAFE);
+    const must = {
+      'AIza + 35': 'key = AIza' + gen(35, URLSAFE),
+      'ghp_ + 36': 'token ' + 'gh' + 'p_' + gen(36),
+      'github_pat_ 11 + 59': 'github_' + 'pat_' + gen(11) + '_' + gen(59),
+      'JWT': 'auth ' + jwt,
+      'sk_live_ + 24': 'sk_' + 'live_' + gen(24),
+      'rk_live_ + 24': 'rk_' + 'live_' + gen(24, ALNUM, 1),
+      'prefix after underscore': 'STRIPE_sk_' + 'live_' + gen(24),
+      'PEM header': '-----BEGIN ' + 'PRIVATE KEY-----',
+      'json secret, base64 with + / ==': '{"secret":"' + gen(61, B64) + '=="}',
+      'token= 45': 'https://example.com/hook?token=' + gen(45),
+      'token= 72, after another parameter': 'https://example.com/hook?a=1&token=' + gen(72),
+      'api_key= 50': 'https://example.com/x?api_key=' + gen(50),
+      'access_token= 60': 'https://example.com/x?b=1&access_token=' + gen(60),
+      'X-Amz-Signature= 64': 'https://example.com/x?X-Amz-Signature=' + gen(64, ALNUM, 2),
+      'sig= 48': 'https://example.com/x?sv=2020&sig=' + gen(48, ALNUM, 3),
+      'password= 48, html-escaped ampersand': 'https://example.com/x?a=1&amp;password=' + gen(48),
+      'unnamed query value ending in ==': 'https://example.com/hook?' + gen(50, ALNUM, 4) + '==',
+      'userinfo': 'https://user:' + gen(44) + '@example.com/x',
+      'userinfo, word-like password': 'https://user:' + ['Correct', 'Horse', 'Battery', 'Staple', 'Words', '4', 'Eva', 'Pass1'].join('-') + '@example.com/x',
+      'one random path segment': 'https://hooks.example.com/services/' + gen(50),
+      'random path with dashes': 'https://hooks.example.com/services/' + gen(48, URLSAFE, 6),
+      'slack-style webhook': 'https://hooks.example.com/services/T' + gen(8, '0123456789') + '/B' + gen(8, '0123456789') + '/' + gen(24),
+      'discord-style webhook': 'https://discord.com/api/webhooks/' + gen(18, '0123456789') + '/' + gen(68, URLSAFE, 7),
+      'oauth fragment token': 'https://example.com/cb#access.token=' + gen(48),
+      '32 hex chars': 'sha ' + gen(32, '0123456789abcdef'),
+    };
+    // 1.2.0 review fixes: unknown parameter names, passphrases outside a path, a credential parameter nested in a plain one.
+    for (const name of ['t', 'k', 's', 'pw', 'pat', 'hmac', 'mac', 'tok', 'sas', 'secure', 'cookie', 'pk', 'psk', 'kid', 'salt', 'p', 'u', 'sess', 'x', 'd', 'data', 'state', 'id', 'ref', 'link', 'sv', 'seed', 'apiid']) must['param ' + name + '='] = 'https://api.example.com/v1/data?' + name + '=' + gen(43, URLSAFE, 8);
+    must['json string, unknown param'] = '{"url":"https://api.example.com/v1/data?t=' + gen(43, URLSAFE, 9) + '"}';
+    const words = ['Correct', 'Horse', 'Battery', 'Staple', 'Tiger', 'Blue', 'Apple7'];
+    must['passphrase after password:'] = 'password: ' + words.join('-');
+    must['passphrase after secret=, underscores'] = 'secret=' + words.join('_');
+    must['dashed passphrase, no path, no context'] = 'note ' + words.join('-');
+    must['six-letter groups'] = ['aaaaaa', 'bbbbbb', 'cccccc', 'dddddd', 'eeeeee', 'Ffffff9'].join('_');
+    must['nested token= in a plain param'] = 'https://e.com/?a=b-token=' + gen(43, URLSAFE, 10);
+    must['nested sig= in a plain param'] = 'https://e.com/?a=x_sig=' + gen(43, URLSAFE, 11);
+    must['nested token= in a benign param'] = 'https://e.com/?utm_source=x-token=' + gen(43, URLSAFE, 12);
+    const missed = Object.entries(must).filter(([, v]) => b6(v) < 1).map(([k]) => k);
+    ok(!missed.length, `B6 missed: ${missed.join('; ')}`);
+    for (const n of [35, 45, 50, 64, 72]) ok(mixed(gen(n)), `generator output ${n} is not mixed`);
+  });
+  t('ban rule B6 (1.2.0): a very long run on one line is flagged and stays fast', () => {
+    const blob = gen(400000, ALNUM);
+    const t0 = Date.now();
+    ok(b6(blob) >= 1, 'long blob not flagged');
+    ok(Date.now() - t0 < 5000, 'B6 scan of a 400k run is slow');
+  });
+  // 1.2.0 extras: AWS access key ids, Google OAuth client secrets, npm tokens, Slack tokens. Values are built at run time, never written out.
+  t('ban rule B6 (1.2.0 extras): AWS, Google OAuth, npm and Slack token prefixes fail in prose, in a JSON string and after NAME=', () => {
+    const URLSAFE = ALNUM + '_-';
+    const D10 = '0123456789';
+    const vals = {
+      'AWS AKIA': 'AK' + 'IA' + gen(16, UPPER + D10),
+      'AWS ASIA': 'AS' + 'IA' + gen(16, UPPER + D10, 2),
+      'Google OAuth GOCSPX-, 20 chars': 'GOC' + 'SPX-' + gen(20, URLSAFE, 1),
+      'Google OAuth GOCSPX-, 28 chars': 'GOC' + 'SPX-' + gen(28, URLSAFE, 3),
+      'npm token': 'npm' + '_' + gen(36),
+      'Slack xoxb': 'xo' + 'xb-' + gen(12, D10) + '-' + gen(12, D10, 1) + '-' + gen(24),
+      'Slack xoxa': 'xo' + 'xa-' + gen(10, D10),
+      'Slack xoxp': 'xo' + 'xp-' + gen(10, D10, 1),
+      'Slack xoxr': 'xo' + 'xr-' + gen(10, D10, 2),
+      'Slack xoxs': 'xo' + 'xs-' + gen(10, D10, 3),
+    };
+    const envName = { 'AWS AKIA': 'AWS_ACCESS_KEY_ID', 'AWS ASIA': 'AWS_ACCESS_KEY_ID', 'npm token': 'NPM_TOKEN' };
+    const missed = [];
+    for (const [k, v] of Object.entries(vals)) {
+      const forms = {
+        prose: 'the value ' + v + ' was pasted here',
+        'line start': v,
+        env: (envName[k] ?? 'SOME_SECRET') + '=' + v,
+      };
+      for (const [f, text] of Object.entries(forms)) if (b6(text) < 1) missed.push(`${k} (${f}, markdown)`);
+      for (const kind of ['other', 'clusters', 'config']) {
+        const doc = JSON.stringify({ notes: 'x ' + v + ' y', env: (envName[k] ?? 'SOME_SECRET') + '=' + v });
+        if (!scanJsonText(doc, kind, []).some((h) => h.rule === 'B6')) missed.push(`${k} (JSON ${kind})`);
+      }
+      const hit = scanMarkdown('prose ' + v, []).find((h) => h.rule === 'B6');
+      if (!hit || 'snippet' in hit) missed.push(`${k} (hit missing or carries a snippet)`);
+    }
+    ok(!missed.length, `B6 missed: ${missed.join('; ')}`);
+  });
+  t('ban rule B6 (1.2.0 extras): bare prefix words, env names and near-misses are not keys', () => {
+    const must = {
+      'bare words in prose': 'The words AKIA, ASIA, GOCSPX, npm_ and xoxb are only prefixes.',
+      'npm env names': 'set npm_config_registry and read npm_package_version and npm_lifecycle_event',
+      'xoxo love': 'xoxo-love, said the card',
+      'capitalised Xoxb-': 'Xoxb-',
+      'capitalised Xoxb- with a tail': 'Xoxb-' + gen(12, '0123456789'),
+      'AKIA then 16 chars with a lowercase letter': 'AK' + 'IA' + 'ABCDEFGH' + 'a' + 'BCDEFGH',
+      'AKIA then 15 chars': 'AK' + 'IA' + 'ABCDEFGH' + 'BCDEFGH',
+      'GOCSPX- then 19 chars': 'GOC' + 'SPX-' + 'abcdefghijklmnopqrs',
+      'npm_ then 35 chars': 'npm' + '_' + 'abcdefghijklmnopqrstuvwxyzabcdefghi',
+      'xoxb- then 9 chars': 'xo' + 'xb-' + '123456789',
+      'xoxz- is not a Slack prefix': 'xo' + 'xz-' + '1234567890123',
+      'xoxp- prose without a digit': 'xo' + 'xp-love-you-forever',
+    };
+    const wrong = Object.entries(must).filter(([, v]) => b6(v) !== 0).map(([k]) => k);
+    ok(!wrong.length, `B6 flagged: ${wrong.join('; ')}`);
   });
   t('ban rules: volume_band is exempt from B1, B3, B7 only; members skip B8, prose does not', () => {
     eq(jsonScanOpts('clusters', 'clusters[0].volume_band', phrases).skip, ['B1', 'B3', 'B7']);
@@ -2712,8 +2931,10 @@ export async function runSelfTest(log = (s) => console.log(s)) {
   t('redact: key=, Bearer, PEM, private_key, client_email, home path', () => {
     const home = os.homedir();
     const pem = '-----BEGIN ' + 'PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\n-----END ' + 'PRIVATE KEY-----';
-    const s = redact(`GET https://x.test/a?q=1&key=SECRETKEY123&z=2 Bearer abcdefghij.klmnop-qrstuv ya29.a0AbCdEf ${pem} {"private_key": "SECRETPK", "client_email": "sa@proj.iam.test"} ${home}/file access_token=TOK123`);
-    for (const bad2 of ['SECRETKEY123', 'abcdefghij.klmnop', 'ya29.a0AbCdEf', 'MIIEvQIBADANBg', 'SECRETPK', 'sa@proj.iam.test', 'TOK123']) ok(!s.includes(bad2), `leaked ${bad2.slice(0, 6)}`);
+    const bearer = 'Bear' + 'er ' + 'abcdefghij.klmnop-qrstuv';
+    const ya29 = 'ya29' + '.a0AbCdEf';
+    const s = redact(`GET https://x.test/a?q=1&key=SECRETKEY123&z=2 ${bearer} ${ya29} ${pem} {"private_key": "SECRETPK", "client_email": "sa@proj.iam.test"} ${home}/file access_token=TOK123`);
+    for (const bad2 of ['SECRETKEY123', 'abcdefghij.klmnop', ya29, 'MIIEvQIBADANBg', 'SECRETPK', 'sa@proj.iam.test', 'TOK123']) ok(!s.includes(bad2), `leaked ${bad2.slice(0, 6)}`);
     if (home.length > 1) ok(!s.includes(home) && s.includes('~/file'), 'home path not replaced');
     ok(redact(new Error('boom key=ABC')).includes('boom'), 'Error message dropped');
   });
@@ -3076,6 +3297,19 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     c.gsc.regex_families = [{ id: 'bad', pattern: 'a(?=b)' }];
     ok(validateConfig(c).problems.some((p) => p.includes('lookaround')), 'config accepted a lookahead family');
   });
+  t('config validation: a family pattern with \\b next to a non-ASCII letter is a WARN, the RE2 boundary form is clean', () => {
+    const c = baseConfig('x');
+    c.gsc.regex_families = [{ id: 'tr', pattern: '\\b\u00e7ay\u0131\\b' }];
+    const v = validateConfig(c);
+    eq(v.problems, []);
+    ok(v.warnings.some((w) => w.includes('gsc.regex_families[0]') && w.includes('\\b')), 'no warning for \\b next to a non-ASCII letter');
+    const good = '(?:^|[^\\p{L}\\p{N}])\u00e7ay\u0131(?:[^\\p{L}\\p{N}]|$)';
+    eq(checkRe2(good), null, 'the advised form must pass RE2');
+    ok(new RegExp(good, 'iu').test('bir \u00e7ay\u0131 i\u00e7ti') && !new RegExp(good, 'iu').test('bol\u00e7ay\u0131x'), 'advised form matches whole words only');
+    c.gsc.regex_families = [{ id: 'tr', pattern: good }, { id: 'en', pattern: '\\bverse\\b' }];
+    const v2 = validateConfig(c);
+    eq([v2.problems, v2.warnings.filter((w) => w.includes('regex_families'))], [[], []]);
+  });
   t('config validation: caps sum, unknown market, bad intent, unknown key is a warning only', () => {
     const c = baseConfig('x');
     eq(validateConfig(c).problems, []);
@@ -3154,7 +3388,7 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     let ctx = mk({ origin: base });
     let code = await runGeoProbe(ctx);
     eq(code, 4);
-    ok(lines.some((l) => l.startsWith('rules-only proof: a spoofed user agent is not the real bot; Cloudflare verifies real bots by IP. The real check is the Cloudflare dashboard.')), 'footer missing');
+    ok(lines.some((l) => l === "rules-only proof: a spoofed user agent is not the real bot; real bots are verified by IP. The real check is your host's or CDN's bot-protection settings."), 'default footer missing');
     ok(lines.some((l) => l.includes('identical')), 'repo compare line missing');
     ok(lines.some((l) => l.startsWith('Trainy | training') && l.includes('BLOCK')), 'training row missing');
     mock.blockUa = '';
@@ -3165,6 +3399,21 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     mock.robots = 'User-agent: Searchy\nDisallow: /\n';
     code = await runGeoProbe(mk({ origin: base }));
     eq(code, 4, 'rules block of a search bot');
+  });
+  t('geo-probe: geo.bot_settings_hint replaces the default footer wording; a non-string hint is a problem', async () => {
+    mock.robots = ROBOTS;
+    mock.blockUa = '';
+    fs.writeFileSync(path.join(repo, 'public', 'robots.txt'), mock.robots);
+    const priv = newPriv();
+    const config = baseConfig(priv);
+    config.geo.bot_settings_hint = 'the Example dashboard (Security, Bots)';
+    eq(validateConfig(config).problems, []);
+    await runGeoProbe(mk({ origin: base, config, priv }));
+    ok(lines.some((l) => l === 'rules-only proof: a spoofed user agent is not the real bot; real bots are verified by IP. The real check is the Example dashboard (Security, Bots).'), 'custom hint footer missing');
+    ok(!lines.some((l) => l.includes("your host's or CDN's")), 'default wording still printed');
+    const bad = baseConfig('x');
+    bad.geo.bot_settings_hint = 5;
+    ok(validateConfig(bad).problems.some((x) => x.includes('geo.bot_settings_hint')), 'non-string hint accepted');
   });
 
   // ---------------------------------------------------------------- gsc pipeline against the mock
@@ -3529,6 +3778,51 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     eq(extractPaths('(/) and /blog/x').sort(), ['/', '/blog/x']);
     eq(extractPaths('`/` homepage').sort(), ['/']);
   });
+  t('hold detection: companion slugs in queue targets (three syntaxes, notes, non-slugs, root, gated)', () => {
+    eq(extractPaths('/blog/a (+ b-c)').sort(), ['/blog/a', '/blog/b-c']);
+    eq(extractPaths('/blog/a (+ b-c, d-e and f-g)').sort(), ['/blog/a', '/blog/b-c', '/blog/d-e', '/blog/f-g']);
+    eq(extractPaths('/blog/a + b-c').sort(), ['/blog/a', '/blog/b-c']);
+    eq(extractPaths('/blog/a (+ B-c/)').sort(), ['/blog/a']); // not a bare lowercase slug
+    eq(extractPaths('/blog/a (absorbs b-c)').sort(), ['/blog/a']); // a group without a leading + is a note
+    eq(extractPaths('/blog/a (audit only) + /blog/b').sort(), ['/blog/a', '/blog/b']);
+    eq(extractPaths('/blog/a (+ none, outreach/, vercel.json, single)').sort(), ['/blog/a']); // not hyphenated slugs
+    eq(extractPaths('/blog/a (+ b-c) and audit only').sort(), ['/blog/a', '/blog/b-c']);
+    eq(extractPaths('/blog/a, follow-up').sort(), ['/blog/a']); // free text is not scanned
+    eq(extractPaths('/blog/a and non-english').sort(), ['/blog/a']);
+    eq(extractPaths('/blog/a (+ b-c.)').sort(), ['/blog/a', '/blog/b-c']); // trailing punctuation trimmed
+    eq(extractPaths('/blog/a + new-post, more-x').sort(), ['/blog/a', '/blog/new-post']);
+    eq(extractPaths('/ (home) + about-us').sort(), ['/']); // no non-root path, no base directory
+    eq(extractPaths('/guide/x-y (+ z-w)').sort(), ['/guide/x-y', '/guide/z-w']); // base is the first non-root path's directory
+    eq(extractPaths('/faq (+ ask-us)').sort(), ['/ask-us', '/faq']);
+    const pr = { queue: [{ id: 'p1', status: 'gated', not_before: '2026-12-01', target_url: '/blog/a (+ b-c)' }, { id: 'p2', status: 'pending', not_before: '2026-12-01', target_url: '/blog/d + e-f' }, { id: 'p3', status: 'retired', not_before: '2026-12-01', target_url: '/blog/g (+ h-i)' }, { id: 'p4', status: 'done', not_before: '2026-12-01', target_url: '/blog/j' }] };
+    eq([...detectHolds({}, pr, today).keys()].sort(), ['/blog/a', '/blog/b-c', '/blog/d', '/blog/e-f']);
+  });
+  t('aso flag: set only while no page of ours shows within position 20', () => {
+    const run = (position) => {
+      const cfg = baseConfig('x');
+      const a = analyse({ queryRows: [{ keys: ['bible app for iphone'], impressions: 60, clicks: 0, position }], pageQueryRows: [{ keys: ['https://example.test/blog/p', 'bible app for iphone'], impressions: 60, clicks: 0, position }] }, cfg);
+      const c = a.clusters.find((x) => x.head === 'bible app for iphone');
+      return [c.intent, c.aso_handoff];
+    };
+    eq(run(8), ['app-install', false]);
+    eq(run(21), ['app-install', true]);
+    const none = analyse({ queryRows: [{ keys: ['bible app for iphone'], impressions: 60, clicks: 0, position: 30 }], pageQueryRows: [] }, baseConfig('x'));
+    eq(none.clusters[0].aso_handoff, true, 'no page at all');
+    const other = analyse({ queryRows: [{ keys: ['gadget'], impressions: 60, clicks: 0, position: 30 }], pageQueryRows: [] }, baseConfig('x'));
+    eq(other.clusters[0].aso_handoff, false, 'not app-install');
+  });
+  t('draft: aso_handoff follows the curated record', () => {
+    const cl = (head, aso) => ({ id: head.replace(/ /g, '-'), head, members: [{ query: head, impressions: 30, clicks: 0, position: 30, unsafe: false }], impressions: 30, intent: 'app-install', pages: [], main_page: null, suggested_decision: 'aso-handoff', hold_reason: null, held_until: null, aso_handoff: aso });
+    const rec = (head, extra) => ({ id: head.replace(/ /g, '-'), name: head, head_keyword: head, members: [head], intent: 'app-install', content_type: 'aso-handoff', target_url: null, decision: 'aso-handoff', evidence: [{ type: 'autocomplete', fetched: today, note: 'demand: autocomplete shows the phrase' }], ...extra });
+    const a = { clusters: [cl('cleared one', true), cl('kept two', false), cl('fresh three', true), cl('fresh four', false)] };
+    const existing = { clusters: [rec('cleared one', {}), rec('kept two', { aso_handoff: true })] };
+    const d = buildDraft(a, { config: baseConfig('x'), today, end: '2026-11-13', existing });
+    const by = (h) => d.clusters.find((x) => x.head_keyword === h);
+    eq(by('cleared one').aso_handoff, undefined, 'curator cleared the flag');
+    eq(by('kept two').aso_handoff, true, 'curator set the flag');
+    eq(by('fresh three').aso_handoff, true, 'new cluster takes the engine flag');
+    eq(by('fresh four').aso_handoff, undefined, 'new cluster without the flag');
+  });
   t('robots: CR-only line endings, percent-encoding and non-ASCII paths follow RFC 9309', () => {
     eq(robotsAllows(parseRobots('User-agent: *\rDisallow: /'), 'Bot', '/x'), false, 'CR only');
     eq(robotsAllows(parseRobots('User-agent: *\nDisallow: /a%2fb'), 'Bot', '/a%2Fb'), false, 'hex case');
@@ -3566,14 +3860,16 @@ export async function runSelfTest(log = (s) => console.log(s)) {
   });
   t('redact: encoded and single-quoted secrets, colon forms, JWTs, Basic credentials, upper-case home path', () => {
     const home = os.homedir();
-    const jwt = 'eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ4In0.c2lnbmF0dXJl';
+    // Built at run time so no JWT literal sits in this file.
+    const jwt = [JSON.stringify({ alg: 'RS256' }), JSON.stringify({ iss: 'x' }), 'signature'].map((x) => Buffer.from(x).toString('base64url')).join('.');
+    ok(jwt.length === 49 && jwt.split('.').map((x) => x.length).join() === '20,15,12' && jwt.endsWith('.' + Buffer.from('signature').toString('base64url')), 'redact test jwt not rebuilt as expected');
     const out = redact(`key%3DSECRETKEYABC access_token: abc123tok {'access_token': 'abc456tok'} id_token=abc789 refresh_token%3Dabc000 authorization: Basic dXNlcjpwYXNz assertion=${jwt} ${encodeURIComponent(home)}/x ${home.toUpperCase()}/y`);
     for (const leak of ['SECRETKEYABC', 'abc123tok', 'abc456tok', 'abc789', 'abc000', 'dXNlcjpwYXNz', 'eyJhbGci']) ok(!out.includes(leak), `leaked ${leak}`);
     if (home.length > 1) ok(!out.toLowerCase().includes(home.toLowerCase()) && !out.includes(encodeURIComponent(home)), 'home path kept');
   });
   t('check: unknown JSON keys that look like secrets are not echoed and are B6-flagged', () => {
     const secretKey = 'AIza' + 'Q'.repeat(35);
-    const doc = { ...validDoc(), clusters: [{ ...validDoc().clusters[0], ['ya29.SECRETTOKENVALUE123']: 1, [secretKey]: 2 }] };
+    const doc = { ...validDoc(), clusters: [{ ...validDoc().clusters[0], ['ya29' + '.SECRETTOKENVALUE123']: 1, [secretKey]: 2 }] };
     const r = schema(doc);
     const text = JSON.stringify(r.fails);
     ok(r.fails.length >= 2 && !text.includes('SECRETTOKEN') && !text.includes('QQQQ'), text);
@@ -3581,7 +3877,7 @@ export async function runSelfTest(log = (s) => console.log(s)) {
     ok(h.some((x) => x.rule === 'B6') && !JSON.stringify(h).includes('QQQQ') && !JSON.stringify(h).includes('SECRETTOKEN'), 'key not B6-scanned or echoed');
   });
   t('check: a long absolute private_dir in the config is not a key-shaped token; real keys still are', () => {
-    const cfg = baseConfig('/Users/someone/Library/Application Support/Some-Long-Folder/AbC123dEf456GhI789JkL/kw');
+    const cfg = baseConfig('/Users/someone/Library/Application Support/Some-Long-Folder/' + 'AbC123dEf' + '456GhI789JkL' + '/kw');
     eq(scanJsonText(JSON.stringify(cfg), 'config', []), []);
     const c2 = { ...cfg, private_dir: 'AIza' + 'Z'.repeat(35) };
     ok(scanJsonText(JSON.stringify(c2), 'config', []).some((h) => h.rule === 'B6'), 'key in private_dir not caught');

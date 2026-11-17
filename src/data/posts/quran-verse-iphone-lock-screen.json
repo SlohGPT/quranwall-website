@@ -1,30 +1,34 @@
 {
   "meta": {
     "title": "How to Put a Quran Verse on Your iPhone Lock Screen",
-    "description": "A step-by-step guide to showing a daily Quran verse on your iPhone lock screen using widgets, wallpapers, and iOS Focus modes. Lock Screen widgets need iOS 16 or later.",
+    "description": "How to put a Quran verse on your iPhone Lock Screen as a wallpaper or a widget, where each one shows, and what QuranWall shows. Lock Screen widgets need iOS 16 or later.",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-11-16",
-    "readTime": "6 min read",
+    "dateModified": "2026-11-17",
+    "readTime": "9 min read",
     "image": "/og-image.png",
     "keywords": [
       "Quran verse iPhone lock screen",
-      "Quran lock screen",
-      "iPhone Quran widget",
-      "iOS Focus mode Quran",
-      "daily Quran iPhone"
+      "Quran lock screen widget",
+      "Quran verse widget iPhone",
+      "how to put Quran verse on lock screen",
+      "daily Quran verse widget"
     ],
     "cluster": "daily-quran-lock-screen"
   },
   "sections": [
     {
       "type": "paragraph",
-      "text": "To put a Quran verse on your iPhone lock screen, add a Quran lock-screen widget or set a verse wallpaper, then pair it with an iOS Focus mode so it appears automatically. You need an iPhone running iOS 16 or later for Lock Screen widgets and Focus lock screens. An app like [QuranWall](/) places the ayah for you, so you don't have to export, crop, or re-set an image by hand."
+      "text": "There are two ways to put a Quran verse on your iPhone Lock Screen: set the ayah as your Lock Screen wallpaper, or add a Quran widget to the Lock Screen (iOS 16 or later). QuranWall is an iPhone app that does both, with the ayah in Uthmani Arabic or a translation."
+    },
+    {
+      "type": "paragraph",
+      "text": "The two are not the same thing. The wallpaper fills the whole screen behind the clock and keeps the ayah you chose until you pick another. A widget is a smaller box near the time, and it can switch to a new ayah on a schedule. This guide covers both, step by step, plus how to show the verse only at set times."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "Why the lock screen is the best place for Quran"
+      "text": "Why the Lock Screen is the best place for Quran"
     },
     {
       "type": "paragraph",
@@ -38,73 +42,147 @@
     {
       "type": "heading",
       "level": 2,
-      "text": "What you need before you start"
+      "text": "Wallpaper or widget: which one shows where?"
+    },
+    {
+      "type": "paragraph",
+      "text": "A Lock Screen wallpaper is the full-screen image behind the clock, so the ayah is the first thing you see when you wake your iPhone. A Lock Screen widget is a small box under the time, and a Home Screen widget sits among your apps after you unlock. Each of the three can show an ayah."
     },
     {
       "type": "list",
       "items": [
-        "An iPhone running **iOS 16 or later** (lock-screen widgets and per-screen wallpapers arrived in iOS 16).",
-        "The **QuranWall** app for the automatic method, or a saved verse image if you want to do it by hand.",
-        "Access to your lock-screen editor: touch and hold your lock screen to open it."
+        "**Lock Screen wallpaper:** the whole screen, behind the clock and your notifications. Best when you want the ayah large, with room for the Arabic. It stays the same until you change it.",
+        "**Lock Screen widget (iOS 16 or later):** a compact box in the widget area under the time, or a single line in the date above it. Best for a short ayah you glance at many times a day.",
+        "**Home Screen widget:** a larger tile among your apps. You see it after you unlock, so it suits a longer ayah you stop to read.",
+        "**More than one at once:** iOS lets you keep a wallpaper and widgets together, so the ayah can sit behind the clock and in a widget at the same time."
       ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Lock Screen widgets are fairly new. Apple's support article \"How to add and edit widgets on your iPhone\" opens its Lock Screen steps with \"With iOS 16 or later, you can add widgets to your Lock Screen\". Apple's iPhone User Guide page \"Create a custom iPhone Lock Screen\" adds that you can keep several Lock Screens, switch between them and link one to a Focus. To check your version, go to **Settings > General > About** and read the iOS Version line."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "Method 1: Add a Quran lock-screen widget (recommended)"
+      "text": "How to set an ayah as your Lock Screen wallpaper with QuranWall"
     },
     {
       "type": "paragraph",
-      "text": "A lock-screen widget shows a fresh verse each day, updates on its own, and sits quietly below or above the clock. This is the lowest-effort way to keep Quran in front of you."
+      "text": "QuranWall sets the wallpaper through Apple's Shortcuts app: you choose and style the ayah in QuranWall, and Shortcuts applies it to your Lock Screen. The first time, the app walks you through adding its shortcut. After that, the wallpaper keeps the ayah you chose until you pick another one."
     },
     {
       "type": "steps",
       "items": [
         "Download **QuranWall** from the App Store and open it.",
-        "Choose your translation language, background, font and colours.",
-        "Touch and hold your lock screen, tap **Customize**, then select **Lock Screen**.",
-        "Tap the widget area under the clock and add the **QuranWall** widget.",
-        "Tap **Done**. A new verse now appears on your lock screen each day."
+        "Find an ayah: all 114 surahs are searchable by surah, ayah or keyword.",
+        "Choose Uthmani Arabic or a translation, then a background (a preset or your own photo), a font and colours.",
+        "Tap **Make It Mine**. The first time, follow the app's prompts to add the QuranWall shortcut to Apple's Shortcuts app.",
+        "Shortcuts sets the image as your Lock Screen wallpaper and brings you back to QuranWall. Press the side button to see it."
       ]
     },
     {
       "type": "tip",
-      "content": "iOS offers inline lock-screen widgets above the clock and rectangular ones below it. Choose whichever shape QuranWall offers that suits the verse length you want to see."
+      "content": "To change the ayah later, pick a new one in QuranWall and tap **Make It Mine** again. The wallpaper does not change by itself, so if you want a verse that moves on, add the widget as well."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "Method 2: Set a verse wallpaper with a Focus mode"
+      "text": "How to add a Quran widget to your Lock Screen or Home Screen"
     },
     {
       "type": "paragraph",
-      "text": "The wallpaper method puts the verse front and center, and pairing it with a Focus mode makes it appear at the right times while quieting notifications. This is the move if you want a calmer phone during prayer, study, or before bed."
+      "text": "A widget is the way to see a changing ayah. Add the QuranWall widget to your Lock Screen (iOS 16 or later) or your Home Screen from the iOS widget gallery. Turn on auto-rotate and the widget shows a new ayah every day, every 8 hours or every hour; leave it off and it keeps one ayah."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "On the Lock Screen (iOS 16 or later)"
     },
     {
       "type": "steps",
       "items": [
-        "In QuranWall, set up the verse wallpaper you like.",
-        "Open **Settings > Focus** and create a Focus such as **Quiet Time** or **Prayer**.",
-        "Under that Focus, tap **Customize** on the lock screen and choose your QuranWall wallpaper.",
-        "Give the Focus a schedule, for example your morning routine or the minutes before each prayer, so the verse appears on its own."
+        "Install QuranWall and open it once.",
+        "Press the side button, then touch and hold the Lock Screen until the **Customize** button appears. Tap **Customize**, and choose the Lock Screen if iOS asks.",
+        "Tap **Add Widgets**, find **QuranWall** in the list, and tap or drag its widget into the widget area.",
+        "Swipe down to close the widget list, then tap **Done**."
       ]
     },
     {
-      "type": "highlight",
-      "content": "Pairing a verse wallpaper with a Focus turns Quiet Time into a one-tap retreat: the Quran fills your screen and the notifications step back."
+      "type": "heading",
+      "level": 3,
+      "text": "On the Home Screen"
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Touch and hold an empty area of the Home Screen until the apps jiggle.",
+        "Tap **Edit** in the upper-left corner, then tap **Add Widget**.",
+        "Find **QuranWall**, choose a widget size, then tap **Add Widget**.",
+        "Tap **Done**."
+      ]
+    },
+    {
+      "type": "tip",
+      "content": "The Lock Screen has room for only a few widgets. If the QuranWall widget will not fit, remove a widget you use less to make space, then add it again."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "Widget or wallpaper, which should you choose?"
+      "text": "How to show the verse only at set times with a Focus"
+    },
+    {
+      "type": "paragraph",
+      "text": "iOS can link a Lock Screen to a Focus, so the Lock Screen with your ayah appears whenever that Focus is on, for example in the evening or during a quiet hour you schedule. Apple's iPhone User Guide calls this linking a Focus to your Lock Screen. It is an iOS feature you set up once."
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Set your ayah as the Lock Screen wallpaper (steps above).",
+        "Press the side button, then touch and hold the Lock Screen until **Customize** appears at the bottom.",
+        "Tap **Focus** near the bottom of the wallpaper and select a Focus, such as Personal or Sleep.",
+        "To have it turn on by itself, go to **Settings > Focus**, tap that Focus, then tap **Add Schedule**."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "While that Focus is on, the linked Lock Screen shows. Switching to a different Lock Screen also switches your Focus, as Apple's guide notes. For a fuller quiet-time setup with a schedule, see [how to set up a Quran Focus mode on your iPhone](/blog/quran-focus-mode-iphone)."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What QuranWall puts on your iPhone"
+    },
+    {
+      "type": "paragraph",
+      "text": "QuranWall is an iPhone app, listed on the App Store as \"Quran Widget: QuranWall\", that puts an ayah of the Quran on your Lock Screen wallpaper and in a Home Screen or Lock Screen widget. The facts below follow its App Store listing as read on 17 November 2026."
     },
     {
       "type": "list",
       "items": [
-        "**Widget** is best for a fresh verse every day with almost no effort. It shows a new ayah each day and stays out of your way.",
-        "**Wallpaper with Focus** is best when you want a calmer phone at set times, with the verse taking the whole screen.",
-        "**Both** works well too: run a verse wallpaper inside a Quiet Time Focus and keep the widget on your everyday lock screen."
+        "**Where the ayah shows:** your Lock Screen wallpaper, a Home Screen widget, and a Lock Screen widget on iOS 16 or later.",
+        "**Text:** Uthmani Arabic or a translation, with 10 languages included.",
+        "**Your design:** your own background (a preset or your own photo), font and colours.",
+        "**The whole Quran:** all 114 surahs, searchable by surah, ayah or keyword.",
+        "**No ads, and it works offline.**",
+        "**Requirements:** an iPhone with iOS 15.0 or later, per the listing. The Lock Screen widget needs iOS 16 or later."
       ]
+    },
+    {
+      "type": "paragraph",
+      "text": "It is not a prayer-times, tafsir or memorisation app: it does one job, the ayah on your screen. The [QuranWall features page](/features) shows the design options in more detail."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Do other apps put a Quran verse on the Lock Screen?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Yes. QuranWall is our app, and it is not the only one: the App Store has several Quran widget apps that show a verse in a Home Screen or Lock Screen widget, and some let you set how often it changes, from hourly to daily. Most centre on the widget, while QuranWall centres on the full Lock Screen wallpaper and adds a widget."
+    },
+    {
+      "type": "paragraph",
+      "text": "We rank the options, with our bias stated, in [our comparison of the best Islamic lock screen apps for iPhone](/blog/best-islamic-lock-screen-app-iphone)."
     },
     {
       "type": "heading",
@@ -112,12 +190,18 @@
       "text": "Troubleshooting: verse not updating or showing"
     },
     {
+      "type": "paragraph",
+      "text": "Most problems come from the Lock Screen you are looking at, the iOS version, or a widget that was never added. Work through these checks in order."
+    },
+    {
       "type": "list",
       "items": [
-        "Confirm your iPhone is on **iOS 16 or later** in Settings > General > Software Update.",
-        "If a widget is blank, remove it and add it again from the lock-screen editor.",
-        "If a wallpaper will not switch, check that the matching Focus is active and linked to that lock screen.",
-        "Confirm the widget is added to the lock screen you are actually using, not a different one."
+        "Confirm your iPhone is on **iOS 16 or later** for Lock Screen widgets and Focus-linked Lock Screens: **Settings > General > Software Update**.",
+        "If tapping **Make It Mine** does not change your wallpaper, open the Shortcuts app and check that the QuranWall shortcut is still there, since that shortcut is what sets the wallpaper.",
+        "If QuranWall is missing from the widget list, open the app once, then try again.",
+        "If a widget is blank, remove it and add it again from the Lock Screen editor.",
+        "If the wrong wallpaper shows, check which Lock Screen is selected and whether a Focus linked to another Lock Screen is on.",
+        "If the widget never changes, check that auto-rotate is turned on."
       ]
     },
     {
@@ -128,11 +212,38 @@
     {
       "type": "heading",
       "level": 3,
-      "text": "Do I need to jailbreak or use Shortcuts?"
+      "text": "Can I put a Quran verse on my Lock Screen without an app?"
     },
     {
       "type": "paragraph",
-      "text": "No. Lock-screen widgets and wallpapers are built into iOS 16 and later, so no jailbreak is involved, and the steps above use no Shortcuts automation."
+      "text": "Yes. Save an image of the ayah to Photos, touch and hold the Lock Screen, add a new Lock Screen and choose Photos as the wallpaper. You make the image and change it by hand. Check the wording against a named translation first, so the verse is exact."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Do I need to jailbreak, or use the Shortcuts app?"
+    },
+    {
+      "type": "paragraph",
+      "text": "No jailbreak is involved. QuranWall does use Apple's Shortcuts app to set the wallpaper: the first time you tap Make It Mine, the app walks you through adding its shortcut, and after that Shortcuts applies each new ayah. Widgets are added from the iOS widget gallery."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Does the verse change every day?"
+    },
+    {
+      "type": "paragraph",
+      "text": "The wallpaper keeps the ayah you chose until you pick another one in QuranWall. The widget can change on its own: turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Which iPhones does this work on?"
+    },
+    {
+      "type": "paragraph",
+      "text": "QuranWall's App Store listing says iOS 15.0 or later. Lock Screen widgets, several Lock Screens and linking a Lock Screen to a Focus came with iOS 16, so those parts of this guide need iOS 16 or later."
     },
     {
       "type": "heading",
@@ -141,7 +252,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Lock-screen widgets and wallpapers are standard iOS features, and iOS decides when a widget refreshes. A verse that changes once a day does not need frequent updates."
+      "text": "Lock Screen wallpapers and widgets are standard iOS features, and iOS itself decides when a widget refreshes. A wallpaper is a still image, so it does not refresh at all."
     },
     {
       "type": "heading",
@@ -156,7 +267,7 @@
       "type": "callout",
       "icon": "sparkles",
       "title": "The short version",
-      "content": "Put a Quran verse on your iPhone lock screen in two ways: add a **QuranWall widget** for a fresh verse every day, or set a **verse wallpaper inside a Focus mode** for a calmer phone at set times. Both need iOS 16 or later for the Lock Screen features."
+      "content": "Set an ayah as your **Lock Screen wallpaper** with QuranWall's Make It Mine, or add the **QuranWall widget** to your Lock Screen (iOS 16 or later) or Home Screen for an ayah that can change on a schedule. Link the Lock Screen to a Focus if you want it at set times."
     },
     {
       "type": "paragraph",
@@ -164,8 +275,8 @@
     },
     {
       "type": "cta",
-      "title": "Put the Quran on your lock screen today",
-      "description": "QuranWall puts an ayah on your Lock Screen wallpaper and Home Screen widget, with a new ayah each day.",
+      "title": "Put an ayah on your Lock Screen",
+      "description": "QuranWall puts an ayah of the Quran on your Lock Screen wallpaper and in a Home Screen or Lock Screen widget, in Uthmani Arabic or a translation.",
       "buttonText": "Download QuranWall",
       "buttonUrl": "https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-blog&mt=8"
     }
