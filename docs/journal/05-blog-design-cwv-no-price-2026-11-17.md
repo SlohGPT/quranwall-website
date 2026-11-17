@@ -300,3 +300,59 @@ link-graph 1.1.0 adds two warn-only checks, and both fire:
 - The push-2 nits from the earlier follow-up are still open.
 - Titles vs H1 on `/features` and `/blog`, and the shared og:image, are for the SEO machine or Karol.
 - The "92%" stat and the "first waitlist member" testimonials are older copy. This pass didn't touch them.
+
+### Follow-up: smooth reveals, counters and mockup corners (2026-11-17, ~14:25 → 15:30)
+
+**Asked** (Karol, relayed by FaithWall): some elements "don't load" while scrolling, the "1,000+" numbers don't animate smoothly, and phone-mockup screen corners must never show past the rounded screen, on all three sites. "Do this yourself, everything yourself": push once the gates pass.
+
+**Found on QuranWall:**
+- **Reveals:** `Reveal` started 60 px inside the viewport and faded over 0.6 s with up to 0.2 s of stagger per item, so a block could sit blank on screen while you scrolled.
+- **Counters:** `SocialProof` counters waited for 50 % visibility and counted over 1.6 s. In Chromium the 92 % counter first showed its final value, then jumped down to 30 %.
+- **Mockup clipping:** screens clipped with `overflow:hidden` plus a radius only, which iOS Safari can ignore for composited children.
+- **Scroll cost:** large `blur()` glows, and `backdrop-filter` on repeated cards on phones.
+
+**Built** (`bf929e9`):
+- `src/lib/reveal.ts` is one shared observer for every reveal and counter.
+  - It fires when an element comes within 15 % of the viewport bottom.
+  - Its fallback, on `scrollend` or 150 ms after the last scroll, shows every pending block above the viewport bottom.
+  - Back/forward restores and #hash entries show everything at once.
+- `Reveal` now fades in 0.5 s with a rise of at most 16 px, and stagger is capped at 60 ms per item and 180 ms per group.
+- Counters run 1.1 s with an ease-out, use `tabular-nums` and reserve their final width. The server HTML keeps the final value.
+- The hero "Trusted by 1,000+" stays static text: it is above the fold, and counting it would flash.
+- Phone screens (`PhoneFrame`, `AppShowcase`, the Features preview, the blog verse card) add `clip-path: inset(0 round R)` and `isolation: isolate`. The verse card has a separate inner screen with radius `calc(2.75rem - 6px)`.
+- Glows are radial gradients now, and cards have no `backdrop-filter` below `md`.
+- The nav no longer animates `box-shadow` or `backdrop-filter`.
+- The unused `useInViewOnce.ts` is deleted.
+
+**Verified:**
+- **Scroll test** (Playwright WebKit as iPhone 15, and Chromium mobile; stepped at about 1,500 px/s and as a flick; on `/`, two posts and `/features`):
+  - On `/`, elements stuck for over 650 ms in view went from 2 to 0 in WebKit and from 3 to 0 in Chromium.
+  - Elements blank for 300 ms or more on `/`: 32 → 14 in WebKit and 29 → 8 in Chromium. The rest are 0.5 s fades caught mid-way.
+  - The rerun against the live site after the deploy also gives 0 stuck on every page in both browsers.
+- **Counters live** (WebKit, first visible, then +300 ms): 47 % → 83 %, 400+ → 877+, 55 → 103, ending at the final 92 %, 1,000+ and 114.
+- **Corners:** Playwright WebKit drew the old mockups rounded too, so it can't show the leak. The real check was Mobile Safari in the iOS Simulator (iPhone 17e, iOS 26.5).
+  - Before, on the live site: the hero phone, Features phone, How it works phones and the verse card showed no leak at rest.
+  - After, on the local build: none either.
+  - The change is preventive, following FaithWall's reproduction on faithwall.app.
+  - Shots and corner crops are with the FaithWall notes.
+- **Gates:**
+  - typecheck and build (16 pages, sitemap unchanged) pass;
+  - `lint-facts` gives 0 FAIL;
+  - `link-graph --dist` and `--live` exit 0;
+  - JSON-LD and the App Store link count on `/` are unchanged;
+  - JS on `/` grew by 364 B gzip;
+  - CLS on a scroll-through stays at or below 0.0084;
+  - there are no console or hydration errors.
+- **Lighthouse mobile live** (one run each; the machine's load average was about 300):
+
+  | Page | Perf / LCP s | TBT ms | CLS | a11y |
+  |---|---|---|---|---|
+  | `/` | 96 / 2.38 | 71 | 0 | 100 |
+  | verse post | 98 / 1.98 | 0 | 0 | 100 |
+
+  The earlier `/` TBT of 222 ms is now 71.
+- IndexNow got 200 for `/`. The annotation row is outside the repo.
+
+**Open:**
+- `/features` has no phone mockup for the corner test.
+- The corner fix can only be proven on a device that showed the leak. QuranWall's mockups didn't show it in the simulator, before or after.
