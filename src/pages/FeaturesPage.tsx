@@ -77,10 +77,10 @@ export default function FeaturesPage() {
                 Here is everything it does, and why each piece exists.
               </p>
               <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                <AppStoreButton href={APP_STORE} />
+                <AppStoreButton href={APP_STORE} size="lg" />
                 <a
                   href="#daily-verses"
-                  className="inline-flex items-center justify-center px-7 py-3.5 text-lg font-semibold text-white rounded-full border border-white/15 hover:bg-white/5 transition-colors"
+                  className="inline-flex items-center justify-center px-7 h-12 lg:h-14 text-lg font-semibold text-white rounded-full border border-white/15 hover:bg-white/5 transition-colors"
                 >
                   Explore features
                 </a>

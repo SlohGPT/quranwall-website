@@ -300,12 +300,12 @@ export default function Hero() {
             </p>
 
             <div className="hero-ctas flex flex-row flex-wrap gap-3 items-center animate-fade-up-d4">
-              <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />
+              <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} size="lg" />
               <a
                 href={appStoreUrl(CAMPAIGNS.home)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex shrink-0 items-center justify-center gap-2 px-6 sm:px-7 h-11 text-base font-bold whitespace-nowrap text-brand-ink bg-brand rounded-xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-6px_rgba(217,185,104,0.6)]"
+                className="group inline-flex shrink-0 items-center justify-center gap-2 px-6 sm:px-7 lg:px-8 h-12 lg:h-14 text-base lg:text-lg font-bold whitespace-nowrap text-brand-ink bg-brand rounded-xl shadow-[0_10px_30px_-6px_rgba(217,185,104,0.5)] transition-all duration-200 hover:bg-brand-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-6px_rgba(217,185,104,0.6)]"
               >
                 Get Started
                 <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />

@@ -2,6 +2,9 @@ import { ComponentProps } from 'react';
 
 interface AppStoreButtonProps extends Omit<ComponentProps<'a'>, 'children'> {
     theme?: 'dark' | 'light';
+    // 'md' = 44 px (footer, standalone spots). 'lg' = 48 px on phones and 56 px from lg up, the same height as the
+    // primary button beside it (hero, final CTA, install cards). Scaled by height only; width follows the aspect ratio.
+    size?: 'md' | 'lg';
 }
 
 // Apple's official "Download on the App Store" badge (US-UK, SVG), served unmodified from /public/badges.
@@ -11,7 +14,7 @@ interface AppStoreButtonProps extends Omit<ComponentProps<'a'>, 'children'> {
 const BADGE_HEIGHT = 44;
 const BADGE_WIDTH = Math.round((119.66407 / 40) * BADGE_HEIGHT); // 132
 
-export default function AppStoreButton({ theme = 'light', className = '', ...props }: AppStoreButtonProps) {
+export default function AppStoreButton({ theme = 'light', size = 'md', className = '', ...props }: AppStoreButtonProps) {
     // theme 'light' = the white badge, theme 'dark' = the black badge.
     const src = theme === 'dark' ? '/badges/app-store-black.svg' : '/badges/app-store-white.svg';
 
@@ -27,7 +30,7 @@ export default function AppStoreButton({ theme = 'light', className = '', ...pro
                 alt="Download on the App Store"
                 width={BADGE_WIDTH}
                 height={BADGE_HEIGHT}
-                className="block"
+                className={size === 'lg' ? 'block h-12 w-auto lg:h-14' : 'block'}
                 decoding="async"
             />
         </a>

@@ -81,9 +81,9 @@ export default function AppNudge({
             {isAndroid && <p className="text-[15px] leading-snug text-white/75">QuranWall is made for iPhone.</p>}
           </div>
         </div>
-        {/* Apple's badge rules: clear space of at least a quarter of its height (11 px) on every side. */}
+        {/* Apple's badge rules: clear space of at least a quarter of its height (12 px on phones, 14 px from lg) on every side. */}
         <div className="mt-5">
-          <AppStoreButton href={href} theme="light" />
+          <AppStoreButton href={href} theme="light" size="lg" />
         </div>
       </div>
       <InstallHandoff />

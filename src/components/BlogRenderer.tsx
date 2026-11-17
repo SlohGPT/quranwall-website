@@ -261,7 +261,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
                   <h3 className="text-2xl md:text-3xl font-black text-white mb-3">{section.title}</h3>
                   <p className="text-white/80 mb-6 max-w-xl mx-auto">{section.description}</p>
                   <div className="flex justify-center">
-                    <AppStoreButton href={appStoreUrl(CAMPAIGNS.pillar)} theme="light" />
+                    <AppStoreButton href={appStoreUrl(CAMPAIGNS.pillar)} theme="light" size="lg" />
                   </div>
                 </div>
               );

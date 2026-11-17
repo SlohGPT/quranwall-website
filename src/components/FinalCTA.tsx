@@ -40,7 +40,7 @@ export default function FinalCTA() {
                 Choose an ayah for your Lock Screen and see it every time you pick up your phone.
               </p>
 
-              <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} />
+              <AppStoreButton href={appStoreUrl(CAMPAIGNS.home)} size="lg" />
 
               <p className="mt-8 text-sm text-white/60">
                 Join <span className="font-semibold text-white">1,000+</span> believers
