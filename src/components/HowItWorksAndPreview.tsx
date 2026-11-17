@@ -65,7 +65,7 @@ export default function HowItWorksAndPreview() {
                 >
                     {steps.map((step, i) => (
                         <li key={step.number} className="w-[72vw] max-w-[270px] flex-none snap-center lg:w-auto lg:max-w-none">
-                            <Reveal delay={i * 0.1} y={16}>
+                            <Reveal delay={i * 0.06} y={16}>
                                 <div className="flex items-center gap-3">
                                     <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-brand/40 bg-surface-elevated text-base font-bold tracking-wide text-brand shadow-[0_0_20px_rgba(217,185,104,0.15)]">
                                         {step.number}

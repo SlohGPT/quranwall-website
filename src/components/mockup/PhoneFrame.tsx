@@ -45,7 +45,8 @@ export default function PhoneFrame({ children, className = '', style }: Props) {
           style={{ inset: '0.9cqw', borderRadius: '14.6cqw', background: '#000', boxShadow: 'inset 0 0 0 0.2cqw rgba(255,255,255,0.06)' }}
         >
           {/* screen */}
-          <div className="absolute overflow-hidden" style={{ inset: '1.7cqw', borderRadius: '12.9cqw', background: '#05040f' }}>
+          {/* clip-path + isolation: WebKit ignores overflow + radius for children on their own compositing layer (transform, animation, filter) */}
+          <div className="absolute overflow-hidden" style={{ inset: '1.7cqw', borderRadius: '12.9cqw', background: '#05040f', clipPath: 'inset(0 round 12.9cqw)', isolation: 'isolate' }}>
             {children}
             {/* dynamic island */}
             <span

@@ -99,7 +99,9 @@ export function VerseCard({ section }: { section: Verse }) {
   // Long verses step the type down so the fixed portrait box never overflows.
   const long = section.text.length > 120;
   return (
-    <blockquote className="relative mx-auto my-8 flex aspect-[9/19.5] w-full max-w-[300px] flex-col items-center justify-center overflow-hidden rounded-[2.75rem] border-[6px] border-brand-ink bg-surface-card px-6 py-14 text-center ring-2 ring-brand/45">
+    <blockquote className="relative mx-auto my-8 aspect-[9/19.5] w-full max-w-[300px] overflow-hidden rounded-[2.75rem] border-[6px] border-brand-ink bg-surface-card ring-2 ring-brand/45">
+      {/* the screen: its own radius (frame radius minus the 6px bezel), clipped so WebKit never lets a square corner out */}
+      <div className="absolute inset-0 isolate flex flex-col items-center justify-center overflow-hidden rounded-[calc(2.75rem-6px)] px-6 py-14 text-center [clip-path:inset(0_round_calc(2.75rem-6px))]">
       <span aria-hidden="true" className="absolute left-1/2 top-3 h-[18px] w-16 -translate-x-1/2 rounded-full bg-brand-ink" />
       <svg aria-hidden="true" focusable="false" viewBox="0 0 28 28" width="28" height="28" className="mx-auto mb-4 block shrink-0" fill="rgba(217,185,104,.15)" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round">
         <path d={crescentPath(14, 14, 10)} />
@@ -109,6 +111,7 @@ export function VerseCard({ section }: { section: Verse }) {
       </p>
       <footer className="mt-3 text-[15px] font-semibold tracking-wide text-brand">{section.reference}</footer>
       <span aria-hidden="true" className="absolute bottom-3 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-white/40" />
+      </div>
     </blockquote>
   );
 }

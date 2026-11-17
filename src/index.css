@@ -115,7 +115,7 @@
   }
 
   .card-glass {
-    @apply bg-surface-card/90 backdrop-blur-sm border border-surface-border rounded-3xl;
+    @apply bg-surface-card/90 md:backdrop-blur-sm border border-surface-border rounded-3xl;
   }
 
   .card-gradient {
@@ -182,9 +182,9 @@
 
   /* Below-the-fold entrance (components/ui/Reveal.tsx): visible by default, hidden only after mount while off screen. */
   .reveal {
-    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
   }
-  .reveal.reveal-pending { opacity: 0; transform: translateY(var(--reveal-y, 20px)); }
+  .reveal.reveal-pending { opacity: 0; transform: translateY(var(--reveal-y, 14px)); }
 
   /* Layered top padding for the fixed nav:
        - base 1.25rem (mobile) / 1.5rem (desktop), the design spec
@@ -213,7 +213,7 @@
 html.vv-zoomed .chrome-pin { position: absolute; }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal.reveal-pending { transform: none; }
+  .reveal.reveal-pending { opacity: 1; transform: none; }
   *,
   *::before,
   *::after {
@@ -243,12 +243,12 @@ html.vv-zoomed .chrome-pin { position: absolute; }
 @keyframes qa-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 @keyframes qa-sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(2.5deg); } }
 @keyframes qa-rise { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
-/* Entrance, once, 1 s: only after the figure scrolls into view (below the fold). */
-.is-seen .qa-in { animation: qa-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
-@keyframes qa-in { from { opacity: 0; transform: translateY(6px); } }
+/* Entrance, once, about 0.55 s: only after the figure scrolls into view (below the fold). */
+.is-seen .qa-in { animation: qa-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(min(var(--i, 0), 3) * 60ms); }
+@keyframes qa-in { from { opacity: 0; transform: translateY(12px); } }
 /* Step diagram (visuals/StepDiagram.tsx): connectors draw once, a gold spark travels the line on a slow loop. */
 .qa-draw { transform-box: fill-box; transform-origin: left center; }
-.is-seen .qa-draw { animation: qa-draw 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 120ms + 150ms); }
+.is-seen .qa-draw { animation: qa-draw 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(min(var(--i, 0), 3) * 60ms); }
 @keyframes qa-draw { from { transform: scaleX(0); } }
 .qa-travel { animation-name: qa-travel; animation-duration: 6s; animation-timing-function: linear; }
 @keyframes qa-travel { 0% { transform: translateX(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateX(256px); opacity: 0; } }
@@ -256,3 +256,8 @@ html.vv-zoomed .chrome-pin { position: absolute; }
   .qa-loop, .is-seen .qa-in, .is-seen .qa-draw { animation: none !important; }
   .qa-travel { opacity: 0; }
 }
+
+/* Stat counters (SocialProof): the final text reserves the width, so the count-up never shifts the line. */
+.qa-count { display: inline-grid; font-variant-numeric: tabular-nums; }
+.qa-count::before { content: attr(data-final); grid-area: 1 / 1; visibility: hidden; height: 0; overflow: hidden; }
+.qa-count > span { grid-area: 1 / 1; text-align: center; }

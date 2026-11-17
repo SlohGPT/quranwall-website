@@ -159,7 +159,7 @@ export default function Navigation() {
               boxShadow: pill
                 ? '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05) inset'
                 : 'none',
-              transition: 'background 0.6s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+              transition: 'background 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
             }}
           >
             {width > 0 && height > 0 && (

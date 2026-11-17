@@ -16,7 +16,7 @@ function observer(): IntersectionObserver | null {
           if (e.isIntersecting) e.target.classList.add('is-seen');
         }
       },
-      { rootMargin: '0px 0px -6% 0px' },
+      { rootMargin: '0px 0px 15% 0px', threshold: 0 },
     );
   }
   return io;

@@ -44,7 +44,7 @@ export default function TestimonialsAndFAQ() {
 
                         <div className="space-y-5">
                             {testimonials.map((testimonial, i) => (
-                                <Reveal key={testimonial.author} delay={i * 0.1} className={i % 2 === 1 ? 'lg:ml-8' : 'lg:mr-8'}>
+                                <Reveal key={testimonial.author} delay={i * 0.06} className={i % 2 === 1 ? 'lg:ml-8' : 'lg:mr-8'}>
                                     <figure className={`${glassCardClass} overflow-hidden p-6 sm:p-8 transition duration-300 hover:border-brand/30`}>
                                         <svg aria-hidden="true" viewBox="0 0 32 24" className="mb-4 h-6 w-8 fill-brand/70">
                                             <path d="M0 24V13.2C0 5.6 4.2 1 11.4 0l1 3.6C8.4 4.6 6.6 7 6.4 10.4H12V24H0Zm18 0V13.2C18 5.6 22.2 1 29.4 0l1 3.6c-4 1-5.8 3.4-6 6.8H30V24H18Z" />

@@ -45,7 +45,7 @@ export default function ExploreMore() {
           <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5">
             {links.map((link, i) => (
               <li key={link.to} className="flex">
-                <Reveal delay={i * 0.08} className="flex w-full">
+                <Reveal delay={i * 0.06} className="flex w-full">
                   <Link
                     to={link.to}
                     className={`${glassCardClass} ${glassCardHoverClass} group flex w-full flex-col p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-7`}

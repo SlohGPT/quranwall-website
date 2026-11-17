@@ -58,7 +58,7 @@ export default function Support() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[1100px] rounded-full pointer-events-none bg-[radial-gradient(closest-side,rgba(217,185,104,0.07),transparent)]" />
           <div className="container-main relative z-10 pt-32 md:pt-40 pb-12">
             <div className="animate-fade-up mx-auto flex max-w-5xl flex-col items-center gap-10 text-center md:flex-row md:justify-between md:gap-12 md:text-left">
               <div className="md:max-w-xl">

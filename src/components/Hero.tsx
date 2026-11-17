@@ -264,10 +264,10 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Static ambient glow - no GPU-heavy animations */}
         <div className="hidden md:block">
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[100px] animate-[pulse_20s_ease-in-out_infinite]" />
-          <div className="absolute bottom-1/3 right-1/3 w-[500px] h-[500px] bg-brand/3 rounded-full blur-[100px] animate-[pulse_15s_ease-in-out_infinite_2s]" />
+          <div className="absolute top-1/4 left-1/4 w-[900px] h-[900px] rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.07),transparent)] animate-[pulse_20s_ease-in-out_infinite]" />
+          <div className="absolute bottom-1/3 right-1/3 w-[800px] h-[800px] rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.05),transparent)] animate-[pulse_15s_ease-in-out_infinite_2s]" />
         </div>
-        <div className="md:hidden absolute top-1/4 left-1/2 -translate-x-1/2 w-full h-[400px] bg-brand/5 rounded-full blur-[80px]" />
+        <div className="md:hidden absolute top-1/4 left-1/2 -translate-x-1/2 w-full h-[560px] rounded-full bg-[radial-gradient(closest-side,rgba(217,185,104,0.07),transparent)]" />
       </div>
 
       <div className="container-main relative">

@@ -19,14 +19,14 @@ type TileProps = {
   /** Absolutely positioned art that is allowed to bleed to the tile edges. */
   backdrop?: ReactNode;
   children?: ReactNode;
-  /** Position in the grid: staggers the entrance by 90 ms per tile. */
+  /** Position in the grid: staggers the entrance by 60 ms per tile (the group caps at 180 ms). */
   index: number;
 };
 
 function Tile({ title, description, icon, className = '', textClassName = '', backdrop, children, index }: TileProps) {
   // The wrapper carries the grid placement and the entrance; the article keeps the card look and the hover lift.
   return (
-    <Reveal delay={index * 0.09} y={24} className={`flex ${className}`}>
+    <Reveal delay={index * 0.06} y={16} className={`flex ${className}`}>
     <article
       className="group relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-[transform,border-color] duration-300 hover:-translate-y-[3px] hover:border-brand/30 sm:p-7"
     >
@@ -86,7 +86,7 @@ function WidgetArt() {
           <span key={i} className="h-10 w-10 rounded-[11px] bg-white/25" style={{ opacity: 0.5 + (i % 3) * 0.15 }} />
         ))}
       </div>
-      <div aria-hidden="true" className="absolute inset-0 bg-black/15 backdrop-blur-[6px]" />
+      <div aria-hidden="true" className="absolute inset-0 bg-black/15 md:backdrop-blur-[6px]" />
       <div className="relative z-10 w-full max-w-[280px]">
         <QuranWidget size="medium" verse={SHOWCASE_VERSES[0]} />
       </div>
@@ -250,8 +250,10 @@ function CustomiserArt() {
         aria-label="Preview of a Lock Screen showing Ash-Sharh 6 in the Saheeh International translation, with an example background, font and colour"
         className="relative aspect-[3/4] w-[190px] shrink-0 overflow-hidden rounded-2xl border border-white/[0.14] shadow-[0_20px_40px_-16px_rgba(0,0,0,0.7)]"
       >
-        <div className="absolute left-0 top-0 w-full" style={{ aspectRatio: '1 / 2.17' }}>
-          <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper={bg} edition="translation" accent={accent} serif={font === 'serif'} />
+        <div className="absolute inset-0 overflow-hidden rounded-[15px] isolate [clip-path:inset(0_round_15px)]">
+          <div className="absolute left-0 top-0 w-full" style={{ aspectRatio: '1 / 2.17' }}>
+            <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper={bg} edition="translation" accent={accent} serif={font === 'serif'} />
+          </div>
         </div>
       </div>
 

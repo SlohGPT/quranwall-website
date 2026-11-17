@@ -67,7 +67,7 @@ export default function FeaturesPage() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[1100px] rounded-full pointer-events-none bg-[radial-gradient(closest-side,rgba(217,185,104,0.07),transparent)]" />
           <div className="container-main relative z-10 pt-32 md:pt-40 pb-12 md:pb-16 text-center">
             <div className="mb-8 flex justify-center">
               <Breadcrumbs crumbs={[{ label: 'Home', to: '/' }, { label: 'Features' }]} />
@@ -106,7 +106,7 @@ export default function FeaturesPage() {
                   as="section"
                   key={feature.id}
                   id={feature.id}
-                  y={24}
+                  y={16}
                   className="scroll-mt-28 py-12 md:py-16 grid md:grid-cols-[auto_1fr] gap-6 md:gap-10"
                 >
                   <div className="flex md:block items-center gap-4">

@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { useInViewOnce } from '../hooks/useInViewOnce';
-import { usePrefersReducedMotion } from './mockup/utils';
+import { skipMotion, whenNear } from '../lib/reveal';
 import Reveal from './ui/Reveal';
 import StarPattern from './ui/StarPattern';
 import Icon, { type IconName } from './visuals/icons';
@@ -25,34 +24,44 @@ function formatCount(n: number, decimals: number, suffix: string) {
 
 function Counter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInViewOnce(ref, 0.5);
-  const reduceMotion = usePrefersReducedMotion();
+  const final = formatCount(value, decimals, suffix);
   // Render the FINAL value ("92%" / "1,000+" / "114") in SSR so crawlers and
   // AI bots that don't execute JS read the real numbers, not "0.0". The
-  // count-up still runs on the client when the section scrolls into view
-  // (off-screen on load, so users never see a reset). React-state-based update
-  // means React tracks the text changes (no direct DOM mutation, no drift).
-  const [display, setDisplay] = useState(() => formatCount(value, decimals, suffix));
+  // count-up runs on the client only for counters that are still below the viewport
+  // (never one that is already on screen, never with reduced motion, a #hash or a
+  // back/forward restore), and it starts as soon as the number is within 15 % of the viewport
+  // bottom (shared observer, lib/reveal.ts), so it is already moving when it scrolls into view.
+  // React-state-based update means React tracks the text changes (no direct DOM mutation, no drift).
+  const [display, setDisplay] = useState(final);
 
   useEffect(() => {
-    if (!isInView || reduceMotion) return;
-    // rAF tween 0 -> value over 1.6 s with an ease-out curve (same feel as the old cubic-bezier(0.22, 1, 0.36, 1)).
-    const duration = 1600;
-    const start = performance.now();
+    const el = ref.current;
+    if (!el || skipMotion() || el.getBoundingClientRect().top < window.innerHeight) return;
     let raf = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 4);
-      setDisplay(formatCount(value * eased, decimals, suffix));
-      if (t < 1) raf = requestAnimationFrame(tick);
+    setDisplay(formatCount(0, decimals, suffix));
+    const cancel = whenNear(el, () => {
+      // rAF tween 0 -> value over 1.1 s with an ease-out curve.
+      const duration = 1100;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 4);
+        setDisplay(t < 1 ? formatCount(value * eased, decimals, suffix) : final);
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    });
+    return () => {
+      cancel();
+      cancelAnimationFrame(raf);
+      setDisplay(final);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [isInView, reduceMotion, value, decimals, suffix]);
+  }, [value, decimals, suffix, final]);
 
+  // .qa-count reserves the width of the final text (index.css), so the line never jitters while it counts.
   return (
-    <span ref={ref} className="tabular-nums">
-      {display}
+    <span className="qa-count" data-final={final}>
+      <span ref={ref}>{display}</span>
     </span>
   );
 }
