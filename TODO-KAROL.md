@@ -26,7 +26,7 @@ Items the SEO machine can't do itself. Newest first inside each section; the fir
   - **Where:** App Store Connect → your app (QuranWall) → App Analytics → Acquisition. Read Campaigns by token, and also Sources → Web Referrer. Set the date range to the last 30 days.
   - **Threshold:** Apple only lists a campaign once it has at least 5 first-time downloads in the range (24-hour attribution), so empty rows are normal at first.
   - **Campaign names:**
-    - pages: `qw-web-home`, `qw-web-nav`, `qw-web-footer`, `qw-web-features`, `qw-web-pricing` (also `public/pricing.md`), `qw-web-compare`, `qw-web-pillar`, `qw-web-about`, `qw-web-llms` (`public/llms.txt`)
+    - pages: `qw-web-home`, `qw-web-nav`, `qw-web-footer`, `qw-web-features`, `qw-web-compare`, `qw-web-pillar`, `qw-web-about`, `qw-web-llms` (`public/llms.txt`). `qw-web-pricing` was retired on 2026-11-17 with `public/pricing.md`; old clicks may still show under it.
     - blog: `qw-web-blog` (an App Store link written into a post's text; none of the current posts has one, so expect it empty), `qw-web-blog-mid`, `qw-web-blog-end` (the install cards), `qw-web-blog-sticky` (the phone bar)
     - other: `qw-web-handoff` (desktop QR and Copy link), `qw-web-smart-banner` (Safari's banner)
     - In your first read, check whether `qw-web-smart-banner` shows up at all; nobody has confirmed that Apple counts it.
