@@ -137,3 +137,71 @@ FaithWall checked the live site on its own: an origin/main export, a live crawl,
 - No component reads `installLine` ("Free to download."), so no live page shows it. That is compliant. The redesign either renders it at the install card or CTA, or drops the key.
 - Fold: on the 6 hero posts the order is cover, collapsed TOC, then the Quick Answer. So the callout is the first text block, not the first block. The redesign moves the Quick Answer above the cover (answer-first) and re-measures.
 - Annotations rows for `99b0f6e`, `8ce9cc1` and this push now live in `~/.claude/quranwall-gsc/annotations.csv`, outside the repo. They were moved out of the FaithWall file.
+- IndexNow: `/support` was pinged after `08778e8` went live, and it was accepted.
+
+## Follow-up the same day: visual redesign push 1, instruction wording, 13 more lint evasions
+**Asked.** Karol, 11-17, through the shared visual-redesign brief: the blog, guide and help pages are "too text heavy", with "no visuals, there's no vector things". Every page type should break up its text with meaningful vector visuals, a few of them moving. The text stays. Push 1 covers posts, the hub and help. The homepage comes later, after Karol approves its captures. QuranWall has no pillar or FAQ route, so the brief's pillar part lands on `/blog` (the hub) and its FAQ part on `/support`.
+
+**Art direction (decided):**
+- **The frame.** The pointed arch, a mihrab outline, frames every spot scene instead of a rectangle. It is the one memorable device; everything else is quiet line art.
+- **Palette.** Existing tokens only:
+  - night `#1E1338`, dusk `#2C1C58` and plum `#362266`;
+  - gold `#D9B968`, with `#C2A451` for secondary strokes;
+  - ink `#0C0D24` on gold.
+
+  The one gradient is the sky inside the arch.
+- **Strokes.** Icons on a 24 grid at 1.5 px, and scenes at viewBox 320×240 at 2 px, with round caps and no shadows.
+- **Motifs:**
+  - crescent, 8-point star, iPhone (round corners and a Dynamic Island, never the squircle);
+  - the lock-screen ayah as abstract lines only, never drawn Arabic or Quran text;
+  - tasbih beads, an open mushaf on a rehal, a fajr horizon, a moon for Focus, app tiles, an envelope.
+- **Motion.** One slow loop per scene, 6 s or longer. It is paused until a shared IntersectionObserver marks the scene in view, and turned off under reduced motion.
+
+**Built:**
+- `6507fbd`, the visuals library and post block visuals:
+  - 9 inline SVG scenes of 1.4–3.6 KB each, picked by slug with cluster fallbacks;
+  - steps as a numbered rail;
+  - stats drawn truthfully, in the built HTML: 186 dots, 10 dots, 4 segments;
+  - icon callouts;
+  - the verse as an iPhone card, with the same text and reference, still HTML;
+  - tables stacked under 640 px;
+  - the Quick Answer moved above the cover (answer-first);
+  - each post's scene before its first H2.
+- `88b8681`, `/blog` and `/support`:
+  - `/blog` gets a cluster map after the first topic, with real links. From 1024 px it is radial; below that it is a row of topic cards.
+  - `/support` gets an illustrated header, topic icons, and a 4-step diagram in "How does QuranWall work?".
+  - The FAQ answers stay in the DOM: the old `max-h-48` clip is replaced by a grid-rows collapse.
+  - Small contrast and underline fixes take `/support` accessibility from 91 to 100.
+- `59879f8` removes the leading ", " before the verse reference. It was live before this pass too.
+- `251df06` puts the no-price rule into `CLAUDE.md`, `SEO-STRATEGY.md` and the blog skill. Karol approved it on 11-17, in this session and again through FaithWall. `lint-facts --prompts` shows 0 FAIL.
+- **Outside the repo,** with Karol's OK the same day: the `quranwall-merge-bot` and `quranwall-seo-autopilot-local` prompts no longer name `pricing.md`. Their install-line sentence now reads: legal pages only, and "Free to download" only at download points.
+- `044bc1a` closes FaithWall's 13 further evasions:
+  - one-time purchase or pay once;
+  - lifetime access or plans, "upgrade to unlock", remove ads or support the developer;
+  - prices in dollars or cents, a bare "trial" about QuranWall, gratis, "at no charge";
+  - "ad-free and free", "free for a week", a lowercase plan-word "premium".
+
+  A sentence that points back at QuranWall ("unlike Athan, it is…") is no longer exempt. Self-test 422.
+
+**Verified, local, before push:**
+- Lighthouse mobile, median of 3, on a gzip static server. The machine load was 70–100, so read it as noise-level. Each cell is perf / LCP s:
+
+  | Page | Before | After |
+  |---|---|---|
+  | `/` (untouched) | 89 / 3.28 | 89 / 3.08 |
+  | `/blog` | 97 / 2.29 | 100 / 1.61 |
+  | post | 94 / 2.62 | 94 / 2.58 |
+  | `/features` | 97 / 2.20 | 98 / 2.12 |
+  | `/support` | 99 / 1.97 | 98 / 2.10 |
+
+  CLS 0 everywhere. The first build's `/blog` map shift (0.156, from `content-visibility` on the first topic) was fixed.
+- Added weight is 5–7 KB gzip per page.
+- Quick Answer top on the 6 hero posts: 373–405 px on mobile and 402–472 px on desktop.
+- Gates: typecheck, build, `lint-facts` (every mode), `link-graph --dist`, `gen-llms-guides --check`, and the block-sequence check (install cards unmoved in all 8 posts) all pass.
+- Captures (390×844 and 1440×900) are with the coordinating FaithWall session for review before the push.
+
+**Open:**
+- No icons inside the step rail, because the step texts don't map to clear icons.
+- The stacked tables are tested on a synthetic table only; no post has a table yet.
+- The homepage is push 2, after Karol's OK.
+- `installLine` is still unrendered.
