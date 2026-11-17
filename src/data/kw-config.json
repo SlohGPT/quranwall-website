@@ -13,14 +13,14 @@
   "gsc": {
     "property": "sc-domain:quranwall.com",
     "regex_families": [
-      { "id": "quran", "pattern": "qur'?an|koran|kuran|mushaf" },
-      { "id": "ayah-verse", "pattern": "ayah|ayat|ayaat|aayat|ayet|verse|scripture" },
-      { "id": "surah", "pattern": "surah|\\bsura\\b|surat|ayatul|ayat al|kursi|yaseen|yasin|kahf|mulk|fatiha|ikhlas|rahman" },
+      { "id": "quran", "pattern": "qur'?an|kuran|mushaf|(?:holy|the|al) koran|koran (?:verses?|ayah|ayat|app|wallpaper|widget|quotes?)" },
+      { "id": "ayah-verse", "pattern": "ayah|ayaat|aayat|(?:^|[^\\p{L}\\p{N}])(?:ayat|ayet)|verse|scripture" },
+      { "id": "surah", "pattern": "surah|\\bsura\\b|surat (?:al|an|ar|as|at|ad|az|ash|yasin|yaseen|ya sin|ikhlas|fatiha|kahfi?|mulk|rahman|waqiah)(?:[^\\p{L}\\p{N}]|$)|ayatul|ayat al|ayat ?kursi|al ?kursi|yaseen|yasin|kahf|mulk|fatiha|ikhlas|rahman" },
       { "id": "lock-screen", "pattern": "lock ?screen|lockscreen|kilit ekran|layar kunci" },
       { "id": "widget", "pattern": "widget" },
       { "id": "wallpaper", "pattern": "wallpaper|background|duvar ka|latar" },
       { "id": "iphone-app", "pattern": "(iphone|ios|apple) (app|apps|widget|widgets|wallpaper|lock)|apps? (for|on) (iphone|ios)" },
-      { "id": "islamic-practice", "pattern": "islam|muslim|\\bduas?\\b|dhikr|zikr|adhkar|azkar|tasbih|istighfar|salawat|salah|fajr|tahajjud|ramadan|sabr" },
+      { "id": "islamic-practice", "pattern": "islam|muslim|\\bduas?\\b|dhikr|zikr|adhkar|azkar|tasbih|istighfar|salawat|salah (?:times?|tracker|reminders?|app|widget)|(?:fajr|dhuhr|zuhr|asr|maghrib|isha|daily|five) salah|fajr|tahajjud|ramadan|sabr" },
       { "id": "mood", "pattern": "for (anxiety|anxious|fear|stress|grief|depress|lonel|sad|anger|hope|strength|patience|peace|sleep|healing|comfort|worry|gratitude)|when (you|i) (feel|are)|verses? about" },
       { "id": "compare", "pattern": " vs |versus|alternative|best .*app|apps? like|top .*apps?" },
       { "id": "daily-verse", "pattern": "daily|of the day|every day|each day|today|rotating" }
