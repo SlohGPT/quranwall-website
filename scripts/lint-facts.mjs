@@ -290,9 +290,14 @@ function allowedProofStripped(s) {
   const blank = (m) => ' '.repeat(m.length);
   return s
     .replace(/\b(?:trusted by|join)\s+(\d[\d,]*\+?)\s+believers\b/gi, (m, n) => (normCount(n) === floor ? blank(m) : m))
+    // Built HTML (SocialProof.tsx renders <dt> label, then <dd> value) reads label first: "Early users feel closer to Allah 92%".
+    .replace(/\bBelievers using QuranWall\s+(\d[\d,]*\+?)(?![\w%,.+])/gi, (m, n) => (normCount(n) === floor ? blank(m) : m))
+    .replace(/\bEarly users feel closer to Allah\s+92%(?!\w)/gi, blank)
     .replace(/(?<![\w.,])(\d[\d,]*\+?)\s+Believers using QuranWall\b/gi, (m, n) => (normCount(n) === floor ? blank(m) : m))
     .replace(/(?<![\w.,])92%\s+Early users feel closer to Allah\b/gi, blank);
 }
+/** The two kept stats with a drifted value after the label (built-HTML order): "Believers using QuranWall 2,000+", "Early users feel closer to Allah 93%". */
+const STAT_LABEL_FIRST_DRIFT = /\b(?:Believers using QuranWall|Early users feel closer to Allah)\s+\d[\d,.]*\s?(?:\+|%)?/i;
 
 const DL_NUM = String.raw`\d[\d,.]*(?:[km]\b)?\+?`;
 // Installs are counted like downloads, but never allowed (even the floor: the floor is a download count).
@@ -344,7 +349,7 @@ function lintText(text, out, opts = {}) {
       if (id === 'pricing-mention' && PRICING_EXEMPT.test(opts.relPath || '')) continue;
       let found;
       if (id === 'social-proof-downloads') found = downloadHits(s);
-      else { const m = re.exec(id === 'social-proof' ? allowedProofStripped(s) : s); found = m ? [m] : []; }
+      else { const sp = id === 'social-proof' ? allowedProofStripped(s) : s; const m = re.exec(sp) || (id === 'social-proof' ? STAT_LABEL_FIRST_DRIFT.exec(sp) : null); found = m ? [m] : []; }
       for (const m of found) {
         // Scope for negations: the matched clause (site content) or the whole sentence (prompts).
         const scope = opts.wholeSentenceNeg ? s : s.slice(clauseStart(s, m.index), m.index + m[0].length);
@@ -1101,6 +1106,14 @@ const SELF_TEST = [
   ['PASS', 'stat', { value: 1000, suffix: '+', label: 'Believers using QuranWall' }],
   ['PASS', 'stat', { value: facts.downloadsFloor, label: 'Believers using QuranWall' }],
   ['PASS', 'stat', { value: 92, suffix: '%', label: 'Early users feel closer to Allah' }],
+  // Built HTML reads label first (<dt> label, <dd> value), and the stats run together.
+  ['PASS', 'site', 'Early users feel closer to Allah 92% Believers using QuranWall 1,000+ Surahs, all searchable 114'],
+  ['PASS', 'site', 'Believers using QuranWall 1,000+ Surahs, all searchable 114'],
+  ['PASS', 'site', 'Believers using QuranWall ' + facts.downloadsFloor],
+  ['FAIL', 'site', 'Early users feel closer to Allah 92% Believers using QuranWall 2,000+ Surahs, all searchable 114', 'social-proof'],
+  ['FAIL', 'site', 'Early users feel closer to Allah 93% Believers using QuranWall 1,000+ Surahs, all searchable 114', 'social-proof'],
+  ['FAIL', 'site', 'Believers using QuranWall 1,000 Surahs, all searchable 114', 'social-proof'],
+  ['FAIL', 'site', 'Believers using QuranWall 10,000+', 'social-proof'],
   ['FAIL', 'site', 'Trusted by 2,000+ believers', 'social-proof'],
   ['FAIL', 'site', 'Join 1,000 believers', 'social-proof'],
   ['FAIL', 'site', 'Join 10,000+ believers', 'social-proof'],
