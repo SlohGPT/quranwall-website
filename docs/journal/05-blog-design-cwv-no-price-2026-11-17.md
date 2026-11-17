@@ -118,3 +118,22 @@ JS gzip per page: `/` 96 KB, `/blog` 100 KB, post 130 KB, `/features` 100 KB. CS
 - `framer-motion` is still listed in `package.json`, but nothing imports it. Removing it is a lockfile-only follow-up.
 - AuthorBio keeps its `aria-label`. At 375 px wide, a 4-line H1 could push the fold past 760; no post has one today.
 - The marker `index-785Ypg-B.js` noted before the push came from a pre-`99b0f6e` build. The live hash is `index-0jMfpJab.js`.
+
+## Follow-up the same day: FaithWall's verification, /support billing and lint holes (`ff1a0b0`)
+FaithWall checked the live site on its own: an origin/main export, a live crawl, and Lighthouse 12.8.2 run 3× on mobile. Its numbers match the table above: / 98, /blog 99, post 98, /features 99. Desktop scores 100, a11y 100 and CLS 0 on all 14 runs. link-graph `--live` exits 0, `/pricing` and `/pricing.md` return 404, and the ct tokens are intact.
+
+**Built (`ff1a0b0`):**
+- `/support` still said "billing" in its meta, og and twitter descriptions and on the privacy card. It now reads "…supported iPhones, and privacy." and "How we handle your information."
+- `lint-facts` now also fails:
+  - bare "billing" and "subscribe";
+  - "cancel anytime", "QuranWall+", "unlock everything", "see pricing";
+  - prices with no currency symbol, such as "4.99 a week";
+  - "download it free", "free on the App Store", "free forever", "free of charge".
+- Sentences that name another app and not QuranWall are exempt from the "free" rules, so "Athan is free to download" passes. Billing, price and subscribe wording still fail.
+- Self-test 292. typecheck, build and every lint mode pass with 0 FAIL, and the dist grep has 0 hits outside the legal pages.
+
+**Corrections to this entry:**
+- The Vercel usage WARN is the billik team's total from other client projects. QuranWall is not a billik project, so it was not this site's cost. FaithWall is passing the WARN to Karol.
+- No component reads `installLine` ("Free to download."), so no live page shows it. That is compliant. The redesign either renders it at the install card or CTA, or drops the key.
+- Fold: on the 6 hero posts the order is cover, collapsed TOC, then the Quick Answer. So the callout is the first text block, not the first block. The redesign moves the Quick Answer above the cover (answer-first) and re-measures.
+- Annotations rows for `99b0f6e`, `8ce9cc1` and this push now live in `~/.claude/quranwall-gsc/annotations.csv`, outside the repo. They were moved out of the FaithWall file.
