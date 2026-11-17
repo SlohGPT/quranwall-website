@@ -7,6 +7,7 @@ const guideGroups = listingsByCluster();
 
 const footerLinks = {
   about: [
+    { name: 'Start here', href: clusterHref('daily-quran-lock-screen') },
     { name: 'Features', href: '/features' },
     { name: 'Download', href: appStoreUrl(CAMPAIGNS.footer) },
     { name: 'Support', href: '/support' },
@@ -44,7 +45,7 @@ export default function Footer() {
                 QuranWall
               </span>
             </div>
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs">
+            <p className="text-white/65 text-sm leading-relaxed max-w-xs">
               An ayah of the Quran on your iPhone Lock Screen.
             </p>
 
@@ -53,15 +54,15 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
-            <h4 className="font-semibold text-white mb-4">About</h4>
+          <nav aria-label="Footer: About">
+            <p className="font-semibold text-white mb-4">About</p>
             <ul className="space-y-3">
               {footerLinks.about.map((link) => (
                 <li key={link.name}>
                   {link.href.startsWith('/') ? (
                     <Link
                       to={link.href}
-                      className="text-white/50 hover:text-white transition-colors text-sm"
+                      className="text-white/65 hover:text-white transition-colors text-sm"
                     >
                       {link.name}
                     </Link>
@@ -70,7 +71,7 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white/50 hover:text-white transition-colors text-sm"
+                      className="text-white/65 hover:text-white transition-colors text-sm"
                     >
                       {link.name}
                     </a>
@@ -78,40 +79,40 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          <div>
-            <h4 className="font-semibold text-white mb-4">Resources</h4>
+          <nav aria-label="Footer: Resources">
+            <p className="font-semibold text-white mb-4">Resources</p>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-white/50 hover:text-white transition-colors text-sm"
+                    className="text-white/65 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          <div>
-            <h4 className="font-semibold text-white mb-4">Company</h4>
+          <nav aria-label="Footer: Company">
+            <p className="font-semibold text-white mb-4">Company</p>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   {link.href.startsWith('/') ? (
                     <Link
                       to={link.href}
-                      className="text-white/50 hover:text-white transition-colors text-sm"
+                      className="text-white/65 hover:text-white transition-colors text-sm"
                     >
                       {link.name}
                     </Link>
                   ) : (
                     <a
                       href={link.href}
-                      className="text-white/50 hover:text-white transition-colors text-sm"
+                      className="text-white/65 hover:text-white transition-colors text-sm"
                     >
                       {link.name}
                     </a>
@@ -119,24 +120,24 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
 
         <nav aria-label="Guides" className="mb-16 pt-12 border-t border-surface-border">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-10">
             {guideGroups.map(({ cluster, posts }) => (
               <div key={cluster}>
-                <h4 className="font-semibold text-white mb-4">
+                <p className="font-semibold text-white mb-4">
                   <Link to={clusterHref(cluster)} className="hover:text-brand transition-colors">
                     {CLUSTER_HEADING[cluster]}
                   </Link>
-                </h4>
+                </p>
                 <ul className="space-y-3">
                   {posts.map((post) => (
                     <li key={post.slug}>
                       <Link
                         to={`/blog/${post.slug}`}
-                        className="text-white/50 hover:text-white transition-colors text-sm leading-snug block"
+                        className="text-white/65 hover:text-white transition-colors text-sm leading-snug block"
                       >
                         {post.title}
                       </Link>
@@ -154,21 +155,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-8 text-center md:text-left text-white/60 text-xs leading-relaxed">
+        <p className="mt-8 text-center md:text-left text-white/65 text-xs leading-relaxed">
           Apple, the Apple logo, iPhone and App Store are trademarks of Apple Inc., registered in the U.S. and other countries and regions.
         </p>
 
         <div className="pt-6 border-t border-surface-border mt-6 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-          <p className="text-white/40 text-sm text-center md:text-left">
+          <p className="text-white/65 text-sm text-center md:text-left">
             &copy; 2026 QuranWall. Made with love for Allah.
           </p>
           <div className="flex items-baseline justify-center md:justify-end gap-2 sm:gap-3">
-            <span className="text-white/30 font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight">Built by</span>
+            <span className="text-white/65 font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight">Built by</span>
             <a
               href="https://www.karchi.xyz/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/50 hover:text-white transition-colors duration-300 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none"
+              className="text-white/65 hover:text-white transition-colors duration-300 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none"
               aria-label="karchi. digital agency"
             >
               karchi.
