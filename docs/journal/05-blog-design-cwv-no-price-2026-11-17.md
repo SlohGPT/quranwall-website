@@ -205,3 +205,41 @@ FaithWall checked the live site on its own: an origin/main export, a live crawl,
 - The stacked tables are tested on a synthetic table only; no post has a table yet.
 - The homepage is push 2, after Karol's OK.
 - `installLine` is still unrendered.
+
+### Follow-up: redesign push 1 live (2026-11-17, later)
+
+**Review fixes before the push** (FaithWall reviewed the captures): `96fd64a`.
+- The verse card is now a portrait phone (9:19.5) with curly quotes. Verses over 120 characters drop to 16 px so the whole ayah fits.
+- The stat figure's SVG is `aria-hidden`, so a screen reader reads the number once, from the HTML text.
+- The `/blog` cluster map sizes its nodes to the container (container query) and widens the rings. The smallest gap between nodes is now about 15–18 px at 1024 and 1100 px.
+- The mid and end install cards now print `facts.installLine` ("Free to download.") once each. This closes the "`installLine` is still unrendered" item above.
+- `9c5cb2f`: `TODO-KAROL.md` retires the `qw-web-pricing` campaign token along with `pricing.md`.
+
+**Live** (`96fd64a`, deploy confirmed by commit status and asset hash):
+- On 3 posts the stray ", " before the verse reference is gone, and "Free to download." appears twice (mid and end card). The scene is present, and the `/blog` map is live.
+- `link-graph --live` exits 0, with 17 pages ok.
+- Lighthouse mobile, live, median of 3:
+
+  | Page | Perf / LCP s | TBT ms | CLS | a11y |
+  |---|---|---|---|---|
+  | `/blog` | 99 / 1.83 | | 0 | 100 |
+  | dhikr-reminders post | 97 / 2.13 | 25 | 0 | 100 |
+  | `/support` | 99 / 1.72 | | 0 | 100 |
+
+- **Lazy images:** after a scroll-through, every `src` on the page returns 200. The QR code is `hidden lg:flex`, so phones never request it.
+- **Captures:** the open "How does QuranWall work?" answer is a 2×2 step grid on phones and 4 in a row on desktop. These sit with the FaithWall review captures.
+- IndexNow got 200 for `/blog`, `/support` and all 8 posts. The GSC annotation row for `96fd64a` is outside the repo.
+
+**Process note:** during the local Lighthouse runs, the implementer ran `pkill -f lighthouse` once. That breaks the "kill only your own PIDs" rule. Nothing else was running Lighthouse at the time, but future briefs repeat the rule.
+
+**Open, for push 2 (not blocking):**
+- best-islamic stacks cover, stat and scene too close together.
+- Tables need ARIA roles.
+- The stat-shape regex needs tightening.
+- The ring needs a `<g transform>`, and the dot stagger must stay ≤ 1.2 s.
+- Scene SVGs should use `useId`, and the duplicate `useInView` in `lib/inview.ts` needs a rename.
+- The FAQ answers carry too many `role=region` landmarks.
+- The map should be `role=list`.
+- The scenes should be more distinct; the quran-verse one is the plainest.
+- The homepage redesign waits for Karol's OK on captures.
+- `framer-motion` is unused but still in `package.json`.
