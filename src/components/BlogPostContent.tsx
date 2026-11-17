@@ -130,12 +130,14 @@ export default function BlogPostContent({ post, slug, related }: Props) {
 
           <AuthorBio />
 
-          <p className="mt-10 text-[16px] text-white/80">
-            Part of{' '}
-            <Link to={topicHref} className="text-brand underline underline-offset-2 hover:text-brand-light">
-              {CLUSTER_HEADING[meta.cluster]}
-            </Link>
-          </p>
+          <nav aria-label="Topic" className="mt-10">
+            <p className="text-[16px] text-white/80">
+              Part of{' '}
+              <Link to={topicHref} className="text-brand underline underline-offset-2 hover:text-brand-light">
+                {CLUSTER_HEADING[meta.cluster]}
+              </Link>
+            </p>
+          </nav>
 
           {(prev || next) && (
             <nav aria-label="Previous and next in this topic" className="mt-4 flex flex-col gap-2">
