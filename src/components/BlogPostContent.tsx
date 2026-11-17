@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import BlogRenderer from './BlogRenderer';
 import AuthorBio from './AuthorBio';
-import BlogCard from './BlogCard';
+import { CLUSTER_LABEL, clusterHref } from '../lib/clusters';
 import Breadcrumbs from './Breadcrumbs';
 import type { BlogPost, BlogPostListing } from '../types/blog';
 
@@ -100,14 +100,51 @@ export default function BlogPostContent({ post, slug: _slug, related }: Props) {
       </div>
 
       {related.length > 0 && (
-        <div className="max-w-6xl mx-auto mt-20">
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-6">Keep reading</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {related.slice(0, 3).map((p) => (
-              <BlogCard key={p.slug} post={p} />
+        <nav aria-labelledby="related-guides" className="max-w-6xl mx-auto mt-20">
+          <h2 id="related-guides" className="text-2xl md:text-3xl font-black text-white mb-6">
+            Keep reading
+          </h2>
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {related.map((p) => (
+              <li
+                key={p.slug}
+                className="relative rounded-2xl overflow-hidden bg-surface-card border border-surface-border hover:border-brand/40 transition-colors"
+              >
+                <img
+                  src={p.thumbnail}
+                  alt=""
+                  width={1600}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[16/9] object-cover"
+                />
+                <div className="p-5">
+                  <p className="text-xs text-brand font-semibold tracking-wide mb-2">
+                    {CLUSTER_LABEL[p.cluster] || p.cluster}
+                  </p>
+                  <h3 className="text-lg font-bold text-white leading-tight">
+                    <Link
+                      to={`/blog/${p.slug}`}
+                      className="hover:text-brand transition-colors after:absolute after:inset-0 after:content-['']"
+                    >
+                      {p.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 text-white/60 text-sm leading-relaxed line-clamp-2">{p.description}</p>
+                </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+          <p className="mt-6">
+            <Link
+              to={clusterHref(meta.cluster)}
+              className="text-brand hover:text-brand-light underline underline-offset-2 font-semibold"
+            >
+              More {CLUSTER_LABEL[meta.cluster]} guides
+            </Link>
+          </p>
+        </nav>
       )}
     </article>
   );

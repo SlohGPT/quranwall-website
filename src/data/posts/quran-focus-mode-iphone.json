@@ -4,7 +4,7 @@
     "description": "Use an iOS Focus mode to turn prayer and quiet time into a calm, distraction-free moment with the Quran on your iPhone. A step-by-step setup using Focus lock screens (iOS 16 or later).",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-11-16",
+    "dateModified": "2026-11-17",
     "readTime": "7 min read",
     "image": "/og-image.png",
     "keywords": [
@@ -19,7 +19,7 @@
   "sections": [
     {
       "type": "paragraph",
-      "text": "To set up a Quran Focus mode on your iPhone, create a custom Focus in Settings, give it a lock screen with a Quran verse wallpaper or widget, then schedule it for the times you want to slow down, such as before each prayer or first thing in the morning. When the Focus turns on, your phone quiets its notifications and the Quran fills the screen. Focus lock screens need iOS 16 or later."
+      "text": "To set up a Quran Focus mode on your iPhone, create a custom Focus, link a Lock Screen showing a Quran verse (QuranWall puts an ayah on your Lock Screen wallpaper and widget), and schedule it before each prayer. When it turns on, notifications go quiet and the verse fills the screen. Focus lock screens need iOS 16 or later."
     },
     {
       "type": "heading",
@@ -95,7 +95,7 @@
     },
     {
       "type": "paragraph",
-      "text": "A Focus is most useful when you do not have to remember it. iOS can turn yours on by time, location, or app."
+      "text": "A Focus is most useful when you do not have to remember it. iOS can turn yours on by time, location, or app. A morning window pairs well with a [Muslim morning routine on iPhone](/blog/muslim-morning-routine-iphone)."
     },
     {
       "type": "list",
@@ -117,7 +117,7 @@
       "type": "callout",
       "icon": "lightbulb",
       "title": "Pair it with prayer",
-      "content": "Set short Focus windows a few minutes before each prayer. As the notifications fall away and a verse fills the screen, the transition into salah gets a little easier, and your phone stops competing for the moment."
+      "content": "Set short Focus windows a few minutes before each prayer. As the notifications fall away and a verse fills the screen, the transition into salah gets a little easier, and your phone stops competing for the moment. If you are working through a khatm, a [Quran reading plan app for iPhone](/blog/quran-reading-plan-app-iphone) can set the pages for that quiet window."
     },
     {
       "type": "heading",

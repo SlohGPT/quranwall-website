@@ -1,13 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { BlogPostListing } from '../types/blog';
-
-const CLUSTER_LABEL: Record<string, string> = {
-  'daily-quran-lock-screen': 'Daily Quran',
-  'dua-and-dhikr-iphone': 'Prayer Life',
-  'muslim-productivity-iphone': 'Productivity',
-  'quran-study-tools-ios': 'Quran Study',
-  'muslim-app-comparisons': 'App Comparisons',
-};
+import { CLUSTER_LABEL } from '../lib/clusters';
 
 export default function BlogCard({ post }: { post: BlogPostListing }) {
   return (

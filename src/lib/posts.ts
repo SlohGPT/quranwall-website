@@ -1,6 +1,7 @@
 import postsRegistry from '../data/blogPosts.json';
 import pillarsData from '../data/pillars.json';
 import type { BlogPost, BlogPostListing, PillarConfig, BlogCluster } from '../types/blog';
+import { orderedListings } from './clusters';
 
 const postModules = import.meta.glob<{ default: BlogPost }>('../data/posts/*.json', { eager: true });
 
@@ -21,10 +22,17 @@ export function getListing(slug: string): BlogPostListing | null {
   return allListings.find((p) => p.slug === slug) ?? null;
 }
 
-export function getRelated(slug: string, cluster: BlogCluster, limit = 3): BlogPostListing[] {
-  return allListings
-    .filter((p) => p.slug !== slug && p.cluster === cluster)
-    .slice(0, limit);
+/**
+ * Related guides: order every published post by cluster (fixed cluster order, registry order within a cluster) and take
+ * the next `limit` posts after this one, wrapping around. Each post is then linked from exactly `limit` others, and a
+ * post's same-cluster neighbours come first.
+ */
+export function getRelated(slug: string, limit = 3): BlogPostListing[] {
+  const ordered = orderedListings();
+  const at = ordered.findIndex((p) => p.slug === slug);
+  if (at < 0) return [];
+  const n = Math.min(limit, ordered.length - 1);
+  return Array.from({ length: n }, (_, i) => ordered[(at + 1 + i) % ordered.length]);
 }
 
 export function getPillar(slug: string): PillarConfig | null {

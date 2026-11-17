@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
+import { CLUSTER_HEADING, clusterHref, listingsByCluster } from '../lib/clusters';
+
+const guideGroups = listingsByCluster();
 
 const footerLinks = {
   about: [
@@ -144,6 +147,32 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        <nav aria-label="Guides" className="mb-16 pt-12 border-t border-surface-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-10">
+            {guideGroups.map(({ cluster, posts }) => (
+              <div key={cluster}>
+                <h4 className="font-semibold text-white mb-4">
+                  <Link to={clusterHref(cluster)} className="hover:text-brand transition-colors">
+                    {CLUSTER_HEADING[cluster]}
+                  </Link>
+                </h4>
+                <ul className="space-y-3">
+                  {posts.map((post) => (
+                    <li key={post.slug}>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="text-white/50 hover:text-white transition-colors text-sm leading-snug block"
+                      >
+                        {post.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </nav>
 
         <div className="w-full overflow-hidden flex items-center justify-center">
           <div className="text-[14vw] sm:text-[12vw] lg:text-[10vw] font-black text-white leading-none tracking-[-0.08em] select-none whitespace-nowrap text-center" style={{ letterSpacing: '-0.04em' }}>

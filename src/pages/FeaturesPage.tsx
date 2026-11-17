@@ -7,6 +7,8 @@ import FinalCTA from '../components/FinalCTA';
 import { featureNav } from '../data/featureNav';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import AppStoreButton from '../components/AppStoreButton';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { breadcrumbSchema } from '../lib/breadcrumbs';
 
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
@@ -37,6 +39,11 @@ const itemListSchema = {
   })),
 };
 
+const breadcrumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Features', path: '/features' },
+]);
+
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-surface">
@@ -53,6 +60,7 @@ export default function FeaturesPage() {
         <meta name="twitter:description" content={DESC} />
         <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbs)}</script>
       </Helmet>
       <Navigation />
 
@@ -61,6 +69,9 @@ export default function FeaturesPage() {
         <section className="relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
           <div className="container-main relative z-10 pt-32 md:pt-40 pb-12 md:pb-16 text-center">
+            <div className="mb-8 flex justify-center">
+              <Breadcrumbs crumbs={[{ label: 'Home', to: '/' }, { label: 'Features' }]} />
+            </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

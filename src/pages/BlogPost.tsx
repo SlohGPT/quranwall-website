@@ -14,7 +14,7 @@ export default function BlogPost() {
 
   if (!post || !listing) return <NotFound />;
 
-  const related = getRelated(slug, post.meta.cluster);
+  const related = getRelated(slug);
   const url = `https://quranwall.com/blog/${slug}`;
   const imageUrl = post.meta.image.startsWith('http')
     ? post.meta.image
