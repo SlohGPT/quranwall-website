@@ -246,6 +246,13 @@ html.vv-zoomed .chrome-pin { position: absolute; }
 /* Entrance, once, 1 s: only after the figure scrolls into view (below the fold). */
 .is-seen .qa-in { animation: qa-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
 @keyframes qa-in { from { opacity: 0; transform: translateY(6px); } }
+/* Step diagram (visuals/StepDiagram.tsx): connectors draw once, a gold spark travels the line on a slow loop. */
+.qa-draw { transform-box: fill-box; transform-origin: left center; }
+.is-seen .qa-draw { animation: qa-draw 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 120ms + 150ms); }
+@keyframes qa-draw { from { transform: scaleX(0); } }
+.qa-travel { animation-name: qa-travel; animation-duration: 6s; animation-timing-function: linear; }
+@keyframes qa-travel { 0% { transform: translateX(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateX(256px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .qa-loop, .is-seen .qa-in { animation: none !important; }
+  .qa-loop, .is-seen .qa-in, .is-seen .qa-draw { animation: none !important; }
+  .qa-travel { opacity: 0; }
 }

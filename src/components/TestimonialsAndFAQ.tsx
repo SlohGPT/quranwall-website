@@ -4,6 +4,7 @@ import SectionHeading from './ui/SectionHeading';
 import StarPattern from './ui/StarPattern';
 import { glassCardClass } from './ui/GlassCard';
 import { faqs } from '../data/faqs';
+import { Scene } from './visuals';
 
 const testimonials = [
     {
@@ -77,7 +78,10 @@ export default function TestimonialsAndFAQ() {
 
                     {/* RIGHT COLUMN: FAQ (answers stay in the DOM when collapsed, for SSR and crawlers) */}
                     <div id="faq">
-                        <SectionHeading eyebrow="FAQ" title="Common questions" className="mb-12" />
+                        <div className="mb-12 flex items-end justify-between gap-6">
+                            <SectionHeading eyebrow="FAQ" title="Common questions" />
+                            <Scene name="support" className="hidden w-36 flex-none sm:block lg:w-32 xl:w-40" />
+                        </div>
 
                         <div className="space-y-3">
                             {faqs.map((faq, index) => {

@@ -3,16 +3,17 @@ import { useInViewOnce } from '../hooks/useInViewOnce';
 import { usePrefersReducedMotion } from './mockup/utils';
 import Reveal from './ui/Reveal';
 import StarPattern from './ui/StarPattern';
+import Icon, { type IconName } from './visuals/icons';
 
 // NOTE: these numbers ship in the static/SSR HTML that crawlers and AI engines
 // read, so they must be true and consistent with the rest of the site
 // (Hero + FinalCTA both say "1,000+"). Update them all together when the real
 // figures change. No App Store rating stat here yet — add one back (and the
 // aggregateRating in index.html) only once there's a genuine public rating.
-const stats = [
-  { value: 92, label: 'Early users feel closer to Allah', suffix: '%' },
-  { value: 1000, label: 'Believers using QuranWall', suffix: '+' },
-  { value: 114, label: 'Surahs, all searchable', suffix: '' },
+const stats: { value: number; label: string; suffix: string; icon: IconName }[] = [
+  { value: 92, label: 'Early users feel closer to Allah', suffix: '%', icon: 'highlight' },
+  { value: 1000, label: 'Believers using QuranWall', suffix: '+', icon: 'users' },
+  { value: 114, label: 'Surahs, all searchable', suffix: '', icon: 'book' },
 ];
 
 function formatCount(n: number, decimals: number, suffix: string) {
@@ -77,6 +78,10 @@ export default function SocialProof() {
                   <dd className="bg-gradient-to-b from-brand-light to-brand bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent sm:text-5xl lg:text-7xl">
                     <Counter value={stat.value} suffix={stat.suffix} />
                   </dd>
+                  {/* flex-col-reverse: last in the DOM, first on screen. A pointed-arch badge, fixed 48x56 box. */}
+                  <span aria-hidden="true" className="mb-5 flex h-14 w-12 items-center justify-center rounded-t-full border border-brand/35 bg-brand/[0.08] text-brand">
+                    <Icon name={stat.icon} className="h-6 w-6" />
+                  </span>
                 </div>
               ))}
             </dl>

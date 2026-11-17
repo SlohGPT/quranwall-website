@@ -3,26 +3,32 @@ import SectionHeading from './ui/SectionHeading';
 import { glassCardClass, glassCardHoverClass } from './ui/GlassCard';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { Scene } from './visuals';
+import type { SceneName } from './visuals/scenes';
 
 // In-body links from Home to the pages that answer the questions people ask before installing.
-const links = [
+const links: { to: string; anchor: string; body: string; scene: SceneName }[] = [
   {
     to: '/features',
+    scene: 'reading',
     anchor: 'Everything QuranWall does',
     body: 'The Lock Screen wallpaper, the Home Screen widget, translations in 10 languages and how you can customise the look.',
   },
   {
     to: '/blog/quran-verse-iphone-lock-screen',
+    scene: 'lockscreen',
     anchor: 'How to put a Quran verse on your iPhone Lock Screen',
     body: 'A guide to getting an ayah onto the screen you see most.',
   },
   {
     to: '/blog/best-islamic-lock-screen-app-iphone',
+    scene: 'fan',
     anchor: 'The best Islamic lock screen app for iPhone',
     body: 'A ranking of the apps that put Islamic content on your Lock Screen.',
   },
   {
     to: '/blog/best-muslim-app-for-iphone-2026',
+    scene: 'grid',
     anchor: 'The best Muslim app for iPhone in 2026',
     body: 'An honest ranking of Muslim apps, and what each one is good for.',
   },
@@ -44,6 +50,7 @@ export default function ExploreMore() {
                     to={link.to}
                     className={`${glassCardClass} ${glassCardHoverClass} group flex w-full flex-col p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-7`}
                   >
+                    <Scene name={link.scene} className="mx-auto mb-5 w-full max-w-[168px]" />
                     <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand/70">
                       {String(i + 1).padStart(2, '0')}
                     </span>

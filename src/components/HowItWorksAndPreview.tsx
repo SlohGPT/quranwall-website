@@ -6,6 +6,7 @@ import { glassCardClass } from './ui/GlassCard';
 import { LockScreen, PhoneFrame, QuranWidget, Wallpaper } from './mockup';
 import { AppStoreScreen, ChooseAyahScreen, ReviewScreen } from './mockup/AppScreens';
 import { SHOWCASE_VERSES } from '../data/showcaseVerses';
+import StepDiagram from './visuals/StepDiagram';
 
 // The four beats of the real app flow. Each one is shown as a coded mini screen of the app.
 const steps: { number: string; title: string; description: string; label: string; screen: ReactNode }[] = [
@@ -55,9 +56,11 @@ export default function HowItWorksAndPreview() {
                     Here is what happens in the app, screen by screen.
                 </SectionHeading>
 
+                <StepDiagram className="mx-auto mt-10 w-full max-w-[520px]" />
+
                 {/* Storyboard: four columns from lg, a swipeable row of cards below that (the row bleeds to the screen edge). */}
                 <ol
-                    className="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-6 [scroll-padding-inline:1rem] [scrollbar-width:none] sm:-mx-6 sm:px-6 sm:[scroll-padding-inline:1.5rem] lg:mx-0 lg:mt-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
+                    className="-mx-4 mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-6 [scroll-padding-inline:1rem] [scrollbar-width:none] sm:-mx-6 sm:px-6 sm:[scroll-padding-inline:1.5rem] lg:mx-0 lg:mt-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
                     aria-label="How QuranWall works, step by step"
                 >
                     {steps.map((step, i) => (

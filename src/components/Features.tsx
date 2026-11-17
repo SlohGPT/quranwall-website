@@ -7,10 +7,12 @@ import QuranWidget, { referenceOf } from './mockup/QuranWidget';
 import Wallpaper, { type WallpaperVariant } from './mockup/Wallpaper';
 import { usePrefersReducedMotion } from './mockup/utils';
 import Reveal from './ui/Reveal';
+import Icon, { type IconName } from './visuals/icons';
 
 type TileProps = {
   title: string;
   description: string;
+  icon: IconName;
   className?: string;
   /** Extra classes for the title/description block (used to keep it clear of absolutely positioned art). */
   textClassName?: string;
@@ -21,7 +23,7 @@ type TileProps = {
   index: number;
 };
 
-function Tile({ title, description, className = '', textClassName = '', backdrop, children, index }: TileProps) {
+function Tile({ title, description, icon, className = '', textClassName = '', backdrop, children, index }: TileProps) {
   // The wrapper carries the grid placement and the entrance; the article keeps the card look and the hover lift.
   return (
     <Reveal delay={index * 0.09} y={24} className={`flex ${className}`}>
@@ -35,6 +37,9 @@ function Tile({ title, description, className = '', textClassName = '', backdrop
       />
       {backdrop}
       <div className={`relative z-10 ${textClassName}`}>
+        <span aria-hidden="true" className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-brand/30 bg-brand/[0.08] text-brand">
+          <Icon name={icon} className="h-6 w-6" />
+        </span>
         <h3 className="text-lg font-bold tracking-tight text-white sm:text-xl">{title}</h3>
         <p className="mt-1.5 max-w-md text-sm leading-relaxed text-white/55 sm:text-[15px]">{description}</p>
       </div>
@@ -56,7 +61,7 @@ function LockScreenArt() {
       <div
         role="img"
         aria-label="The top of an iPhone Lock Screen with the clock and Ash-Sharh 6 in the Saheeh International translation"
-        className="absolute left-1/2 top-[160px] z-10 w-[250px] -translate-x-1/2 sm:w-[270px] md:left-auto md:right-[7%] md:top-[44px] md:translate-x-0 lg:left-1/2 lg:right-auto lg:top-[215px] lg:w-[300px] lg:-translate-x-1/2"
+        className="absolute left-1/2 top-[214px] z-10 w-[250px] -translate-x-1/2 sm:w-[270px] md:left-auto md:right-[7%] md:top-[44px] md:translate-x-0 lg:left-1/2 lg:right-auto lg:top-[240px] lg:w-[300px] lg:-translate-x-1/2"
       >
         <PhoneFrame>
           <LockScreen verse={SHOWCASE_VERSES[0]} wallpaper="night" edition="translation" />
@@ -400,34 +405,34 @@ export default function Features() {
           </div>
 
           <div
-            className="grid gap-4 sm:gap-5 md:grid-cols-2 md:grid-flow-dense lg:auto-rows-[minmax(280px,auto)] lg:grid-cols-4"
+            className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:gap-5 md:grid-cols-2 md:grid-flow-dense lg:auto-rows-[minmax(280px,auto)] lg:grid-cols-4"
           >
-            <Tile index={0}
+            <Tile index={0} icon="setup"
               title="The Quran on your Lock Screen"
-              description="The ayah you choose, as your iPhone Lock Screen wallpaper, in Arabic or a translation."
-              className="min-h-[540px] md:col-span-2 md:min-h-[480px] lg:row-span-2 lg:min-h-[620px]"
+              description="The ayah you choose, as your iPhone Lock Screen wallpaper."
+              className="min-h-[594px] md:col-span-2 md:min-h-[480px] lg:row-span-2 lg:min-h-[645px]"
               // md only: the phone sits at right-[7%] w-[270px]; stop the text 16px short of its left edge (93% of the tile minus 270 + 28 padding + 16)
               textClassName="md:max-w-[calc(93%-262px)] lg:max-w-none"
               backdrop={<LockScreenArt />}
             />
 
-            <Tile index={1}
+            <Tile index={1} icon="widget"
               title="A Home Screen widget"
-              description="Add the widget to your Home Screen or Lock Screen. Turn on auto-rotate and it shows a new ayah every day, every 8 hours or every hour."
+              description="Add the widget to your Home Screen or Lock Screen."
               className="lg:col-span-2"
             >
               <WidgetArt />
             </Tile>
 
-            <Tile index={2} title="Ten languages" description="Read it in Arabic or a translation: 10 languages." className="lg:col-span-2">
+            <Tile index={2} icon="globe" title="Ten languages" description="Read it in Arabic or a translation: 10 languages." className="lg:col-span-2">
               <LanguagesArt />
             </Tile>
 
-            <Tile index={3} title="All 114 surahs, searchable" description="Search all 114 surahs by surah, ayah or keyword.">
+            <Tile index={3} icon="search" title="All 114 surahs, searchable" description="Search all 114 surahs by surah, ayah or keyword.">
               <SearchArt />
             </Tile>
 
-            <Tile index={4}
+            <Tile index={4} icon="palette"
               title="Your background, font and colours"
               description="Pick a gradient, a photo from the gallery or your own photo, then choose the font and text colour you like."
               className="md:col-span-2 lg:col-span-2"
@@ -435,7 +440,7 @@ export default function Features() {
               <CustomiserArt />
             </Tile>
 
-            <Tile index={5} title="No ads. Offline browsing." description="QuranWall shows no ads. Browse and search all 114 surahs offline.">
+            <Tile index={5} icon="offline" title="No ads. Offline browsing." description="QuranWall shows no ads. Browse and search all 114 surahs offline.">
               <OfflineArt />
             </Tile>
           </div>
