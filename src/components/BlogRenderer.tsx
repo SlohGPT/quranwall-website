@@ -6,16 +6,22 @@ import { Zap, Lightbulb, BookOpen, AlertCircle, Sparkles } from 'lucide-react';
 import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
 import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
+import { headingIds } from '../lib/headings';
 import type { BlogSection } from '../types/blog';
 
 /**
- * Reading measure: text blocks stop at about 68 characters per line (35rem holds 66-70 characters of DM Sans at 18 px;
- * a literal 68ch is about 770 px in this font, which is the whole column). Stats, verses and the CTA use the full column.
+ * Reading measure is set once, on the post column (BlogPostContent), not per block. Only the figures that earn the
+ * width break out of it: stat cards, verse cards, tables (and the hero, in BlogPostContent). The breakout is 60 px each
+ * side from md (the 720 px a 768 px screen leaves), 84 px each side from lg (768 px wide), and from 1180 px the right
+ * side is limited to 64 px so it stays 32 px clear of the table-of-contents rail.
  */
-const MEASURE = 'max-w-[35rem]';
+const BREAKOUT = 'md:-mx-[60px] lg:-mx-[84px] min-[1180px]:-mr-16';
 
-/** Body copy: 17 px on phones, 18 px from md up, for paragraphs, list items, steps and callout text alike. */
-const BODY = 'text-[17px] md:text-[18px] leading-[1.7]';
+/** Body copy: one size token for paragraphs, list items, steps, callout text and table cells. */
+const BODY = 'text-[18px] leading-[1.7] min-[1180px]:text-[19px] min-[1180px]:leading-[1.65]';
+
+/** Callout family: 16 px padding on phones, 24 px from md up. */
+const CALLOUT_PAD = 'p-4 md:p-6';
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   zap: Zap,
@@ -24,6 +30,22 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   alert: AlertCircle,
   sparkles: Sparkles,
 };
+
+type HastNode = { type?: string; value?: string; tagName?: string; children?: HastNode[] };
+
+function hastText(n: HastNode | undefined): string {
+  if (!n) return '';
+  if (n.type === 'text') return n.value ?? '';
+  return (n.children ?? []).map(hastText).join('');
+}
+
+/** aria-label for a markdown table: its header cells, so the scroll region has a name. */
+function tableLabel(node: HastNode | undefined): string {
+  const head = (node?.children ?? []).find((c) => c.tagName === 'thead');
+  const row = (head?.children ?? []).find((c) => c.tagName === 'tr');
+  const cells = (row?.children ?? []).filter((c) => c.tagName === 'th').map((c) => hastText(c).trim()).filter(Boolean);
+  return cells.length ? `Table: ${cells.join(', ')}` : 'Table';
+}
 
 function Markdown({ text }: { text: string }) {
   return (
@@ -51,8 +73,39 @@ function Markdown({ text }: { text: string }) {
             </a>
           );
         },
-        strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+        strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
         p: ({ children }) => <p className="text-white/80">{children}</p>,
+        // Elements the posts do not use yet (remark-gfm is on). Styled now so a future table, list or quote renders properly.
+        h3: ({ children }) => <h3 className="!mt-9 mb-2 text-[21px] font-bold leading-[1.3] text-white min-[1180px]:text-[23px]">{children}</h3>,
+        ul: ({ children }) => <ul className="my-3 list-disc space-y-2 pl-6 marker:text-brand">{children}</ul>,
+        ol: ({ children }) => <ol className="my-3 list-decimal space-y-2 pl-6 marker:text-brand">{children}</ol>,
+        li: ({ children }) => <li className="pl-1 text-inherit [&>ul]:mt-1.5 [&>ol]:mt-1.5 [&>ul]:space-y-1.5 [&>ol]:space-y-1.5">{children}</li>,
+        blockquote: ({ children }) => (
+          <blockquote className="my-4 border-l-4 border-brand pl-5 font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">{children}</blockquote>
+        ),
+        code: ({ children }) => <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-[15px] text-white">{children}</code>,
+        table: ({ node, children }) => (
+          <div className="relative my-4">
+            <div
+              role="region"
+              tabIndex={0}
+              aria-label={tableLabel(node)}
+              className="overflow-x-auto rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              <table className="min-w-[520px] w-full border-collapse text-left text-[16px] leading-[1.5] min-[1180px]:text-[17px]">{children}</table>
+            </div>
+            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent" />
+            <p className="mt-2 text-[14px] text-white/65 sm:hidden">Swipe to compare</p>
+          </div>
+        ),
+        thead: ({ children }) => <thead className="bg-surface-elevated">{children}</thead>,
+        tbody: ({ children }) => <tbody className="[&>tr:nth-child(even)]:bg-white/[0.03]">{children}</tbody>,
+        th: ({ children }) => (
+          <th className="sticky left-0 border-b border-white/10 bg-surface-elevated px-[14px] py-3 font-semibold text-white first:z-10">{children}</th>
+        ),
+        td: ({ children }) => (
+          <td className="border-b border-white/[0.06] px-[14px] py-3 text-white/80 first:sticky first:left-0 first:z-10 first:bg-surface">{children}</td>
+        ),
       }}
     >
       {text}
@@ -128,21 +181,30 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
   const isPost = pageType === 'blog';
   const h2Indexes = sections.flatMap((sec, i) => (sec.type === 'heading' && sec.level === 2 ? [i] : []));
   const midAt = isPost ? midCardIndex(sections, h2Indexes) : -1;
+  const ids = headingIds(sections);
 
+  // Heading margins (both sides) are !important so they beat the wrapper's space-y; the first block after a heading sits 16 px under it.
   return (
-    <div className="space-y-6">
+    <div className="space-y-[22px] min-[1180px]:space-y-6 [&>:is(h2,h3)+*:not(h2,h3)]:!mt-0">
       {sections.map((section, i) => {
         const block = (() => {
           switch (section.type) {
             case 'heading': {
               const Tag = section.level === 2 ? 'h2' : 'h3';
-              const size = section.level === 2 ? 'text-2xl md:text-3xl mt-10' : 'text-xl md:text-2xl mt-6';
-              return <Tag className={`${size} font-bold text-white tracking-tight`}>{section.text}</Tag>;
+              const size =
+                section.level === 2
+                  ? 'text-[26px] leading-[1.25] md:text-[29px] min-[1180px]:text-[32px] min-[1180px]:leading-[1.2] !mt-14 !mb-4'
+                  : 'text-[21px] leading-[1.3] md:text-[22px] min-[1180px]:text-[23px] !mt-9 !mb-2';
+              return (
+                <Tag id={ids[i]} className={`${size} scroll-mt-24 font-bold tracking-tight text-white`}>
+                  {section.text}
+                </Tag>
+              );
             }
 
             case 'paragraph':
               return (
-                <div className={`text-white/80 ${BODY} ${MEASURE}`}>
+                <div className={`text-white/80 ${BODY}`}>
                   <Markdown text={section.text} />
                 </div>
               );
@@ -150,8 +212,8 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
             case 'callout': {
               const Icon = ICONS[section.icon || 'sparkles'] || Sparkles;
               return (
-                <div className={`my-8 p-6 rounded-2xl bg-brand/10 border border-brand/30 flex gap-4 ${MEASURE}`}>
-                  <Icon className="w-6 h-6 text-brand shrink-0 mt-1" />
+                <div className={`my-8 ${CALLOUT_PAD} rounded-2xl bg-brand/10 border border-brand/30 flex flex-col gap-3 sm:flex-row sm:gap-4`}>
+                  <Icon className="w-6 h-6 text-brand shrink-0 sm:mt-1" />
                   <div className="flex-1 min-w-0">
                     {section.title && <p className="font-bold text-white text-lg mb-2">{section.title}</p>}
                     <div className={`text-white/85 ${BODY}`}>
@@ -164,7 +226,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'tip':
               return (
-                <div className={`my-6 p-5 rounded-xl bg-surface-card border-l-4 border-brand ${MEASURE}`}>
+                <div className={`my-6 ${CALLOUT_PAD} rounded-xl bg-surface-card border-l-4 border-brand`}>
                   <p className="text-xs uppercase tracking-widest text-brand font-bold mb-2">Tip</p>
                   <div className={`text-white/85 ${BODY}`}>
                     <Markdown text={section.content} />
@@ -175,7 +237,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
             case 'highlight':
               return (
                 <div
-                  className={`my-6 p-5 rounded-xl bg-gradient-to-br from-brand/15 to-brand-dark/10 border border-brand/20 ${MEASURE}`}
+                  className={`my-6 ${CALLOUT_PAD} rounded-xl bg-gradient-to-br from-brand/15 to-brand-dark/10 border border-brand/20`}
                 >
                   <div className={`text-white/90 ${BODY}`}>
                     <Markdown text={section.content} />
@@ -185,7 +247,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'important':
               return (
-                <div className={`my-6 p-5 rounded-xl bg-surface-card border-l-4 border-yellow-500/70 ${MEASURE}`}>
+                <div className={`my-6 ${CALLOUT_PAD} rounded-xl bg-surface-card border-l-4 border-yellow-500/70`}>
                   <p className="text-xs uppercase tracking-widest text-yellow-400 font-bold mb-2">Important</p>
                   <div className={`text-white/85 ${BODY}`}>
                     <Markdown text={section.content} />
@@ -195,16 +257,16 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'stat':
               return (
-                <div className="my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center">
+                <div className={`my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center ${BREAKOUT}`}>
                   <p className="text-4xl md:text-5xl font-black text-brand">{section.number}</p>
                   <p className="text-white font-semibold mt-2">{section.label}</p>
-                  {section.description && <p className="text-white/60 text-sm mt-2">{section.description}</p>}
+                  {section.description && <p className="text-white/65 text-[15px] mt-2">{section.description}</p>}
                 </div>
               );
 
             case 'steps':
               return (
-                <ol className={`my-4 space-y-3 list-none pl-0 counter-reset-steps ${MEASURE}`}>
+                <ol className="my-4 space-y-3 list-none pl-0 counter-reset-steps">
                   {section.items.map((item, idx) => (
                     <li key={idx} className="flex gap-4 items-start">
                       <span className="shrink-0 w-8 h-8 rounded-full bg-brand text-brand-ink font-bold flex items-center justify-center text-sm">
@@ -220,7 +282,7 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'list':
               return (
-                <ul className={`my-4 space-y-2 list-disc list-outside pl-6 marker:text-brand ${MEASURE}`}>
+                <ul className="my-4 space-y-2 list-disc list-outside pl-6 marker:text-brand">
                   {section.items.map((item, idx) => (
                     <li key={idx} className={`text-white/85 ${BODY} pl-1`}>
                       <Markdown text={item} />
@@ -231,9 +293,9 @@ export default function BlogRenderer({ sections, pageType = 'blog' }: Props) {
 
             case 'verse':
               return (
-                <blockquote className="my-8 p-6 rounded-2xl bg-surface-card border-l-4 border-brand/60 italic">
-                  <p className="text-white text-xl md:text-2xl leading-relaxed font-serif">"{section.text}"</p>
-                  <footer className="mt-3 text-brand/90 text-sm font-semibold not-italic tracking-wide">
+                <blockquote className={`my-8 rounded-2xl bg-surface-card border-l-4 border-brand py-5 pl-5 pr-5 md:pr-6 ${BREAKOUT}`}>
+                  <p dir="auto" className="font-serif text-[20px] leading-[1.5] text-white min-[1180px]:text-[22px]">"{section.text}"</p>
+                  <footer className="mt-3 text-[15px] font-semibold tracking-wide text-white/70">
                     , {section.reference}
                   </footer>
                 </blockquote>

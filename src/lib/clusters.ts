@@ -47,3 +47,12 @@ export function listingsByCluster(): { cluster: BlogCluster; posts: BlogPostList
 export function orderedListings(): BlogPostListing[] {
   return listingsByCluster().flatMap((g) => g.posts);
 }
+
+/** The posts either side of this one inside its own topic (registry order, no wrap-around). */
+export function topicNeighbours(slug: string): { prev: BlogPostListing | null; next: BlogPostListing | null } {
+  const me = published.find((p) => p.slug === slug);
+  if (!me) return { prev: null, next: null };
+  const inTopic = published.filter((p) => p.cluster === me.cluster);
+  const at = inTopic.findIndex((p) => p.slug === slug);
+  return { prev: inTopic[at - 1] ?? null, next: inTopic[at + 1] ?? null };
+}

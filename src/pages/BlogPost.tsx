@@ -6,6 +6,8 @@ import StickyInstallBar from '../components/StickyInstallBar';
 import BlogPostContent from '../components/BlogPostContent';
 import NotFound from './NotFound';
 import { getPost, getListing, getRelated } from '../lib/posts';
+import { CLUSTER_LABEL, clusterHref } from '../lib/clusters';
+import { breadcrumbSchema as buildBreadcrumbs } from '../lib/breadcrumbs';
 import { GENERIC_CARD, HERO_SIZES, HERO_WIDTHS, coverSize, coverSrcSet } from '../lib/covers';
 
 export default function BlogPost() {
@@ -73,18 +75,16 @@ export default function BlogPost() {
     keywords: post.meta.keywords.join(', '),
   };
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://quranwall.com/' },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://quranwall.com/blog' },
-      { '@type': 'ListItem', position: 3, name: post.meta.title, item: url },
-    ],
-  };
+  // Same four levels as the visible trail. The topic item points at its anchor on /blog (no pillar pages exist yet).
+  const breadcrumbSchema = buildBreadcrumbs([
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    { name: CLUSTER_LABEL[post.meta.cluster], path: clusterHref(post.meta.cluster) },
+    { name: post.meta.title, path: `/blog/${slug}` },
+  ]);
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0">
       <Helmet>
         <title>{docTitle}</title>
         <meta name="description" content={post.meta.description} />
