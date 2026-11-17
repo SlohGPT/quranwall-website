@@ -100,6 +100,12 @@
 }
 
 @layer components {
+  /* Long listing sections skip layout and paint until near the viewport. */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
   .container-main {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 overflow-hidden;
   }

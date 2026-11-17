@@ -3,36 +3,48 @@ import type { BlogPostListing } from '../types/blog';
 import { CLUSTER_LABEL } from '../lib/clusters';
 import ResponsiveImage from './ResponsiveImage';
 
-export default function BlogCard({ post }: { post: BlogPostListing }) {
+interface Props {
+  post: BlogPostListing;
+  /** Above the fold: load the cover eagerly. */
+  eager?: boolean;
+  /** The single LCP candidate on the page: eager plus fetchpriority high. */
+  priority?: boolean;
+}
+
+/**
+ * One <a> for the whole card. Phones: a compact row (112 px cover, label, title, meta, no excerpt).
+ * 768 px and up: a vertical card with a 3:2 cover and the excerpt.
+ */
+export default function BlogCard({ post, eager = false, priority = false }: Props) {
   return (
     <Link
       to={`/blog/${post.slug}`}
-      className="group block rounded-2xl overflow-hidden bg-surface-card border border-surface-border hover:border-brand/40 transition-all duration-300 hover:-translate-y-1"
+      className="group flex flex-row items-start gap-4 md:flex-col md:gap-0 rounded-2xl overflow-hidden bg-surface-card border border-surface-border p-2.5 md:p-0 hover:border-brand/40 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
     >
-      <div className="aspect-[16/9] overflow-hidden bg-surface-elevated">
+      <div className="w-28 shrink-0 aspect-[3/2] overflow-hidden rounded-lg md:rounded-none md:w-full bg-surface-elevated">
         <ResponsiveImage
           src={post.thumbnail}
           alt={post.title}
-          sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 100vw"
-          widths={[480, 640, 800]}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 112px"
+          widths={[240, 480, 640, 800]}
+          loading={eager ? 'eager' : 'lazy'}
+          priority={priority}
+          className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-500"
         />
       </div>
-      <div className="p-5">
-        <div className="flex items-center gap-3 text-xs text-white/50 mb-3">
-          <span className="px-2.5 py-1 rounded-full bg-brand/15 text-brand font-semibold tracking-wide">
-            {CLUSTER_LABEL[post.cluster] || post.cluster}
-          </span>
-          <span>{post.readTime}</span>
-        </div>
-        <h3 className="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-brand transition-colors line-clamp-2">
+      <div className="min-w-0 flex-1 md:p-5">
+        <p className="text-[13px] font-semibold tracking-wide text-brand mb-1 md:mb-2">
+          {CLUSTER_LABEL[post.cluster] || post.cluster}
+        </p>
+        <h3 className="text-[17px] md:text-xl font-bold text-white leading-snug group-hover:text-brand transition-colors line-clamp-3 md:line-clamp-2">
           {post.title}
         </h3>
-        <p className="mt-2 text-white/60 text-sm leading-relaxed line-clamp-2">
+        <p className="max-md:hidden mt-2 text-[15px] text-white/70 leading-relaxed line-clamp-2">
           {post.description}
         </p>
-        <p className="mt-4 text-xs text-white/40">{post.date}</p>
+        <p className="mt-2 md:mt-4 text-[13px] text-white/65">
+          {post.readTime} &middot; {post.date}
+        </p>
       </div>
     </Link>
   );

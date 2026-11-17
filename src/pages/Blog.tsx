@@ -5,7 +5,13 @@ import Footer from '../components/Footer';
 import BlogListing from '../components/BlogListing';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { PILLAR_SLUGS, getPillar } from '../lib/pillars';
-import { CLUSTER_HEADING, listingsByCluster } from '../lib/clusters';
+import { CLUSTER_HEADING, CLUSTER_LABEL, listingsByCluster } from '../lib/clusters';
+
+const groups = listingsByCluster();
+// Cards that precede each section, so only the first three on the page load eagerly.
+const offset = groups.map((_, i) => groups.slice(0, i).reduce((n, g) => n + g.posts.length, 0));
+const CHIP =
+  'inline-flex h-11 items-center gap-1.5 rounded-full border border-white/15 px-4 text-[15px] font-semibold text-white hover:border-brand/50 hover:text-brand transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand';
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -38,19 +44,40 @@ export default function Blog() {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       <Navigation />
-      <main className="container-main pt-28 md:pt-32 pb-20">
-        <div className="mb-8">
+      {/* Not .container-main: its overflow-hidden would stop the chip row from sticking. */}
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 pt-[88px] md:pt-28 pb-20">
+        <div className="mb-2 md:mb-8">
           <Breadcrumbs crumbs={[{ label: 'Home', to: '/' }, { label: 'Blog' }]} />
         </div>
-        <header className="mb-12 max-w-3xl">
-          <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">The QuranWall Blog</p>
-          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">
+        <header id="all" className="scroll-mt-36 mb-3 md:mb-8 max-w-3xl">
+          <p className="hidden md:block text-brand text-sm font-semibold uppercase tracking-widest mb-3">The QuranWall Blog</p>
+          <h1 className="text-[32px] md:text-[44px] font-black text-white tracking-tight leading-[1.15] md:leading-tight">
             The Quran on your iPhone, every day.
           </h1>
-          <p className="mt-5 text-lg text-white/70 leading-relaxed">
+          <p className="mt-2 md:mt-4 text-[15px] leading-snug md:text-lg md:leading-relaxed text-white/70 line-clamp-2 md:line-clamp-none">
             Practical guides for using your phone as a tool for spiritual growth instead of a thief of it. New posts often.
           </p>
         </header>
+
+        <nav
+          aria-label="Blog topics"
+          className="sticky top-16 md:top-[88px] z-30 -mx-4 sm:-mx-6 lg:-mx-12 mb-2 md:mb-10 bg-surface border-y border-surface-border"
+        >
+          <ul className="flex h-12 items-center gap-2 overflow-x-auto snap-x px-4 sm:px-6 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <li className="snap-start shrink-0">
+              <a href="#all" className={CHIP}>
+                All
+              </a>
+            </li>
+            {groups.map(({ cluster, posts }) => (
+              <li key={cluster} className="snap-start shrink-0">
+                <a href={`#${cluster}`} className={CHIP}>
+                  {CLUSTER_LABEL[cluster]} <span className="text-white/65">{posts.length}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         {PILLAR_SLUGS.length > 0 && (
           <section className="mb-14">
@@ -66,7 +93,7 @@ export default function Blog() {
                     className="group p-5 rounded-2xl bg-surface-card border border-surface-border hover:border-brand/40 transition-colors"
                   >
                     <p className="font-bold text-white group-hover:text-brand transition-colors">{p.title}</p>
-                    <p className="mt-1 text-sm text-white/60 line-clamp-2">{p.description}</p>
+                    <p className="mt-1 text-sm text-white/65 line-clamp-2">{p.description}</p>
                   </Link>
                 );
               })}
@@ -74,12 +101,16 @@ export default function Blog() {
           </section>
         )}
 
-        {listingsByCluster().map(({ cluster, posts }) => (
-          <section key={cluster} aria-labelledby={cluster} className="mb-14 last:mb-0">
-            <h2 id={cluster} className="scroll-mt-28 text-2xl md:text-3xl font-bold text-white mb-5">
+        {groups.map(({ cluster, posts }, gi) => (
+          <section
+            key={cluster}
+            aria-labelledby={cluster}
+            className="cv-auto mb-6 md:mb-14 last:mb-0"
+          >
+            <h2 id={cluster} className="scroll-mt-36 md:scroll-mt-44 text-[22px] md:text-3xl font-bold text-white mb-2 md:mb-5">
               {CLUSTER_HEADING[cluster]}
             </h2>
-            <BlogListing posts={posts} />
+            <BlogListing posts={posts} offset={offset[gi]} />
           </section>
         ))}
       </main>

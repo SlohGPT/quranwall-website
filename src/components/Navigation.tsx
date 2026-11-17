@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { featureNav } from '../data/featureNav';
+import { guideNav } from '../data/guideNav';
 import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import useStaticChrome, { isPinchZoomed } from '../lib/useStaticChrome';
 
@@ -11,6 +12,7 @@ export default function Navigation() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileFeaturesOpen, setIsMobileFeaturesOpen] = useState(false);
+  const [isMobileGuidesOpen, setIsMobileGuidesOpen] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isMobileView, setIsMobileView] = useState(false);
   // Pinch-zoomed or a short viewport: the nav sits at the document top (absolute, see .chrome-pin) and never shows the floating pill.
@@ -130,6 +132,7 @@ export default function Navigation() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setIsMobileFeaturesOpen(false);
+    setIsMobileGuidesOpen(false);
   };
 
   const mobileLinkClass =
@@ -261,6 +264,34 @@ export default function Navigation() {
                     Blog
                   </Link>
 
+                  {/* Guides: same CSS-only pattern as Features. The panel is always rendered (hidden with
+                      opacity/invisible), so the topic anchors are in the prerendered HTML. */}
+                  <div className="relative group">
+                    <Link
+                      to="/blog"
+                      className="inline-flex items-center gap-1 text-lg font-semibold text-white hover:text-white/70 transition-colors duration-300 px-4 py-3"
+                    >
+                      Guides
+                      <ChevronDown
+                        className="w-4 h-4 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                    <div className="absolute left-0 top-full min-w-[15rem] pt-3 opacity-0 invisible translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0">
+                      <div className="rounded-2xl border border-white/10 bg-surface-elevated/95 backdrop-blur-xl shadow-2xl shadow-black/40 p-2">
+                        {guideNav.map((g) => (
+                          <Link
+                            key={g.label}
+                            to={g.to}
+                            className="block rounded-xl px-4 py-3 text-base font-medium text-white/75 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            {g.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Features: link to the page, reveal section deep-links on hover/focus.
                       group-hover + group-focus-within keep it usable by mouse and keyboard
                       with no JS; the pt-3 on the panel is a hover bridge to the trigger. */}
@@ -341,6 +372,35 @@ export default function Navigation() {
             <Link to="/blog" className={mobileLinkClass} onClick={closeMobileMenu}>
               Blog
             </Link>
+
+            {/* Guides: collapsible group of topic anchors */}
+            <div>
+              <button
+                onClick={() => setIsMobileGuidesOpen((v) => !v)}
+                className={`w-full flex items-center justify-between ${mobileLinkClass}`}
+                aria-expanded={isMobileGuidesOpen}
+              >
+                Guides
+                <ChevronDown
+                  className={`w-5 h-5 transition-transform duration-200 ${isMobileGuidesOpen ? 'rotate-180' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
+              {isMobileGuidesOpen && (
+                <div className="mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col">
+                  {guideNav.map((g) => (
+                    <Link
+                      key={g.label}
+                      to={g.to}
+                      className="px-4 py-3 text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all text-lg font-medium"
+                      onClick={closeMobileMenu}
+                    >
+                      {g.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Features: collapsible group of section deep-links */}
             <div>
