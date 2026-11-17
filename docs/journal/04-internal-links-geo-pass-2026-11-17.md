@@ -84,3 +84,13 @@ No new posts.
 ## Open
 - If link-graph should still guard body links once posts sit in a footer, it needs a template-aware mode, for example counting contextual links with the footer excluded. That is a change for the shared tool in FaithWall, not here.
 - No WARN is left on QuranWall.
+
+## Follow-up the same day: og:image on four pages (`a094b86`)
+- **Found:** FaithWall's live page audit flagged four pages with no `og:image`. A curl of every sitemap URL confirmed `/blog`, `/privacy-policy`, `/terms-of-use` and `/eula`. They had no `twitter:image` either. The other 12 pages already had one.
+- **Built:** the site card `og-image.png` (1200×630) went in as `og:image` and `twitter:image` in each page's Helmet block. `twitter:card` was already `summary_large_image` on every page.
+- **Verified:**
+  - Typecheck passes and the build prerenders 16 of 16.
+  - Every built page has exactly one `og:image` and one `twitter:image`.
+  - lint-facts gives 0 FAIL, and `link-graph --dist` exits 0.
+  - Live, the four pages carry one of each tag, and `og-image.png` returns 200 as image/png.
+  - `link-graph --live` exits 0, and IndexNow accepted the four URLs.
