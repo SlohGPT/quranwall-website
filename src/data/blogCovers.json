@@ -1,0 +1,126 @@
+{
+  "_comment": "Cover per blog post (quranwall-covers skill). Edit, then run: node scripts/build-covers.mjs {slug} && node scripts/build-blog-thumbnails.mjs. ayah.text must be quoted word for word from the post verse section or src/data/showcaseVerses.ts (English, Saheeh International; no Arabic on covers). hook: 2-5 words, one *accent* word, never the title. file and alt are filled in by the script.",
+  "covers": [
+    {
+      "slug": "best-dhikr-app-for-iphone",
+      "wallpaper": "emerald",
+      "ayah": {
+        "key": "13:28",
+        "text": "Unquestionably, by the remembrance of Allāh hearts are assured."
+      },
+      "hook": "Dhikr that *stays* with you",
+      "tag": "Dhikr apps",
+      "icon": "Sparkles",
+      "badge": "Ranked for 2026",
+      "layout": "right",
+      "file": "/blog-thumbnails/best-dhikr-app-for-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 13:28 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "best-islamic-lock-screen-app-iphone",
+      "wallpaper": "dusk",
+      "ayah": {
+        "key": "94:6",
+        "text": "Indeed, with hardship [will be] ease."
+      },
+      "hook": "An ayah on *every* unlock",
+      "tag": "App guide",
+      "icon": "Lock",
+      "badge": "Ranked for 2026",
+      "layout": "left",
+      "file": "/blog-thumbnails/best-islamic-lock-screen-app-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 94:6 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "best-muslim-app-for-iphone-2026",
+      "wallpaper": "emerald",
+      "ayah": {
+        "key": "65:3",
+        "text": "And whoever relies upon Allāh - then He is sufficient for him."
+      },
+      "hook": "The *Muslim* app stack",
+      "tag": "App guide",
+      "icon": "Layers",
+      "badge": "Honest ranking",
+      "layout": "right",
+      "file": "/blog-thumbnails/best-muslim-app-for-iphone-2026-cover.jpg",
+      "alt": "iPhone lock screen with Quran 65:3 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "how-to-set-dhikr-reminders-iphone",
+      "wallpaper": "night",
+      "ayah": {
+        "key": "2:152",
+        "text": "So remember Me; I will remember you. And be grateful to Me and do not deny Me."
+      },
+      "hook": "Dhikr reminders that *stick*",
+      "tag": "Dhikr",
+      "icon": "Bell",
+      "layout": "fan",
+      "file": "/blog-thumbnails/how-to-set-dhikr-reminders-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 2:152 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "muslim-morning-routine-iphone",
+      "wallpaper": "dusk",
+      "ayah": {
+        "key": "17:78",
+        "text": "Indeed, the recitation of dawn is ever witnessed."
+      },
+      "hook": "Mornings that *start* at Fajr",
+      "tag": "Morning routine",
+      "icon": "Sunrise",
+      "layout": "closeup",
+      "file": "/blog-thumbnails/muslim-morning-routine-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 17:78 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "quran-focus-mode-iphone",
+      "wallpaper": "photo",
+      "ayah": {
+        "key": "2:286",
+        "text": "Allāh does not charge a soul except [with that within] its capacity."
+      },
+      "hook": "A *Quran* Focus mode",
+      "tag": "Focus mode",
+      "icon": "Moon",
+      "badge": "iPhone setup",
+      "layout": "fan",
+      "file": "/blog-thumbnails/quran-focus-mode-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 2:286 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "quran-reading-plan-app-iphone",
+      "wallpaper": "emerald",
+      "ayah": {
+        "key": "17:106",
+        "text": "And We have sent it down progressively."
+      },
+      "hook": "A plan you will *finish*",
+      "tag": "Reading plan",
+      "icon": "CalendarDays",
+      "layout": "left",
+      "float": {
+        "icon": "CalendarDays",
+        "title": "Day 12 of 30",
+        "text": "Reading plan"
+      },
+      "file": "/blog-thumbnails/quran-reading-plan-app-iphone-cover.jpg",
+      "alt": "iPhone lock screen with Quran 17:106 (Saheeh International) on a QuranWall wallpaper"
+    },
+    {
+      "slug": "quran-verse-iphone-lock-screen",
+      "wallpaper": "night",
+      "ayah": {
+        "key": "51:55",
+        "text": "And remind, for indeed, the reminder benefits the believers."
+      },
+      "hook": "Quran on your *lock screen*",
+      "tag": "Setup guide",
+      "icon": "Lock",
+      "layout": "closeup",
+      "file": "/blog-thumbnails/quran-verse-iphone-lock-screen-cover.jpg",
+      "alt": "iPhone lock screen with Quran 51:55 (Saheeh International) on a QuranWall wallpaper"
+    }
+  ]
+}

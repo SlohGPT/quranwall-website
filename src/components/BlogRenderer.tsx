@@ -1,12 +1,13 @@
 import { Fragment, createElement, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Icon, { type IconName } from './visuals/icons';
-import { StatBlock, VerseCard } from './visuals/blocks';
+import { StatBlock, VerseCard, VerseQuote } from './visuals/blocks';
 import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
 import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
 import { headingIds } from '../lib/headings';
 import { leadItems, pickIcon } from '../lib/postIcons';
+import { bigFlexIndexes, type RhythmItem } from '../lib/visualRhythm';
 import { renderMarkdown, type MdComponents } from '../lib/markdown';
 import type { BlogSection } from '../types/blog';
 
@@ -195,6 +196,18 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
   const isPost = pageType === 'blog';
   const h2Indexes = sections.flatMap((sec, i) => (sec.type === 'heading' && sec.level === 2 ? [i] : []));
   const midAt = isPost ? midCardIndex(sections, h2Indexes) : -1;
+  // Verses and stats draw as a phone or a figure only with enough reading text around them; the rest render quiet
+  // (src/lib/visualRhythm.ts). A verse that fits as a Lock Screen phone is the post's own picture, so it takes the
+  // place of the generic spot scene; posts with no such verse keep the scene before the first H2.
+  const rhythm = sections.map((sec, i): RhythmItem => ({
+    kind: sec.type === 'verse' || sec.type === 'stat' ? 'flex' : sec.type === 'cta' ? 'end' : 'text',
+    chars: skipLead && i === 0 ? 0 : textLength(sec),
+    rank: sec.type === 'stat' ? 1 : 0,
+  }));
+  const withoutScene = bigFlexIndexes(rhythm, [midAt]);
+  const verseCarries = [...withoutScene].some((i) => sections[i].type === 'verse');
+  const sceneAt = scene && !verseCarries ? (h2Indexes[0] ?? -1) : -1;
+  const bigFlex = sceneAt === -1 ? withoutScene : bigFlexIndexes(rhythm, [sceneAt, midAt]);
   const ids = headingIds(sections);
 
   // Heading margins (both sides) are !important so they beat the wrapper's space-y; the first block after a heading sits 16 px under it.
@@ -264,7 +277,13 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
               );
 
             case 'stat':
-              return <StatBlock section={section} className={`my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center ${BREAKOUT}`} />;
+              return (
+                <StatBlock
+                  section={section}
+                  quiet={!bigFlex.has(i)}
+                  className={`my-6 p-6 rounded-2xl bg-surface-card border border-surface-border text-center ${BREAKOUT}`}
+                />
+              );
 
             case 'steps':
               // A numbered rail: the steps are a real sequence, so a line runs from badge to badge.
@@ -332,7 +351,7 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
             }
 
             case 'verse':
-              return <VerseCard section={section} />;
+              return bigFlex.has(i) ? <VerseCard section={section} /> : <VerseQuote section={section} />;
 
             case 'cta':
               if (isPost) {
@@ -368,7 +387,7 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
 
         return (
           <Fragment key={i}>
-            {scene && i === h2Indexes[0] && scene}
+            {i === sceneAt && scene}
             {i === midAt && <AppNudge placement="mid" campaign={CAMPAIGNS.blogMid} className="!mt-10 mb-10" />}
             {block}
           </Fragment>

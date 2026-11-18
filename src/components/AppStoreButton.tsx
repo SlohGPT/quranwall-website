@@ -4,7 +4,8 @@ interface AppStoreButtonProps extends Omit<ComponentProps<'a'>, 'children'> {
     theme?: 'dark' | 'light';
     // 'md' = 44 px (footer, standalone spots). 'lg' = 48 px on phones and 56 px from lg up, the same height as the
     // primary button beside it (hero, final CTA, install cards). Scaled by height only; width follows the aspect ratio.
-    size?: 'md' | 'lg';
+    // 'xl' = 56 px on phones, 64 px from lg up: the in-post install cards, where the badge is the one action.
+    size?: 'md' | 'lg' | 'xl';
 }
 
 // Apple's official "Download on the App Store" badge (US-UK, SVG), served unmodified from /public/badges.
@@ -28,9 +29,9 @@ export default function AppStoreButton({ theme = 'light', size = 'md', className
             <img
                 src={src}
                 alt="Download on the App Store"
-                width={BADGE_WIDTH}
-                height={BADGE_HEIGHT}
-                className={size === 'lg' ? 'block h-12 w-auto lg:h-14' : 'block'}
+                width={size === 'xl' ? Math.round((119.66407 / 40) * 56) : BADGE_WIDTH}
+                height={size === 'xl' ? 56 : BADGE_HEIGHT}
+                className={size === 'xl' ? 'block h-14 w-auto lg:h-16' : size === 'lg' ? 'block h-12 w-auto lg:h-14' : 'block'}
                 decoding="async"
             />
         </a>

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import BlogListing from '../components/BlogListing';
-import ClusterMap from '../components/ClusterMap';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { PILLAR_SLUGS, getPillar } from '../lib/pillars';
 import { CLUSTER_HEADING, CLUSTER_LABEL, listingsByCluster } from '../lib/clusters';
@@ -63,7 +62,7 @@ export default function Blog() {
 
         <nav
           aria-label="Blog topics"
-          className="relative -mx-4 sm:-mx-6 lg:-mx-12 mb-2 md:mb-10 bg-surface border-y border-surface-border"
+          className="relative -mx-4 sm:-mx-6 lg:-mx-12 mb-2 md:mb-10"
         >
           <ul className="flex h-12 items-center gap-2 overflow-x-auto snap-x px-4 sm:px-6 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <li className="snap-start shrink-0">
@@ -112,8 +111,6 @@ export default function Blog() {
               </h2>
               <BlogListing posts={posts} offset={offset[gi]} />
             </section>
-            {/* The topic map comes after the first topic, so the first cards keep their place on the fold. */}
-            {gi === 0 && groups.length > 1 && <ClusterMap />}
           </Fragment>
         ))}
       </main>

@@ -84,7 +84,7 @@ export default function BlogPost() {
   ]);
 
   return (
-    <div className="min-h-screen bg-surface pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0">
+    <div className="min-h-screen bg-surface pb-[calc(88px+env(safe-area-inset-bottom,0px))] md:pb-0">
       <Helmet>
         <title>{docTitle}</title>
         <meta name="description" content={post.meta.description} />

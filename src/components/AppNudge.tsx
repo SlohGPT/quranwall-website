@@ -31,8 +31,8 @@ export function RatingLine({ className = '' }: { className?: string }) {
 }
 
 /**
- * Install card for the blog posts: app icon, one product line, requirements, Apple's badge,
- * and on desktop (lg+) a QR code with "Copy link". No headings inside, and data-nosnippet on the card only,
+ * Install card for the blog posts, centered (2026-11-18): app icon, one product line, requirements, Apple's badge
+ * at 56/64 px, and on desktop (lg+) a small "On a computer?" line that opens the QR code and "Copy link". No headings inside, and data-nosnippet on the card only,
  * so Google never lifts card text into a snippet. The server and the first client render produce identical
  * markup: the Android check runs in an effect (see useIsAndroid).
  */
@@ -52,42 +52,38 @@ export default function AppNudge({
       aria-label="Get QuranWall on iPhone"
       data-install-card={placement}
       data-nosnippet=""
-      className={`rounded-2xl border border-brand/30 bg-brand/10 p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8 text-left ${className}`}
+      className={`relative isolate overflow-hidden rounded-3xl border border-brand/25 bg-gradient-to-b from-brand/[0.16] to-brand/[0.04] px-6 py-8 text-center sm:px-10 sm:py-10 ${className}`}
     >
-      <div className="min-w-0 flex-1">
-        <div className="flex items-start gap-4">
-          <img
-            src="/icon-app-180.png"
-            alt=""
-            width={48}
-            height={48}
-            className="h-12 w-12 shrink-0 rounded-[11px]"
-            loading="lazy"
-            decoding="async"
-          />
-          <div className="min-w-0 flex-1 space-y-1.5">
-            {title ? (
-              <>
-                <p className="text-[19px] font-bold leading-snug text-white">{title}</p>
-                {description && <p className="text-[16px] leading-snug text-white/80">{description}</p>}
-              </>
-            ) : (
-              <p className="text-[17px] font-bold leading-snug text-white">
-                A Quran ayah on your iPhone Lock Screen and Home Screen widget.
-              </p>
-            )}
-            <p className="text-[15px] leading-snug text-white/65">{`iPhone · ${facts.minIOSText}`}</p>
-            <RatingLine className="text-[15px] leading-snug text-white/65" />
-            {isAndroid && <p className="text-[15px] leading-snug text-white/75">QuranWall is made for iPhone.</p>}
-          </div>
-        </div>
-        {/* Apple's badge rules: clear space of at least a quarter of its height (12 px on phones, 14 px from lg) on every side. */}
-        <div className="mt-5">
-          <AppStoreButton href={href} theme="light" size="lg" />
-          <p className="mt-2 text-[15px] leading-snug text-white/65">{facts.installLine}</p>
-        </div>
+      {/* soft glow behind the icon; decorative */}
+      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-0 -z-10 h-44 w-[30rem] max-w-full -translate-x-1/2 -translate-y-1/3 rounded-full bg-brand/25 blur-3xl" />
+      <img
+        src="/icon-app-180.png"
+        alt=""
+        width={72}
+        height={72}
+        className="mx-auto h-[72px] w-[72px] rounded-[18px] shadow-[0_14px_34px_-10px_rgba(0,0,0,0.7)] ring-1 ring-white/10"
+        loading="lazy"
+        decoding="async"
+      />
+          {title && <p className="mt-5 text-[22px] font-bold leading-snug text-white sm:text-[24px]">{title}</p>}
+      <p className={title ? 'mx-auto mt-2 max-w-[30rem] text-[16px] leading-relaxed text-white/75' : 'mx-auto mt-5 max-w-[28rem] text-[20px] font-bold leading-snug text-white [text-wrap:balance] sm:text-[22px]'}>
+        {title ? description : 'A Quran ayah on your iPhone Lock Screen and Home Screen widget.'}
+      </p>
+          {/* one row, but each fact its own item: the install line stays a standalone line (lint free-download-prose) */}
+          <ul className="mt-2 flex flex-wrap justify-center gap-x-2 text-[15px] leading-snug text-white/60">
+            {['iPhone', facts.minIOSText, facts.installLine.replace(/\.$/, '')].map((t, k) => (
+              <li key={t} className={k > 0 ? "before:mr-2 before:content-['·']" : undefined}>
+                {t}
+              </li>
+            ))}
+          </ul>
+          <RatingLine className="mt-1 justify-center text-[15px] leading-snug text-white/60" />
+          {isAndroid && <p className="mt-1 text-[15px] leading-snug text-white/75">QuranWall is made for iPhone.</p>}
+      {/* Apple's badge rules: clear space of at least a quarter of its height (14-16 px) on every side. */}
+      <div className="mt-7 flex justify-center">
+        <AppStoreButton theme="light" size="xl" href={href} />
       </div>
-      <InstallHandoff />
+      <InstallHandoff collapsed className="mt-6" />
     </div>
   );
 }

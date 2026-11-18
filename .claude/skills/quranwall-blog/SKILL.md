@@ -1,6 +1,6 @@
 ---
 name: quranwall-blog
-description: Write one full SEO blog post for quranwall.com end-to-end. Use this skill when the user says "Create today's content", "make a blog", "today's blog", "new quranwall blog", "create today's blog post", "make a quranwall blog", or any variation asking for a new daily QuranWall blog post. Picks an unused long-tail keyword from src/data/seo-keywords.json, optionally fetches an on-theme Unsplash photo with proper attribution, writes the post in Karol's voice following the strict section template, validates it, and registers it in src/data/blogPosts.json. Every post advertises QuranWall — and in any comparison or "best apps" post, QuranWall is ranked first and highest.
+description: Write one full SEO blog post for quranwall.com end-to-end. Use this skill when the user says "Create today's content", "make a blog", "today's blog", "new quranwall blog", "create today's blog post", "make a quranwall blog", or any variation asking for a new daily QuranWall blog post. Picks an unused long-tail keyword from src/data/seo-keywords.json, gives it a generated lock-screen cover (quranwall-covers skill), writes the post in Karol's voice following the strict section template, validates it, and registers it in src/data/blogPosts.json. Every post advertises QuranWall — and in any comparison or "best apps" post, QuranWall is ranked first and highest.
 ---
 
 # QuranWall Daily Blog Skill
@@ -30,12 +30,12 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 
 After running this skill end-to-end:
 1. A new file `src/data/posts/{slug}.json` exists, ~800–1100 words, validates as JSON, follows the section template below.
-2. A hero image is set: either a downloaded Unsplash photo at `public/blog-thumbnails/{slug}.jpg` with attribution recorded in `meta.imageAttribution`, **or** the fallback `/og-image.png` if no Unsplash key is configured (see Step 3).
+2. A generated cover is set (Step 3, the quranwall-covers skill): `public/blog-thumbnails/{slug}-cover.jpg` in `meta.image` and the registry `thumbnail`, no `imageAttribution`. Cloud runs without Chrome use `/og-image.png` until the next local run.
 3. The new post is inserted at **index 0** of `src/data/blogPosts.json`.
    Also set `"blocked": true, "used_by": "{slug}"` on the keyword's entry in `src/data/seo-keywords.json` (add the entry first if the keyword came from the user), in the same commit.
 4. `public/sitemap.xml` is regenerated (`npm run generate-sitemap`).
 5. The work is committed and pushed (the Vercel deploy trigger), then the new URL is submitted to IndexNow.
-6. You report back the slug, cluster, word count, and photo credit in the exact final-report format (Step 10).
+6. You report back the slug, cluster, word count, and cover (layout + ayah) in the exact final-report format (Step 10).
 
 ## The steps
 
@@ -63,44 +63,15 @@ Sketch (don't write yet):
 - **Semantic keyword sidebar**: 8–12 related terms to weave in naturally. Examples for "daily ayah wallpaper iphone": *Quran*, *ayah*, *surah*, *lock screen widget*, *lock screen wallpaper*, *home screen widget*, *Sahih International*, *dhikr*, *reminder*, *Ayatul Kursi*, *Ramadan*.
 - **Internal links**: pick 2–3 existing post slugs from `blogPosts.json` to link by keyword overlap. If the only other post is the seed, link to the **homepage `/`** instead. **Do NOT link to `/{cluster}` topic-hub URLs or `/compare/...` URLs — those pages are not routed yet and would 404.** Internal links must be relative paths that start with `/` (e.g. `/blog/other-slug`, `/`, `/about/karol-billik`).
 
-### Step 3 — Hero photo (optional Unsplash, graceful fallback)
+### Step 3 — The cover (generated, the quranwall-covers skill)
 
-This step has two modes. Check first: does `.env.local` exist and contain `UNSPLASH_ACCESS_KEY`?
-
-**Mode A — no Unsplash key (default, works out of the box):**
-Use the site's branded OG image. Set both `meta.image` and the registry `thumbnail` to `/og-image.png`. Omit `meta.imageAttribution`. Skip the rest of this step. (This is exactly what the seed post does.)
-
-**Mode B — Unsplash key present:** fetch a real photo. Source the key, then pick a **soft, aesthetic, halal query** — never a literal keyword (literal queries return ugly screenshots, and avoid imagery with prominent faces/figures for an Islamic audience). Prefer Quran, mosque, nature, lantern, tasbih, calligraphy, and still-life themes:
-
-| Cluster | Good queries |
-|---------|--------------|
-| daily-quran-lock-screen | "open quran soft light", "quran mushaf wooden table", "arabic calligraphy minimal" |
-| dua-and-dhikr-iphone | "tasbih prayer beads", "mosque sunrise silhouette", "open hands light" |
-| muslim-productivity-iphone | "dates coffee morning", "minimalist desk morning", "open notebook calm" |
-| quran-study-tools-ios | "open quran pen notes", "stack of islamic books", "quran reading light" |
-| muslim-app-comparisons | "iphone in hand morning", "modern mosque interior", "lantern bokeh ramadan" |
-
-```bash
-set -a && source .env.local && set +a
-SEARCH_Q="open quran soft light"   # pick from table above
-ENC_Q=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$SEARCH_Q")
-curl -s "https://api.unsplash.com/search/photos?query=${ENC_Q}&per_page=10&orientation=landscape&content_filter=high" \
-  -H "Authorization: Client-ID ${UNSPLASH_ACCESS_KEY}"
-```
-
-From the top 5 results, pick the one with the most `likes` that isn't off-topic (read `alt_description`). Capture `id`, `user.name` → **photographer**, `user.links.html` → **photographerUrl**, `links.html` → **unsplashUrl** (append `?utm_source=quranwall&utm_medium=referral` to both URLs), `links.download_location`, and `urls.regular`/`urls.full`.
-
-Download a sharper copy and **ping the download tracker** (Unsplash API ToS):
-
-```bash
-SLUG="my-post-slug"
-DOWNLOAD_LOC="https://api.unsplash.com/photos/PHOTO_ID/download?ixid=..."
-REGULAR_URL="https://images.unsplash.com/photo-..."   # the urls.regular value
-curl -sL "${REGULAR_URL/&w=1080/&w=1600}" -o "public/blog-thumbnails/${SLUG}.jpg"
-curl -s -H "Authorization: Client-ID ${UNSPLASH_ACCESS_KEY}" "${DOWNLOAD_LOC}" > /dev/null
-```
-
-Verify the file exists and is non-empty (`ls -lh public/blog-thumbnails/${SLUG}.jpg`). In Mode B, set `meta.image` and `thumbnail` to `/blog-thumbnails/{slug}.jpg` and fill `meta.imageAttribution`.
+Covers are generated in-repo, never Unsplash or stock photos, never a paid image generator. Read
+`.claude/skills/quranwall-covers/SKILL.md` and follow it: append the entry to `src/data/blogCovers.json` (an ayah
+quoted word for word from the post's own `verse` block, a wallpaper, a 2-6 word hook with one `*accent*` word, a
+tag, an icon, and a layout none of the post's 3 grid neighbours uses), check it with
+`node scripts/build-covers.mjs --dry`, and render it after Step 6 (`node scripts/build-covers.mjs {slug}`, then
+`node scripts/build-blog-thumbnails.mjs`). The script sets `meta.image` and the registry `thumbnail`.
+Cloud runs without Chrome: keep the entry, use `/og-image.png` for now and add a TODO line for the next local run.
 
 ### Step 4 — Write the post
 
@@ -157,15 +128,14 @@ Create `src/data/posts/{slug}.json` matching this exact shape (reference [src/da
     "datePublished": "YYYY-MM-DD",
     "dateModified": "YYYY-MM-DD",
     "readTime": "X min read",
-    "image": "/og-image.png  OR  /blog-thumbnails/{slug}.jpg",
-    "imageAttribution": { "photographer": "...", "photographerUrl": "...?utm_source=quranwall&utm_medium=referral", "unsplashUrl": "...?utm_source=quranwall&utm_medium=referral" },
+    "image": "/blog-thumbnails/{slug}-cover.jpg",
     "keywords": ["primary keyword", "secondary keyword", "...", "quranwall"],
     "cluster": "one of the 5 cluster slugs"
   },
   "sections": [ ... ]
 }
 ```
-(Omit `imageAttribution` entirely in Mode A.)
+(Covers are generated: never add `imageAttribution`.)
 
 #### Hard rules for the body
 
@@ -220,7 +190,8 @@ Run this checklist on your generated JSON **before** writing it:
 - [ ] Word count 800–1100.
 - [ ] 2–3 internal links (relative `/...` paths only; no `/{cluster}` or `/compare`).
 - [ ] `meta.cluster` exactly matches one of the 5 cluster slugs.
-- [ ] Image fields consistent with the mode used in Step 3 (Mode A → `/og-image.png`, no attribution; Mode B → `/blog-thumbnails/{slug}.jpg` + attribution with UTM params).
+- [ ] The cover entry passes `node scripts/build-covers.mjs --dry`; `meta.image` and `thumbnail` point at `/blog-thumbnails/{slug}-cover.jpg` (or `/og-image.png` on a cloud run), no `imageAttribution`.
+- [ ] Picture ratio: the template draws the `verse` block as a Lock Screen phone and keeps about one big picture per 250 words (`src/lib/visualRhythm.ts`); put the verse where it helps the text, not right before the third H2 (the mid install card), and add no image blocks.
 - [ ] **Conversion checks:**
   - [ ] Sales temperature matches the keyword's intent.
   - [ ] **"Where this gets hard" section is present** with ≥1 friction angle.
@@ -239,7 +210,7 @@ Read `src/data/blogPosts.json`. Use the Edit tool to **insert the new entry at i
   "slug": "...",
   "title": "...",
   "description": "...",
-  "thumbnail": "/og-image.png  OR  /blog-thumbnails/{slug}.jpg",
+  "thumbnail": "/blog-thumbnails/{slug}-cover.jpg",
   "date": "Month DD, YYYY",
   "datePublished": "YYYY-MM-DD",
   "cluster": "...",
@@ -261,10 +232,10 @@ This rewrites `public/sitemap.xml` from `blogPosts.json` so the new URL is inclu
 
 ### Step 8 — Commit and push
 
-Commit and push at the end — that's the Vercel deploy trigger. Stage exactly what changed (drop the thumbnail line in Mode A):
+Commit and push at the end — that's the Vercel deploy trigger. Stage exactly what changed (the cover files are missing on a cloud run; drop them then):
 
 ```bash
-git add src/data/posts/{slug}.json src/data/blogPosts.json src/data/seo-keywords.json public/sitemap.xml "public/blog-thumbnails/{slug}.jpg"
+git add src/data/posts/{slug}.json src/data/blogPosts.json src/data/seo-keywords.json public/sitemap.xml src/data/blogCovers.json src/data/cover-sizes.json public/blog-thumbnails/{slug}-cover*
 git commit -m "$(cat <<'EOF'
 blog: {title}
 
@@ -300,7 +271,7 @@ Output exactly this (no preamble):
    url: https://quranwall.com/blog/{slug}
    cluster: {cluster}
    words: {wordCount}
-   photo: {photographer (Unsplash)  OR  og-image fallback}
+   cover: {layout}, Quran {key}  (or og-image until the next local run)
    indexnow: ✓ submitted to Bing/Yandex/Seznam/Naver   (or: ⏳ retry after deploy)
 ```
 
@@ -310,7 +281,7 @@ Output exactly this (no preamble):
 - **Don't write "X is important because Y" filler.** Every paragraph adds a fact, a tactic, or a concrete example.
 - **Don't bury QuranWall in a comparison post.** It is always first and highest. That's the user's explicit requirement.
 - **Don't quote the Quran without a correct reference, and never alter the wording or invent an ayah.**
-- **Don't hotlink an Unsplash image** — always download to `public/blog-thumbnails/`. And don't forget the download-tracking ping (Unsplash ToS).
+- **Don't use Unsplash, stock photos or paid image generators** — the cover is generated by `scripts/build-covers.mjs` (quranwall-covers skill).
 - **Don't link to `/{cluster}` or `/compare` URLs** — they're not routed and would 404.
 - **Don't exceed 1100 words.** Tighter beats longer. Trim ruthlessly.
 - **Don't put internal links inside the CTA section** — they belong in body paragraphs.

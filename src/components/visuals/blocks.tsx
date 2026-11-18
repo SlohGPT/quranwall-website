@@ -1,7 +1,11 @@
 import type { CSSProperties } from 'react';
 import { useInView } from '../../lib/inview';
 import type { BlogSection } from '../../types/blog';
-import { crescentPath, GOLD, GOLD2 } from './primitives';
+import { GOLD, GOLD2 } from './primitives';
+import PhoneFrame from '../mockup/PhoneFrame';
+import LockScreen from '../mockup/LockScreen';
+import type { WallpaperVariant } from '../mockup/Wallpaper';
+import type { ShowcaseVerse } from '../../data/showcaseVerses';
 
 type Stat = Extract<BlogSection, { type: 'stat' }>;
 type Verse = Extract<BlogSection, { type: 'verse' }>;
@@ -81,9 +85,10 @@ function Figure({ shape }: { shape: StatShape }) {
 }
 
 /** A stat card: the number drawn as it is (dots, segments or a ring), the number and label stay as HTML text. */
-export function StatBlock({ section, className }: { section: Stat; className: string }) {
+export function StatBlock({ section, className, quiet = false }: { section: Stat; className: string; quiet?: boolean }) {
   const ref = useInView<HTMLDivElement>();
-  const shape = statShape(section.number);
+  // quiet (visual rhythm, src/lib/visualRhythm.ts): the number and words only, no drawing
+  const shape = quiet ? null : statShape(section.number);
   return (
     <div ref={ref} className={className}>
       {shape && <Figure shape={shape} />}
@@ -94,24 +99,56 @@ export function StatBlock({ section, className }: { section: Stat; className: st
   );
 }
 
-/** The verse as a portrait lock screen: fixed 9:19.5 iPhone frame, island on top, home bar below, the existing text and reference as real HTML. */
+/** "Quran 13:28 (Sahih International)" → "Quran 13:28": the lock screen shows the short reference, the page keeps the full one. */
+function shortReference(reference: string): string {
+  return reference.replace(/\s*\([^)]*\)\s*$/, '');
+}
+
+/** Deterministic wallpaper per reference, so the same ayah always gets the same sky (no 'photo': it is a heavy image). */
+function wallpaperFor(reference: string): WallpaperVariant {
+  const skies: WallpaperVariant[] = ['night', 'emerald', 'dusk'];
+  let h = 0;
+  for (const ch of reference) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return skies[h % skies.length];
+}
+
+/**
+ * The verse on a real iPhone Lock Screen, the same mockup as the homepage: clock, the translation and its reference.
+ * Only the top of the phone shows; the lower edge fades into the page. The full reference (with the translation
+ * name) is the caption, so the quote stays attributed as real text.
+ */
 export function VerseCard({ section }: { section: Verse }) {
-  // Long verses step the type down so the fixed portrait box never overflows.
-  const long = section.text.length > 120;
+  const verse: ShowcaseVerse = {
+    key: '0:0',
+    surah: '',
+    surahNameAr: '',
+    arabic: '',
+    translation: section.text,
+    translationName: '',
+  };
   return (
-    <blockquote className="relative mx-auto my-8 aspect-[9/19.5] w-full max-w-[300px] overflow-hidden rounded-[2.75rem] border-[6px] border-brand-ink bg-surface-card ring-2 ring-brand/45">
-      {/* the screen: its own radius (frame radius minus the 6px bezel), clipped so WebKit never lets a square corner out */}
-      <div className="absolute inset-0 isolate flex flex-col items-center justify-center overflow-hidden rounded-[calc(2.75rem-6px)] px-6 py-14 text-center [clip-path:inset(0_round_calc(2.75rem-6px))]">
-      <span aria-hidden="true" className="absolute left-1/2 top-3 h-[18px] w-16 -translate-x-1/2 rounded-full bg-brand-ink" />
-      <svg aria-hidden="true" focusable="false" viewBox="0 0 28 28" width="28" height="28" className="mx-auto mb-4 block shrink-0" fill="rgba(217,185,104,.15)" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round">
-        <path d={crescentPath(14, 14, 10)} />
-      </svg>
-      <p dir="auto" className={`font-serif leading-[1.5] text-white ${long ? 'text-[16px]' : 'text-[20px]'}`}>
-        {`\u201C${section.text}\u201D`}
+    <figure className="mx-auto my-10 flex w-full max-w-[290px] flex-col items-center">
+      <blockquote
+        className="relative w-full overflow-hidden [mask-image:linear-gradient(to_bottom,#000_78%,transparent)]"
+        style={{ aspectRatio: section.text.length > 150 ? '1 / 1.62' : '1 / 1.45' }}
+      >
+        <PhoneFrame>
+          <LockScreen verse={verse} wallpaper={wallpaperFor(section.reference)} reference={shortReference(section.reference)} />
+        </PhoneFrame>
+      </blockquote>
+      <figcaption className="mt-3 text-center text-[14px] text-white/60">{section.reference} on an iPhone Lock Screen</figcaption>
+    </figure>
+  );
+}
+
+/** The quiet form of a verse (visual rhythm): a gold rule, the ayah in the serif, the reference below. */
+export function VerseQuote({ section }: { section: Verse }) {
+  return (
+    <blockquote className="my-7 border-l-[3px] border-brand py-1 pl-5">
+      <p dir="auto" className="font-serif text-[20px] leading-[1.55] text-white/90 md:text-[22px] [text-wrap:pretty]">
+        {section.text}
       </p>
-      <footer className="mt-3 text-[15px] font-semibold tracking-wide text-brand">{section.reference}</footer>
-      <span aria-hidden="true" className="absolute bottom-3 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-white/40" />
-      </div>
+      <cite className="mt-2.5 block text-[13px] font-semibold not-italic uppercase tracking-[0.12em] text-brand">{section.reference}</cite>
     </blockquote>
   );
 }

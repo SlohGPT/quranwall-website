@@ -17,6 +17,8 @@ type Props = {
   accent?: string;
   /** Translation face: the verse serif (default) or the page sans. */
   serif?: boolean;
+  /** Reference line override (blog verse figures pass "Quran 13:28"); default: surah name and ayah number. */
+  reference?: string;
   className?: string;
 };
 
@@ -49,7 +51,7 @@ export function StatusBarIcons({ color = '#fff' }: { color?: string }) {
 }
 
 /** The phone Lock Screen as the app sets it: clock, then one text of the ayah (Arabic or a translation) and its reference. */
-export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', edition = 'translation', accent, serif = true, className = '' }: Props) {
+export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'night', edition = 'translation', accent, serif = true, reference, className = '' }: Props) {
   const text = useMemo(() => ({ verse, edition, accent }), [verse, edition, accent]);
   const verseLayers = useLayers(text);
   const wallLayers = useLayers(wallpaper);
@@ -124,7 +126,7 @@ export default function LockScreen({ verse = SHOWCASE_VERSES[0], wallpaper = 'ni
                 </p>
               ) : (
                 <p className="font-semibold" style={{ marginTop: '4cqw', fontSize: '4.4cqw', color: l.value.accent ?? '#fff', opacity: 0.78 }}>
-                  {referenceOf(l.value.verse)}
+                  {reference ?? referenceOf(l.value.verse)}
                 </p>
               )}
             </FadeLayer>

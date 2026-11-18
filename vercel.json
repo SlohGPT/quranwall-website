@@ -39,5 +39,37 @@
         { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/blog-thumbnails/best-dhikr-app-for-iphone.jpg",
+      "destination": "/blog-thumbnails/best-dhikr-app-for-iphone-cover.jpg",
+      "permanent": true
+    },
+    {
+      "source": "/blog-thumbnails/best-islamic-lock-screen-app-iphone.jpg",
+      "destination": "/blog-thumbnails/best-islamic-lock-screen-app-iphone-cover.jpg",
+      "permanent": true
+    },
+    {
+      "source": "/blog-thumbnails/best-muslim-app-for-iphone-2026.jpg",
+      "destination": "/blog-thumbnails/best-muslim-app-for-iphone-2026-cover.jpg",
+      "permanent": true
+    },
+    {
+      "source": "/blog-thumbnails/how-to-set-dhikr-reminders-iphone.jpg",
+      "destination": "/blog-thumbnails/how-to-set-dhikr-reminders-iphone-cover.jpg",
+      "permanent": true
+    },
+    {
+      "source": "/blog-thumbnails/muslim-morning-routine-iphone.jpg",
+      "destination": "/blog-thumbnails/muslim-morning-routine-iphone-cover.jpg",
+      "permanent": true
+    },
+    {
+      "source": "/blog-thumbnails/quran-reading-plan-app-iphone.jpg",
+      "destination": "/blog-thumbnails/quran-reading-plan-app-iphone-cover.jpg",
+      "permanent": true
+    }
   ]
 }
