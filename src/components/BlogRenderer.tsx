@@ -6,6 +6,7 @@ import AppStoreButton from './AppStoreButton';
 import AppNudge from './AppNudge';
 import { APP_STORE_ID, CAMPAIGNS, appStoreUrl } from '../lib/app-store';
 import { headingIds } from '../lib/headings';
+import { leadItems, pickIcon } from '../lib/postIcons';
 import { renderMarkdown, type MdComponents } from '../lib/markdown';
 import type { BlogSection } from '../types/blog';
 
@@ -198,7 +199,7 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
 
   // Heading margins (both sides) are !important so they beat the wrapper's space-y; the first block after a heading sits 16 px under it.
   return (
-    <div className="space-y-[22px] min-[1180px]:space-y-6 [&>:is(h2,h3)+*:not(h2,h3)]:!mt-0">
+    <div className="post-prose space-y-[22px] min-[1180px]:space-y-6 [&>:is(h2,h3)+*:not(h2,h3)]:!mt-0">
       {sections.map((section, i) => {
         const block = (() => {
           switch (section.type) {
@@ -285,7 +286,40 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
                 </ol>
               );
 
-            case 'list':
+            case 'list': {
+              // Items that start with a bold label ("**Widget:** text") render as icon rows (2026-11-18 design pass).
+              const rows = leadItems(section.items);
+              if (rows) {
+                return (
+                  <ul className="post-keylist my-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+                    {rows.map((row, idx) => {
+                      const RowIcon = pickIcon(row.label, row.text);
+                      return (
+                        <li key={idx} className="flex gap-4 border-t border-white/[0.07] p-4 first:border-t-0 md:gap-5 md:px-6 md:py-5">
+                          <span
+                            aria-hidden="true"
+                            className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand ring-1 ring-inset ring-brand/30"
+                          >
+                            <RowIcon className="h-5 w-5" strokeWidth={1.75} />
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            {row.label && (
+                              <div className="text-[17px] font-bold leading-snug text-white md:text-[18px] [&_strong]:font-bold">
+                                <Markdown text={row.label} />
+                              </div>
+                            )}
+                            {row.text && (
+                              <div className={`${row.label ? 'mt-1' : ''} text-[16px] leading-[1.6] text-white/75 md:text-[17px]`}>
+                                <Markdown text={row.text} />
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                );
+              }
               return (
                 <ul className="my-4 space-y-2 list-disc list-outside pl-6 marker:text-brand">
                   {section.items.map((item, idx) => (
@@ -295,6 +329,7 @@ export default function BlogRenderer({ sections, skipLead = false, scene, pageTy
                   ))}
                 </ul>
               );
+            }
 
             case 'verse':
               return <VerseCard section={section} />;

@@ -261,3 +261,21 @@ html.vv-zoomed .chrome-pin { position: absolute; }
 .qa-count { display: inline-grid; font-variant-numeric: tabular-nums; }
 .qa-count::before { content: attr(data-final); grid-area: 1 / 1; visibility: hidden; height: 0; overflow: hidden; }
 .qa-count > span { grid-area: 1 / 1; text-align: center; }
+
+/* === Blog design pass 2026-11-18: section markers ===
+   Every H2 in a post body opens a section: a hairline above it and its number (01, 02 ...) as a small gold label. The number
+   is a CSS counter, so it is not part of the heading text, the contents list or the anchors. List rows with a bold label are
+   rendered in BlogRenderer (case 'list'). */
+.post-prose { counter-reset: post-sec; }
+.post-prose > h2 { counter-increment: post-sec; padding-top: 28px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.post-prose > h2::before {
+  content: counter(post-sec, decimal-leading-zero);
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  color: #D9B968;
+  font-variant-numeric: tabular-nums;
+}

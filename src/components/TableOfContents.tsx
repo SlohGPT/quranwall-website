@@ -72,10 +72,10 @@ export default function TableOfContents({ entries, variant }: { entries: TocEntr
   }
 
   return (
-    <aside data-toc className="hidden min-[1180px]:block">
+    <aside data-toc className="hidden min-[1180px]:block min-[1180px]:pt-4">
       <nav
         aria-label="On this page"
-        className="sticky top-[88px] max-h-[calc(100vh-120px)] overflow-y-auto pr-1"
+        className="sticky top-[120px] max-h-[calc(100vh-152px)] overflow-y-auto pr-1"
       >
         <p className="mb-3 text-[15px] font-semibold text-white">{label}</p>
         <ol className="space-y-0.5 border-l border-white/10">

@@ -46,8 +46,12 @@ export default function BlogPostContent({ post, slug, related }: Props) {
     >
       {minutesOf(meta.readTime) >= PROGRESS_MIN_MINUTES && <ReadingProgress targetId="post-article" />}
 
-      <div className="mx-auto min-[1180px]:grid min-[1180px]:grid-cols-[37.5rem_220px] min-[1180px]:justify-center min-[1180px]:gap-24">
-        <div className="mx-auto w-full min-w-0 max-w-[37.5rem]">
+      {/* Desktop (1180 px and up, posts with a contents list): the header and the cover run across both columns, then the
+          text column and the "On this page" rail start on the same line (2026-11-18). */}
+      <div
+        className={`mx-auto ${showToc ? 'min-[1180px]:grid min-[1180px]:grid-cols-[37.5rem_240px] min-[1180px]:justify-center min-[1180px]:gap-x-20' : ''}`}
+      >
+        <div className={`mx-auto w-full min-w-0 max-w-[37.5rem] ${showToc ? 'min-[1180px]:col-span-2 min-[1180px]:max-w-none' : ''}`}>
           <Breadcrumbs
             crumbs={[
               { label: 'Home', to: '/' },
@@ -57,7 +61,7 @@ export default function BlogPostContent({ post, slug, related }: Props) {
             ]}
           />
 
-          <header className="mt-2 md:mt-3">
+          <header className="mt-2 md:mt-3 min-[1180px]:max-w-[880px]">
             <Link
               to={topicHref}
               className="inline-flex min-h-[28px] items-center rounded-full border border-brand/25 bg-brand/10 px-3 text-[13px] font-semibold text-brand hover:bg-brand/15"
@@ -88,10 +92,10 @@ export default function BlogPostContent({ post, slug, related }: Props) {
             </p>
           </header>
 
-          {lead && <Callout section={lead} className="mt-5" />}
+          {lead && <Callout section={lead} className="mt-5 min-[1180px]:max-w-[37.5rem]" />}
 
           {hasHero && (
-            <figure className="mt-4 md:-mx-[60px] lg:-mx-[84px] min-[1180px]:-mr-16">
+            <figure className={`mt-4 md:-mx-[60px] lg:-mx-[84px] ${showToc ? 'min-[1180px]:mx-0' : ''}`}>
               <div className="overflow-hidden rounded-2xl">
                 <ResponsiveImage
                   src={meta.image}
@@ -126,7 +130,9 @@ export default function BlogPostContent({ post, slug, related }: Props) {
               )}
             </figure>
           )}
+        </div>
 
+        <div className="mx-auto w-full min-w-0 max-w-[37.5rem]">
           {showToc && <TableOfContents entries={toc} variant="details" />}
 
           <div className="mt-3 md:mt-4">

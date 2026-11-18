@@ -51,7 +51,7 @@ export default function Blog() {
         <div className="mb-2 md:mb-8">
           <Breadcrumbs crumbs={[{ label: 'Home', to: '/' }, { label: 'Blog' }]} />
         </div>
-        <header id="all" className="scroll-mt-36 mb-3 md:mb-8 max-w-3xl">
+        <header id="all" className="scroll-mt-3 mb-3 md:mb-8 max-w-3xl">
           <p className="hidden md:block text-brand text-sm font-semibold uppercase tracking-widest mb-3">The QuranWall Blog</p>
           <h1 className="text-[32px] md:text-[44px] font-black text-white tracking-tight leading-[1.15] md:leading-tight">
             The Quran on your iPhone, every day.
@@ -63,7 +63,7 @@ export default function Blog() {
 
         <nav
           aria-label="Blog topics"
-          className="sticky top-16 md:top-[88px] z-30 -mx-4 sm:-mx-6 lg:-mx-12 mb-2 md:mb-10 bg-surface border-y border-surface-border"
+          className="relative -mx-4 sm:-mx-6 lg:-mx-12 mb-2 md:mb-10 bg-surface border-y border-surface-border"
         >
           <ul className="flex h-12 items-center gap-2 overflow-x-auto snap-x px-4 sm:px-6 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <li className="snap-start shrink-0">
@@ -107,7 +107,7 @@ export default function Blog() {
           <Fragment key={cluster}>
             {/* The first topic is on the fold, so it is laid out at once; only the later ones skip rendering (cv-auto). */}
             <section aria-labelledby={cluster} className={`${gi === 0 ? '' : 'cv-auto '}mb-6 md:mb-14 last:mb-0`}>
-              <h2 id={cluster} className="scroll-mt-36 md:scroll-mt-44 text-[22px] md:text-3xl font-bold text-white mb-2 md:mb-5">
+              <h2 id={cluster} className="scroll-mt-3 text-[22px] md:text-3xl font-bold text-white mb-2 md:mb-5">
                 {CLUSTER_HEADING[cluster]}
               </h2>
               <BlogListing posts={posts} offset={offset[gi]} />
