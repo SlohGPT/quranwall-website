@@ -4,7 +4,7 @@
     "description": "Build a muslim morning routine iphone setup that sticks — Fajr, adhkar, Quran, and a calm lock screen before the day gets loud.",
     "date": "June 25, 2026",
     "datePublished": "2026-06-25",
-    "dateModified": "2026-11-17",
+    "dateModified": "2026-11-19",
     "readTime": "5 min read",
     "image": "/blog-thumbnails/muslim-morning-routine-iphone-cover.jpg",
     "imageAttribution": {
@@ -82,7 +82,7 @@
     {
       "type": "steps",
       "items": [
-        "**Fajr alarm:** In Clock, create a labeled alarm (*Fajr*) on your local prayer time. Enable **Sleep > Full Schedule** if you use Bedtime — waking at the same window trains your body.",
+        "**Fajr alarm:** In Clock, create a labeled alarm (*Fajr*) on your local prayer time. Enable **Sleep > Full Schedule** if you use Bedtime — waking at the same window trains your body. For the prayer times themselves, use a dedicated app; our [ranking of the best Muslim apps for iPhone in 2026](/blog/best-muslim-app-for-iphone-2026) says which ones handle them.",
         "**Lock-screen Quran:** Download QuranWall from the App Store, choose your translation language and colours, and add the lock-screen widget. You see an ayah before any app badge.",
         "**Morning Focus mode:** In Settings > Focus, create a **Morning** Focus that silences non-essential apps from Fajr until you finish adhkar. Attach your QuranWall lock screen to it so a verse greets you at that hour (Focus lock screens need iOS 16 or later) — the full walkthrough is in our [Quran Focus mode guide](/blog/quran-focus-mode-iphone).",
         "**Timed adhkar nudge:** Add one daily Reminder in the Reminders app — *Morning adhkar after Fajr* — set to repeat daily. Details on layering reminders live in [how to set dhikr reminders on iPhone](/blog/how-to-set-dhikr-reminders-iphone)."
