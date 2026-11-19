@@ -4,7 +4,7 @@
     "description": "Use an iOS Focus mode to turn prayer and quiet time into a calm, distraction-free moment with the Quran on your iPhone. A step-by-step setup using Focus lock screens (iOS 16 or later).",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-11-17",
+    "dateModified": "2026-11-19",
     "readTime": "7 min read",
     "image": "/blog-thumbnails/quran-focus-mode-iphone-cover.jpg",
     "keywords": [
@@ -49,6 +49,7 @@
       "items": [
         "An iPhone on **iOS 16 or later** (per-Focus lock screens arrived in iOS 16).",
         "A Quran verse lock screen — [QuranWall](/) puts an ayah on your Lock Screen wallpaper and Home Screen widget.",
+        "Your local prayer times, if you want the Focus to follow them: our [honest ranking of Muslim apps for iPhone](/blog/best-muslim-app-for-iphone-2026) covers the prayer-time apps.",
         "A little time to create the Focus and set its schedule."
       ]
     },
