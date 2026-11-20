@@ -9,6 +9,7 @@ import { appStoreUrl, CAMPAIGNS } from '../lib/app-store';
 import AppStoreButton from '../components/AppStoreButton';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { breadcrumbSchema } from '../lib/breadcrumbs';
+import facts from '../data/facts.json';
 
 const URL = 'https://quranwall.com/features';
 const TITLE = 'Features | QuranWall';
@@ -93,6 +94,23 @@ export default function FeaturesPage() {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Answer-first passage (SEO queue p11): one self-contained, quotable paragraph for AI answers and snippets.
+            Facts only from src/data/facts.json and the live listing; no pricing, no new feature claims. */}
+        <section aria-labelledby="what-does-quranwall-do" className="container-main pb-4">
+          <div className="max-w-3xl mx-auto rounded-2xl border border-white/10 bg-surface-card p-6 sm:p-8">
+            <h2 id="what-does-quranwall-do" className="text-brand text-sm font-semibold uppercase tracking-widest">
+              What does QuranWall do?
+            </h2>
+            <p className="mt-3 text-lg text-white/75 leading-relaxed">
+              {facts.brand} turns an ayah you choose into your iPhone Lock Screen wallpaper: pick it from any of the 114
+              surahs, tap Make It Mine, and Apple&apos;s Shortcuts app sets it. You can also add the QuranWall widget to
+              your Home Screen, and once you turn on auto-rotate it brings a new ayah every day, every 8 hours or every
+              hour. Each ayah shows in Uthmani Arabic or a translation (10 languages in all), with the background, font
+              and colours you pick, and the app shows no ads. {facts.brand} needs {facts.minIOSText}.
+            </p>
           </div>
         </section>
 

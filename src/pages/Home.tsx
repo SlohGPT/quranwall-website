@@ -116,6 +116,23 @@ export default function Home() {
             </Helmet>
             <Navigation />
             <Hero />
+            {/* Answer-first passage (SEO queue p11): one self-contained, quotable paragraph near the top for AI answers
+                and snippets. Facts only from src/data/facts.json and the live listing; no pricing, no new feature claims. */}
+            <section aria-labelledby="what-is-quranwall" className="bg-surface pt-16 sm:pt-20">
+                <div className="container-main">
+                    <div className="mx-auto max-w-3xl text-center">
+                        <h2 id="what-is-quranwall" className="text-sm font-semibold uppercase tracking-widest text-brand">
+                            What is QuranWall?
+                        </h2>
+                        <p className="mt-4 text-lg leading-relaxed text-white/70 sm:text-xl">
+                            {facts.brand} (listed on the App Store as {facts.storeName}) is an iPhone app that puts an ayah of
+                            the Quran on your Lock Screen wallpaper and Home Screen widget. Search all 114 surahs by surah, ayah
+                            or keyword, and read the ayah in Uthmani Arabic or a translation, 10 languages in all. It shows no
+                            ads and works offline.
+                        </p>
+                    </div>
+                </div>
+            </section>
             <SocialProof />
             <Features />
             <HowItWorksAndPreview />
