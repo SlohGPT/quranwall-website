@@ -19,7 +19,7 @@
   "sections": [
     {
       "type": "paragraph",
-      "text": "There are two ways to put a Quran verse on your iPhone Lock Screen: set the ayah as your Lock Screen wallpaper, or add a Quran widget to the Lock Screen (iOS 16 or later). QuranWall is an iPhone app that does both, with the ayah in Uthmani Arabic or a translation."
+      "text": "There are two ways to put a Quran verse on your iPhone Lock Screen: set the ayah as your Lock Screen wallpaper, or add a Quran widget to the Lock Screen (iOS 16 or later). QuranWall is an iPhone app that does both (the wallpaper and the Lock Screen widget need iOS 16 or later), with the ayah in Uthmani Arabic or a translation."
     },
     {
       "type": "paragraph",
@@ -163,8 +163,8 @@
         "**Text:** Uthmani Arabic or a translation, with 10 languages included.",
         "**Your design:** your own background (a preset or your own photo), font and colours.",
         "**The whole Quran:** all 114 surahs, searchable by surah, ayah or keyword.",
-        "**No ads, and it works offline.**",
-        "**Requirements:** an iPhone with iOS 15.0 or later, per the listing. The Lock Screen widget needs iOS 16 or later."
+        "**No ads, and the Quran text works offline.**",
+        "**Requirements:** QuranWall installs on an iPhone with iOS 15.0 or later. The Lock Screen wallpaper and the Lock Screen widget need iOS 16 or later; on iOS 15 you get the Home Screen widget."
       ]
     },
     {
@@ -243,7 +243,7 @@
     },
     {
       "type": "paragraph",
-      "text": "QuranWall's App Store listing says iOS 15.0 or later. Lock Screen widgets, several Lock Screens and linking a Lock Screen to a Focus came with iOS 16, so those parts of this guide need iOS 16 or later."
+      "text": "QuranWall installs on iOS 15.0 or later, but its Lock Screen wallpaper and Lock Screen widget need iOS 16 or later. Lock Screen widgets, several Lock Screens and linking a Lock Screen to a Focus came with iOS 16, so those parts of this guide need iOS 16 or later."
     },
     {
       "type": "heading",

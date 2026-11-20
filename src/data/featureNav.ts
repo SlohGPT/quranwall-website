@@ -41,7 +41,7 @@ export const featureNav: AppFeature[] = [
     description:
       'Read each ayah in Uthmani Arabic or in a translation, and you can search all 114 surahs to find the ayah you want.',
     points: [
-      'Translations in 10 languages',
+      'Arabic plus translations in 9 more languages (11 editions)',
       'All 114 surahs searchable by surah, ayah or keyword',
       'Uthmani Arabic text',
     ],
@@ -52,7 +52,7 @@ export const featureNav: AppFeature[] = [
     eyebrow: 'Made for iPhone',
     title: 'A Lock Screen wallpaper and a Home Screen widget',
     description:
-      'QuranWall is an iPhone app that sets your Lock Screen wallpaper through Apple\'s Shortcuts app and adds a widget for the Home Screen and Lock Screen. It needs iOS 15.0 or later.',
+      'QuranWall is an iPhone app that sets your Lock Screen wallpaper through Apple\'s Shortcuts app and adds a widget for the Home Screen and Lock Screen. It installs on iOS 15.0 or later; the wallpaper and the Lock Screen widget need iOS 16 or later.',
     points: [
       'Lock Screen wallpaper with your ayah',
       'Widget for the Home Screen and Lock Screen',

@@ -7,11 +7,11 @@ export default function PrivacyPolicy() {
         <div className="min-h-screen bg-surface">
             <Helmet>
                 <title>Privacy Policy | QuranWall</title>
-                <meta name="description" content="QuranWall's privacy policy. We don't collect sensitive personal information, don't require an account, and your verse selections stay on your device." />
+                <meta name="description" content="QuranWall's privacy policy. No account or sign-in is required, there are no ads and no cross-app tracking. We use anonymous product analytics and RevenueCat for purchases." />
                 <link rel="canonical" href="https://quranwall.com/privacy-policy" />
                 <meta property="og:type" content="website" />
                 <meta property="og:title" content="Privacy Policy | QuranWall" />
-                <meta property="og:description" content="QuranWall's privacy policy. We don't collect sensitive personal information, don't require an account, and your verse selections stay on your device." />
+                <meta property="og:description" content="QuranWall's privacy policy. No account or sign-in is required, there are no ads and no cross-app tracking. We use anonymous product analytics and RevenueCat for purchases." />
                 <meta property="og:url" content="https://quranwall.com/privacy-policy" />
                 <meta property="og:image" content="https://quranwall.com/og-image.png" />
                 <meta name="twitter:image" content="https://quranwall.com/og-image.png" />
@@ -69,10 +69,12 @@ export default function PrivacyPolicy() {
                     <p><em>In Short: We collect personal information that you provide to us.</em></p>
                     <p>We collect personal information that you voluntarily provide to us when you express an interest in obtaining information about us or our products and Services, when you participate in activities on the Services, or otherwise when you contact us.</p>
                     <p><strong>Sensitive Information.</strong> We do not process sensitive information.</p>
-                    <p><strong>Payment Data.</strong> We may collect data necessary to process your payment if you choose to make purchases, such as your payment instrument number, and the security code associated with your payment instrument. All payment data is handled and stored by RevenueCat. You may find their privacy notice link(s) here: <a href="https://www.revenuecat.com/privacy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.revenuecat.com/privacy/</a>.</p>
+                    <p><strong>Payment Data.</strong> Purchases are processed by Apple through the App Store, and we do not receive your card number or security code. We use RevenueCat to manage subscriptions and keep your purchase history. You may find their privacy notice link(s) here: <a href="https://www.revenuecat.com/privacy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.revenuecat.com/privacy/</a>.</p>
                     <p><strong>Application Data.</strong> If you use our application(s), we also may collect the following information if you choose to provide us with access or permission:</p>
                     <ul>
-                        <li><strong>Push Notifications.</strong> We may request to send you push notifications regarding your account or certain features of the application(s). If you wish to opt out from receiving these types of communications, you may turn them off in your device's settings.</li>
+                        <li><strong>Notifications.</strong> If you allow them, the application(s) schedule local reminder notifications on your device. There is no account and no push notification server. If you wish to opt out, you may turn them off in your device's settings.</li>
+                        <li><strong>Photos.</strong> The application(s) ask for access to your photo library only to save your wallpaper or to let you choose your own photo as the background.</li>
+                        <li><strong>Camera.</strong> The application(s) ask for camera access only if you choose to take a photo to use as your background.</li>
                     </ul>
                     <p>This information is primarily needed to maintain the security and operation of our application(s), for troubleshooting, and for our internal analytics and reporting purposes.</p>
                     <p>All personal information that you provide to us must be true, complete, and accurate, and you must notify us of any changes to such personal information.</p>
@@ -91,7 +93,6 @@ export default function PrivacyPolicy() {
                     <p>We process your personal information for a variety of reasons, depending on how you interact with our Services, including:</p>
                     <ul>
                         <li><strong>To request feedback.</strong> We may process your information when necessary to request feedback and to contact you about your use of our Services.</li>
-                        <li><strong>To send you marketing and promotional communications.</strong> We may process the personal information you send to us for our marketing purposes, if this is in accordance with your marketing preferences. You can opt out of our marketing emails at any time. For more information, see the section "What Are Your Privacy Rights?" below.</li>
                         <li><strong>To protect our Services.</strong> We may process your information as part of our efforts to keep our Services safe and secure, including fraud monitoring and prevention.</li>
                         <li><strong>To identify usage trends.</strong> We may process information about how you use our Services to better understand how they are being used so we can improve them.</li>
                         <li><strong>To determine the effectiveness of our marketing and promotional campaigns.</strong> We may process your information to better understand how to provide marketing and promotional campaigns that are most relevant to you.</li>
@@ -140,7 +141,6 @@ export default function PrivacyPolicy() {
                     <p>We may need to share your personal information in the following situations:</p>
                     <ul>
                         <li><strong>Business Transfers.</strong> We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.</li>
-                        <li><strong>Offer Wall.</strong> Our application(s) may display a third-party hosted "offer wall." Such an offer wall allows third-party advertisers to offer virtual currency, gifts, or other items to users in return for the acceptance and completion of an advertisement offer. Such an offer wall may appear in our application(s) and be displayed to you based on certain data, such as your geographic area or demographic information. When you click on an offer wall, you will be brought to an external website belonging to other persons and will leave our application(s). A unique identifier, such as your user ID, will be shared with the offer wall provider in order to prevent fraud and properly credit your account with the relevant reward.</li>
                     </ul>
 
                     <h3>5. HOW LONG DO WE KEEP YOUR INFORMATION?</h3>
@@ -179,7 +179,7 @@ export default function PrivacyPolicy() {
                                 <tr className="border-b border-white/10">
                                     <td className="py-2 px-4">A. Identifiers</td>
                                     <td className="py-2 px-4">Contact details, such as real name, alias, postal address, telephone or mobile contact number, unique personal identifier, online identifier, Internet Protocol address, email address, and account name</td>
-                                    <td className="py-2 px-4">NO</td>
+                                    <td className="py-2 px-4">YES</td>
                                 </tr>
                                 <tr className="border-b border-white/10">
                                     <td className="py-2 px-4">B. Personal information as defined in the California Customer Records statute</td>
@@ -194,7 +194,7 @@ export default function PrivacyPolicy() {
                                 <tr className="border-b border-white/10">
                                     <td className="py-2 px-4">D. Commercial information</td>
                                     <td className="py-2 px-4">Transaction information, purchase history, financial details, and payment information</td>
-                                    <td className="py-2 px-4">NO</td>
+                                    <td className="py-2 px-4">YES</td>
                                 </tr>
                                 <tr className="border-b border-white/10">
                                     <td className="py-2 px-4">E. Biometric information</td>
@@ -239,6 +239,7 @@ export default function PrivacyPolicy() {
                             </tbody>
                         </table>
                     </div>
+                    <p>Identifiers and commercial information are marked as collected because of the services the application uses: Mixpanel (anonymous product analytics, under an anonymous identifier), RevenueCat (manages purchases and keeps purchase history) and Quran.com (receives the surah and ayah you ask to hear when you play a recitation).</p>
                     <p>We may also collect other personal information outside of these categories through instances where you interact with us in person, online, or by phone or mail in the context of:</p>
                     <ul>
                         <li>Receiving help through our customer support channels;</li>

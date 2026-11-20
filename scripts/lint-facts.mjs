@@ -174,10 +174,15 @@ const ARABIC_BESIDE = new RegExp(String.raw`\b(?:beside|alongside|next to|togeth
 // Another app's feature ("Muslim Pro shows Arabic beside a translation") is not a QuranWall claim.
 const ARABIC_OTHER = /\b(?:Muslim Pro|Quran Majeed|Quran\.com|Tarteel|Athan|iQuran|Al-?Quran|competitors?|other apps?|another app|most apps|many apps|print(?:ed)? mushafs?|mushafs?)\b/i;
 
-// Read-along recitation is real in the app (Listen in Arabic); Karol's decision on wording is pending (TODO-KAROL question 7),
-// so it WARNs instead of FAILing (2026-11-17). Other audio claims stay invented-audio FAILs.
-const READALONG = /\bListen in Arabic\b|\bread[- ]?along\b/i;
-const WARN_RULES = new Set(['audio-readalong']);
+// 2026-11-20 (app source, docs/app-knowledge): read-along recitation per ayah is real (Mishary Alafasy, word highlight, speed, repeat,
+// streamed from Quran.com on first play). Saying so is fine; DENYING audio is the FAIL (audio-denied), and so is claiming more than
+// exists (invented-audio: full-surah player, several reciters, offline audio). Nothing WARNs on audio any more.
+const WARN_RULES = new Set();
+// A sentence about another app, not QuranWall ("Quran.com has no audio ...", "Ayat has no widget"): not a QuranWall claim.
+// The brand check mirrors OTHER_APP_ONLY, which is defined further down (hence the late binding).
+const ABOUT_OTHER_APP = { test: (s) => !/Quran ?Wall/i.test(s) && (OTHER_APP_ONLY.test(s) || ARABIC_OTHER.test(s) || COMPETITOR_EXTRA.test(s)) };
+// Competitor names the posts use besides the ones in OTHER_APP_NAME / ARABIC_OTHER.
+const COMPETITOR_EXTRA = /\b(?:Ayat|Noor|Quran Quotes|Quran Widgets?|IslamicFinder|Quran Focus)\b/;
 
 // A sentence that is only a download CTA (JSX tags, quotes and punctuation around it are ignored).
 const STANDALONE_DOWNLOAD = /^(?:\s|<[^>]*>|[{}'"`*_.!:|-])*(?:free to download|download for free|free download)(?:\s|<[^>]*>|[{}'"`*_.!:|-])*$/i;
@@ -254,11 +259,11 @@ const rules = [
   ['free-download-prose', /\bfree to (?:download|install|get)\b|\bdownload (?:it |the app |quranwall )?for free\b|\bfree downloads?\b|\bdownload\s+(?:it|this app|the app|quranwall|them)\s+free\b|\bfree (?:on|in|from|at) (?:the )?(?:app store|apple)\b|\bdownload\b[^.]{0,20}\b(?:gratis|at no (?:charge|cost|fee)|without paying)\b|\bgratis (?:download|app)s?\b/i, null, [STANDALONE_DOWNLOAD, OTHER_APP_ONLY]],
   // Saying that using the app is free, without naming it ("all features for free", "use it for free").
   ['free-use-bare', /\b(?:all|every|full|any|the)\s+(?:the\s+|of the\s+)?(?:\w+\s+){0,2}(?:features?|functionality|access)\b[^.]{0,30}\b(?:for free|free of charge|at no cost|free)\b|\b(?:use|using|try|get|unlock|access|enjoy)\b[^.]{0,30}\b(?:for free|free of charge)\b|\bfree (?:version|tier|plan)\b|\bno[- ]cost\b|\bcosts? nothing\b|\bfree forever\b|\bfree of charge\b|\bgratis\b|\bat no (?:extra |additional )?(?:charge|cost|fee)\b|\bad[- ]?free\s*(?:,|and|&|\+)\s*(?:completely\s+|totally\s+|100%\s+)?free(?![-\w])|(?<![-\w])free\s*(?:,|and|&|\+)\s*ad[- ]?free\b|\b(?:try|use|get|start|test)\s+(?:it|this app|the app|Quran ?Wall|them)\s+free(?![-\w])/i, null, OTHER_APP_ONLY],
-  // NOT CONFIRMED by the listing: installing through iOS Focus modes.
+  // CONFIRMED ABSENT in the app code (2026-11-20): installing through iOS Focus modes (only an unreferenced Shortcuts tip mentions Focus).
   ['focus-install', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\bFocus(?:\\s+(?:modes?|filters?))?\\b|\\bFocus modes?\\b${CL}{0,60}\\b${BRAND}\\b`, 'i'), null, /\blink(?:ed|s)?\b|\bpair(?:ed|s)?\b|\bswitch(?:es|ing)?\b/i],
-  // NOT CONFIRMED: verse packs or any named pack.
+  // CONFIRMED ABSENT in the app code (2026-11-20): verse packs, themed packs or any named pack.
   ['verse-packs', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:packs?|bundles?|collections? of (?:verses|ayat|ayahs))\\b`, 'i'), null],
-  ['verse-packs-bare', /\b(?:verse|ayah|ayat|surah|themed|wallpaper|theme|dua|dhikr|starter|bonus) packs?\b/i, null],
+  ['verse-packs-bare', /\b(?:verse|ayah|ayat|surah|themed|wallpaper|theme|dua|dhikr|starter|bonus) packs?\b|\bthemed\s+(?:collections?|bundles?|sets?)\b|\b(?:anxiety|patience|gratitude|mercy)\b[^.]{0,25}\b(?:packs?|collections?)\b/i, null],
   // NOT CONFIRMED: "Premium" unlocks or "unlimited" anything. The listing never says "Premium" at all.
   ['premium-unlock', new RegExp(`\\bPremium\\b[^.]{0,60}\\b(?:unlock\\w*|includes?|gives?|adds?|removes?|enables?|grants?)\\b|\\bunlock\\w*\\b[^.]{0,40}\\bPremium\\b|\\b${BRAND}\\b${CL}{0,80}\\bunlimited\\b|\\bunlimited\\s+(?:verses?|ayat|ayahs?|wallpapers?|widgets?|backgrounds?|fonts?|themes?|translations?|surahs?|access)\\b`, 'i'), null],
   // NOT CONFIRMED: the name "Premium". The listing's in-app purchases are called QuranWall+ Weekly / Yearly;
@@ -272,16 +277,43 @@ const rules = [
   // "under 2 minutes to install"). Bare phrases: the page or post is about QuranWall. Stat blocks reach this
   // rule as "<number><suffix> <label>" (see statText), built HTML as concatenated text (see htmlToText).
   ['setup-time', new RegExp(`\\b(?:seconds?|secs?|minutes?|mins?)\\s+to\\s+(?:set[- ]?up|install\\w*)\\b|\\b${NUM}[- ](?:seconds?|secs?|minutes?|mins?)[- ](?:set[- ]?up|install\\w*)\\b|\\b\\d+s[- ]?set[- ]?up\\b|\\b(?:a[- ]|an[- ])?(?:second|minute|sec|min)[- ]set[- ]?up\\b|\\b${SETUPV}\\b[^.]{0,30}?\\b${QLEAD}${QTY}|\\b(?:under|within|less than|in just|in only)\\s+${QTY}[^.]{0,30}\\b(?:set[- ]?up|install\\w*)\\b|\\b${SETVERB}\\b${CL}{0,30}?\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b|\\b${QLEAD}${QTY}\\s+with\\s+${BRAND}\\b${CL}{0,40}\\b${SETVERB}\\b`, 'i'), null],
-  // NOT CONFIRMED: "no account" (bare phrase, no brand needed).
-  ['no-account-bare', /\bno (?:user )?accounts?\b[^.]{0,30}\b(?:required|needed|necessary)\b|\bwithout (?:creating |signing up for |making )?an account\b|\bno (?:sign-?up|log-?in|sign-?in)s?\b[^.]{0,20}\b(?:required|needed|necessary)\b/i, null],
+  // 2026-11-20: "no account or sign-in needed" is CONFIRMED by the app code (no accounts, no sign-in), so the old no-account-bare FAIL is gone.
+  ['focus-install-bare', /\bFocus[- ](?:mode[- ])?(?:install\w*|setup|set-up)\b|\binstall\w*\s+(?:it\s+|the app\s+|the widget\s+)?(?:through|via|with|using|from)\s+(?:an?\s+|your\s+)?(?:iOS\s+)?Focus\b/i, null, [DENY, ABOUT_OTHER_APP]],
+  // CONFIRMED ABSENT (2026-11-20): a dhikr, tasbih or counter widget; themed collections; Pin or favourites; iPad, Mac, Watch, iCloud sync; large or circular widgets.
+  ['dhikr-widget', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:dhikr|tasbih|tasbeeh|zikr|adhkar)\\s+(?:widgets?|counters?|trackers?)\\b|\\b(?:dhikr|tasbih|tasbeeh|zikr|adhkar)\\s+(?:widgets?|counters?|trackers?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
+  ['pin-favourites', /\b(?:pin|pins|pinned|pinning)\s+(?:an?\s+|the\s+|your\s+|any\s+)?(?:favou?rite\s+)?(?:ayah|ayat|verse|surah)s?\b|\bpinned\s+(?:ayah|ayat|verse|favou?rite)s?\b|\bfavou?rites?\s+(?:list|tab|screen|collection)\b|\bsave\s+(?:your\s+)?favou?rite\s+(?:ayah|ayat|verses?)\b/i, null, [DENY, ABOUT_OTHER_APP]],
+  ['invented-platform', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:iPads?|iPadOS|macOS|Mac app|Apple Watch|watchOS|Apple TV|Vision Pro|CarPlay|iCloud|syncs? across|sync(?:s|ing)? (?:between|with)|large widgets?|circular widgets?|StandBy)\\b`, 'i'), null, DENY],
+  // CONFIRMED (2026-11-20): the Quran text works offline; recitation (first play), purchases and support need internet. A bare "works offline" claims too much.
+  ['offline-unqualified', /\b(?:works?|working|runs?)\s+(?:fully\s+|completely\s+|entirely\s+|100%\s+|totally\s+)?offline\b/i, null, [/\b(?:not|n['’]t|never)\s+(?:\w+\s+)?(?:work|run)/i, ABOUT_OTHER_APP, /\b(?:Quran text|text|browsing|browse|search|widget|surahs?)\b/i]],
+  // CONFIRMED (2026-11-20): anonymous product analytics (Mixpanel) and RevenueCat are in the app, and support messages carry the saved ayah and first name. Supported: no ads, no ad SDK,
+  // no account or sign-in, no tracking prompt, no cross-app tracking. Legal pages are exempt (PRIVACY_EXEMPT = PRICING_EXEMPT); NEG does not rescue these in site content (see NEG_BYPASS).
+  ['privacy-claims', new RegExp([
+    String.raw`\bno\s+(?:user\s+|usage\s+|personal\s+)?(?:tracking|analytics|trackers?)\b(?!\s+(?:prompt|across|between))`,
+    String.raw`\bno\s+(?:personal\s+|user\s+)?data\s+(?:is\s+|are\s+|gets\s+)?(?:collected|collection|stored|shared)\b|\bno\s+data\s+collection\b`,
+    String.raw`\b(?:we|it|the app|Quran ?Wall)\s+(?:do(?:es)?\s+not|don['’]t|doesn['’]t|never)\s+(?:track|collect|store|share)\b`,
+    String.raw`\bnothing\s+(?:ever\s+)?leaves\s+(?:your|the)\s+(?:phone|device|iPhone)\b|\b(?:never|doesn['’]t|does not)\s+leaves?\s+(?:your|the)\s+(?:phone|device|iPhone)\b`,
+    String.raw`\b(?:selections?|choices?|verses?|ayat|ayahs?|data|information)\s+(?:stay|stays|remain|remains|is kept|are kept|is stored|are stored)\s+(?:only\s+)?(?:on|in)\s+(?:your|the)\s+(?:device|phone|iPhone)\b`,
+    String.raw`\btracker-free\b|\bzero\s+tracking\b|\bwithout\s+(?:any\s+)?(?:tracking|analytics|data collection)\b(?!\s+you\s+across)`,
+    String.raw`\b(?:100%|completely|fully|totally)\s+private\b`,
+  ].join('|'), 'i'), null, ABOUT_OTHER_APP],
+  // CONFIRMED (2026-11-20): QuranWall installs on iOS 15.0, but the wallpaper, the wallpaper picker and the Lock Screen widgets need iOS 16. "Works on / needs iOS 15" without the
+  // iOS 16 caveat over-promises the main feature (SettingsView.swift:743-780; QuranWallWallpaperIntent.swift:25).
+  ['ios15-wallpaper', { exec(s) {
+    if (!/\biOS\s?15\b/i.test(s)) return null;
+    if (/\biOS\s?16\b|\binstall\w*\b|\bHome Screen widget\b|\bminimum\b|\blist(?:ing|s|ed)\b|\bor later\b[^.]{0,30}\bor later\b/i.test(s)) return null;
+    const m = /\b(?:works?|working|runs?|needs?|needed|requires?|required|supports?|compatible|only)\b[^.;]{0,40}\biOS\s?15\b/i.exec(s)
+      || (/\b(?:wallpapers?|lock[- ]?screens?)\b/i.test(s) ? /\biOS\s?15\b/i.exec(s) : null);
+    return m;
+  } }, null, [ABOUT_OTHER_APP, DENY]],
   // NOT CONFIRMED: iOS 16 as the minimum (the listing says iOS 15.0). OS-feature facts (Lock Screen widgets
   // arrived in iOS 16) are allowed through the widget/Lock Screen/Focus wording.
-  ['ios16-as-min', new RegExp(`\\b(?:${BRAND}|the app)\\b[^.]{0,100}\\biOS\\s?16(?:\\.0)?(?:\\+|\\s+or\\s+(?:later|newer|higher)|\\s+and\\s+(?:later|newer|up))|\\b(?:requires?|needs?|minimum|min\\.?)\\s+(?:iOS\\s*)?16(?:\\.0)?\\b|Platform\\W{1,8}iOS 16|Minimum iOS\\W{1,8}16|operatingSystem"?\\W{1,6}iOS 16|^[-*\\s]*iOS 16(?:\\.0)?(?:\\+|\\s+or later|\\s+and later)?\\s*$`, 'i'), null, /widget|Lock Screen|Focus|competitor|customi[sz]|introduced|\bsince\b/i],
+  ['ios16-as-min', new RegExp(`\\b(?:${BRAND}|the app)\\b[^.]{0,100}\\biOS\\s?16(?:\\.0)?(?:\\+|\\s+or\\s+(?:later|newer|higher)|\\s+and\\s+(?:later|newer|up))|\\b(?:requires?|needs?|minimum|min\\.?)\\s+(?:iOS\\s*)?16(?:\\.0)?\\b|Platform\\W{1,8}iOS 16|Minimum iOS\\W{1,8}16|operatingSystem"?\\W{1,6}iOS 16|^[-*\\s]*iOS 16(?:\\.0)?(?:\\+|\\s+or later|\\s+and later)?\\s*$`, 'i'), null, /widget|Lock Screen|Focus|wallpaper|iOS\s?15|competitor|customi[sz]|introduced|\bsince\b/i],
   // Invented features (about QuranWall). A denial in the same sentence ("no audio", "doesn't have") is fine.
   ['invented-android-web', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:Android|Google Play|Play Store|web app|web version|browser version|desktop app|Windows|Chrome extension)\\b|\\b(?:Android|web app|web version|browser version)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with)\\s+${BRAND}\\b`, 'i'), null, DENY],
-  ['invented-audio', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:audio(?: recitation)?|recitations?|recited|reciters?|qari|qaris|listen(?:ing)? to|hear)\\b|\\b(?:audio(?: recitation)?|recitations?|reciters?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, [DENY, READALONG]],
-  // Read-along recitation ("Listen in Arabic") is a real feature: WARN, not FAIL (2026-11-17, see READALONG).
-  ['audio-readalong', new RegExp(`\\b${BRAND}\\b[^.]{0,120}\\b(?:Listen in Arabic|read[- ]?along)\\b|\\b(?:Listen in Arabic|read[- ]?along)\\b[^.]{0,120}\\b${BRAND}\\b|\\bListen in Arabic\\b`, 'i'), null],
+  // Audio: the app HAS read-along recitation per ayah (Mishary Alafasy; first play needs internet). Denying it is the FAIL; so is claiming a full-surah player,
+  // several reciters, a reciter picker, or offline audio. A sentence about another app is not a claim about ours.
+  ['audio-denied', /\b(?:no|without|lacks?|lacking|missing|minus)\s+(?:any\s+|built-in\s+|in-app\s+)?(?:audio|recitations?|reciters?|qari)\b|\b(?:doesn['’]t|does not|don['’]t|do not|isn['’]t|aren['’]t|not)\s+(?:have|has|include|offer|play|support|come with|provide|feature)\s+(?:any\s+)?(?:audio|recitations?)\b/i, null, [ABOUT_OTHER_APP]],
+  ['invented-audio', new RegExp(`\\b${BRAND}\\b${CL}{0,80}\\b(?:(?:full|whole|complete)[- ](?:surah|chapter)\\s+(?:audio|recitations?|player)|audio players?|(?:choose|pick|select|switch)\\s+(?:between\\s+|your\\s+|a\\s+|the\\s+)?(?:\\w+\\s+)?(?:reciters?|qaris?)|(?:several|multiple|many|different|famous|top|popular|favou?rite|your favou?rite)\\s+(?:\\w+\\s+)?(?:reciters?|qaris?)|(?:offline|downloadable|downloaded) (?:audio|recitations?)|(?:audio|recitations?)\\s+(?:offline|without (?:an? )?internet)|download\\s+(?:the\\s+)?(?:audio|recitations?)|playlists?)\\b|\\b(?:(?:full|whole|complete)[- ](?:surah|chapter)\\s+(?:audio|recitations?|player)|audio players?)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, [DENY, ABOUT_OTHER_APP]],
   ['invented-tafsir', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:tafs[iī]rs?|commentar(?:y|ies)|exegesis)\\b|\\b(?:tafs[iī]rs?|commentar(?:y|ies))\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-prayer-times', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:prayer times?|salah times?|salat times?|adhan|azan|qibla|qiblah|prayer reminders?|athan)\\b|\\b(?:prayer times?|qibla|qiblah|adhan)\\b${CL}{0,40}\\b(?:of|for|from|in|on|with|inside)\\s+${BRAND}\\b`, 'i'), null, DENY],
   ['invented-hifz', new RegExp(`\\b${BRAND}\\b${CL}{0,70}\\b(?:hifz|hifdh|memori[sz]ation (?:tracking|tracker|tools?|progress|plans?|features?|mode)|memori[sz]ing (?:progress|tools?)|track\\w*\\s+(?:your\\s+)?(?:hifz|memori[sz]ation|memori[sz]ing|progress)|hifz (?:tracker|tools?|plans?|mode|features?))\\b`, 'i'), null, DENY],
@@ -310,7 +342,7 @@ const rules = [
 const NEG = /\b(?:never|don'?t|do not|doesn'?t|does not|banned|avoid|no claim|not confirmed|unconfirmed|not claim|must not|mustn'?t|forbidden|ruled out)\b|\bno\b[^.;]{0,100}\bclaims?\b/i;
 
 // JSON keys that hold identifiers, not prose.
-const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', 'url', 'href', 'id', 'imageAlt', 'alternateName', 'related', 'featured', 'cluster', 'target_keyword', 'query', 'queries']);
+const SKIPKEYS = new Set(['keywords', 'keyword', 'slug', 'image', 'thumbnail', 'url', 'href', 'id', 'imageAlt', 'alternateName', 'related', 'featured', 'cluster', 'target_keyword', 'query', 'queries', 'minIOS', 'minIOSText', 'wallpaperMinIOS', 'wallpaperMinIOSText']);
 
 // A list item about another app ("**Muslim Pro** — ...") that never names QuranWall can't make a QuranWall
 // claim through a bare phrase, so the bare-phrase rules skip it.
@@ -318,8 +350,11 @@ const OTHER_APP_ITEM = /^\s*(?:[-*]\s+)?\*\*(?!Quran ?Wall\b)[^*]{2,60}\*\*/;
 // Files where the pricing rules do not apply: the legal pages only (Apple requires their subscription and billing text).
 // Built legal pages: dist/terms-of-use, dist/eula, dist/privacy-policy.
 const PRICING_EXEMPT = /^(?:src\/pages\/(?:TermsOfUse|EULA|PrivacyPolicy)\.tsx|dist\/(?:terms-of-use|eula|privacy-policy)(?:\/index)?\.html)$/;
-const PRICING_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare']);
-const BARE_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare', 'no-account-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare', 'arabic-beside-translation', 'wallpaper-automatic']);
+const PRICING_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare', 'privacy-claims']); // privacy-claims: the legal pages describe the data practices (2026-11-20)
+// Rules whose phrase IS a denial ("no tracking", "does not have audio", "we never track"): NEG ("never", "does not") must not rescue them in site content.
+// Skills and prompts (wholeSentenceNeg) still treat a sentence that states the ban as a mention.
+const NEG_BYPASS = new Set(['audio-denied', 'privacy-claims']);
+const BARE_RULES = new Set(['pricing-mention', 'free-download-prose', 'free-use-bare', 'audio-denied', 'privacy-claims', 'ios15-wallpaper', 'offline-unqualified', 'pin-favourites', 'focus-install-bare', 'setup-60s', 'setup-time', 'premium-name', 'premium-plan-word', 'social-proof', 'social-proof-downloads', 'verse-packs-bare', 'free-app-bare', 'arabic-beside-translation', 'wallpaper-automatic']);
 
 /**
  * Files whose negations are rule text, not copy: skills and the SEO queue/keyword notes say "NOT CONFIRMED: do not
@@ -418,7 +453,7 @@ function lintText(text, out, opts = {}) {
         if (allow) {
           if ([].concat(allow).some((a) => (a === DENY ? DENY.test(scope) : a.test(s)))) continue;
         }
-        if (NEG.test(scope)) continue;
+        if (!(NEG_BYPASS.has(id) && !opts.wholeSentenceNeg) && NEG.test(scope)) continue;
         if (opts.planText && PLAN_VERBS.test(s)) continue;
         out.push({ id, s: s.replace(/\s+/g, ' ').slice(0, 190) });
         break;
@@ -589,8 +624,11 @@ function walk(dir, out = []) {
 const LINTABLE = /\.(tsx?|json|html|md|txt|webmanifest)$/; // 2026-11-17: public/manifest.webmanifest has a description shown at install
 const rel = (abs) => relative(ROOT, abs).split(sep).join('/');
 
+// Code, not copy: regex replacement strings such as '$1\\$2$3' read as a price (pricing-mention). 2026-11-20: a false positive that failed --all.
+const LINT_SKIP = new Set(['src/lib/postIcons.ts']);
 function isLintable(relPath) {
   if (!LINTABLE.test(relPath)) return false;
+  if (LINT_SKIP.has(relPath)) return false;
   if (relPath.startsWith('src/') || relPath.startsWith('.claude/skills/')) return true;
   if (relPath === 'index.html') return true;
   return /^public\/[^/]+\.(txt|md|webmanifest)$/.test(relPath);
@@ -809,8 +847,9 @@ function checkMachineFiles() {
     if (!existsSync(abs)) { fail('dist-machine-file', r, 'missing'); continue; }
     const txt = readFileSync(abs, 'utf8');
     if (!txt.includes(facts.minIOSText)) fail('dist-machine-file', r, `does not say "${facts.minIOSText}"`);
+    if (facts.wallpaperMinIOSText && !txt.includes(facts.wallpaperMinIOSText)) fail('dist-machine-file', r, `does not say "${facts.wallpaperMinIOSText}" (the wallpaper and Lock Screen widgets need it)`);
     for (const m of txt.matchAll(/\biOS\s?(\d+(?:\.\d+)?)/g)) {
-      if (parseFloat(m[1]) !== minNum) fail('dist-machine-file', r, `names iOS ${m[1]}, facts.json minIOS is ${facts.minIOS}`);
+      if (parseFloat(m[1]) !== minNum && parseFloat(m[1]) !== parseFloat(facts.wallpaperMinIOS)) fail('dist-machine-file', r, `names iOS ${m[1]}, facts.json minIOS is ${facts.minIOS} and wallpaperMinIOS is ${facts.wallpaperMinIOS}`);
     }
     txt.split('\n').forEach((ln, i) => {
       if (/[$€£]\s?\d|\b\d+(?:[.,]\d+)?\s?(?:USD|EUR|GBP)\b|\b\d+[- ]days?\s+(?:free\s+)?trial\b|\bfree trial\b|\bper (?:week|month|year)\b|\/(?:wk|week|mo|month|yr|year)\b/i.test(ln)) {
@@ -979,8 +1018,8 @@ const SELF_TEST = [
   ['FAIL', 'tsx', "{ value: 5, label: 'Minutes to get started' }", 'setup-time'],
   ['FAIL', 'tsx', "{ value: 2000, suffix: '+', label: 'Downloads' }", 'social-proof-downloads'],
   ['FAIL', 'tsx', 'Over <b>5,000</b> downloads', 'social-proof-downloads'],
-  ['FAIL', 'site', 'We never claim this, but QuranWall has audio recitation.', 'invented-audio'],
-  ['FAIL', 'site', 'We do not claim this, yet QuranWall has audio recitation.', 'invented-audio'],
+  ['FAIL', 'site', 'We never claim this, but QuranWall has no audio recitation.', 'audio-denied'],
+  ['FAIL', 'site', 'We do not claim this, yet QuranWall has a full-surah audio player.', 'invented-audio'],
   ['FAIL', 'site', 'Other apps lack it, while QuranWall has tafsir.', 'invented-tafsir'],
   // must FAIL: earlier probes
   ['FAIL', 'site', 'Thousands of believers use QuranWall.', 'social-proof'],
@@ -1072,8 +1111,8 @@ const SELF_TEST = [
   ['PASS', 'stat', { value: 1000, suffix: '+', label: 'Downloads' }],
   ['PASS', 'stat', { value: '1,000+', label: 'Downloads' }],
   ['PASS', 'tsx', "{ value: 1000, suffix: '+', label: 'Downloads' }"],
-  ['PASS', 'site', 'QuranWall has no audio recitation.'],
-  ['PASS', 'site', 'QuranWall has no audio recitation, but it puts a verse on your Lock Screen.'],
+  ['PASS', 'site', 'QuranWall has per-ayah audio recitation by Mishary Alafasy, not a full-surah player.'],
+  ['PASS', 'site', 'QuranWall has audio recitation per ayah.'],
   ['PASS', 'site', 'Never miss a verse.'],
   ['PASS', 'site', 'a translation in 10 languages'],
   ['PASS', 'site', 'All 114 surahs, searchable'],
@@ -1083,7 +1122,7 @@ const SELF_TEST = [
   ['PASS', 'site', 'Better than a thousand months.'],
   ['PASS', 'site', 'This premium wallpaper look suits a Lock Screen.'],
   ['PASS', 'prompt', ['Never call the subscription "Premium".']],
-  ['PASS', 'prompt', ['Never claim this, but QuranWall has audio recitation.']],
+  ['PASS', 'prompt', ['Never write that QuranWall has no audio recitation.']],
 
   // ---- 2026-11-17: facts round (wallpaper shows ONE edition and never changes by itself; read-along exists; plan names; counts)
   // arabic-beside-translation: FAIL
@@ -1145,10 +1184,56 @@ const SELF_TEST = [
   ['PASS', 'site', 'Muslim Pro sends a new verse every day.'],
   ['PASS', 'prompt', ["Never write 'automatically' or 'every morning a new ayah' about the wallpaper."]],
   ['PASS', 'prompt', ['- never "a new ayah each day" about the Lock Screen wallpaper']],
-  // invented-audio vs read-along (WARN)
-  ['WARN', 'site', 'Tap Listen in Arabic for read-along recitation in QuranWall.', 'audio-readalong'],
-  ['WARN', 'site', 'QuranWall has read-along recitation.', 'audio-readalong'],
-  ['WARN', 'site', 'Tap Listen in Arabic to hear the ayah in QuranWall.', 'audio-readalong'],
+  // 2026-11-20: read-along recitation is real (app source). Saying so passes; denying it or inflating it fails.
+  ['PASS', 'site', 'Tap Listen in Arabic for read-along recitation in QuranWall.'],
+  ['PASS', 'site', 'QuranWall has read-along recitation.'],
+  ['PASS', 'site', 'Tap Listen in Arabic to hear the ayah in QuranWall.'],
+  ['FAIL', 'site', 'QuranWall has no audio.', 'audio-denied'],
+  ['FAIL', 'site', 'QuranWall puts an ayah on your Lock Screen without audio.', 'audio-denied'],
+  ['FAIL', 'site', 'QuranWall does not have audio recitation.', 'audio-denied'],
+  ['FAIL', 'site', 'It has no audio recitation, tafsir or hifz tools.', 'audio-denied'],
+  ['PASS', 'prompt', ['Do not say QuranWall has no audio: it has per-ayah recitation.']],
+  ['PASS', 'site', 'Quran.com has audio recitation; QuranWall keeps one ayah on your Lock Screen.'],
+  ['PASS', 'site', 'Ayat has no audio recitation.'],
+  ['FAIL', 'site', 'QuranWall has a full-surah audio player.', 'invented-audio'],
+  ['FAIL', 'site', 'QuranWall lets you choose between reciters.', 'invented-audio'],
+  ['FAIL', 'site', 'QuranWall plays audio offline.', 'invented-audio'],
+  ['PASS', 'site', 'QuranWall plays a read-along recitation of one ayah; the first play needs internet.'],
+  // 2026-11-20 privacy: anonymous analytics and RevenueCat are in the app
+  ['FAIL', 'site', 'QuranWall has no tracking.', 'privacy-claims'],
+  ['FAIL', 'site', 'No data collected, ever.', 'privacy-claims'],
+  ['FAIL', 'site', 'We never track you.', 'privacy-claims'],
+  ['FAIL', 'site', 'Your verse selections stay on your device.', 'privacy-claims'],
+  ['FAIL', 'site', 'Nothing leaves your phone.', 'privacy-claims'],
+  ['FAIL', 'site', 'QuranWall works without tracking or analytics.', 'privacy-claims'],
+  ['PASS', 'site', 'QuranWall has no ads, no account and no tracking prompt.'],
+  ['PASS', 'site', 'QuranWall has no cross-app tracking and no ad SDK.'],
+  ['PASS', 'prompt', ['Never write "no tracking" or "no data collected".']],
+  ['PASS', 'site', 'Muslim Pro has no tracking prompt.'],
+  // 2026-11-20 no account is confirmed
+  ['PASS', 'site', 'No account or sign-in needed.'],
+  ['PASS', 'site', 'QuranWall works without creating an account.'],
+  // iOS 15 install vs iOS 16 wallpaper
+  ['FAIL', 'site', 'QuranWall needs iOS 15.0 or later.', 'ios15-wallpaper'],
+  ['FAIL', 'site', 'QuranWall works on iPhones running iOS 15.0 or later.', 'ios15-wallpaper'],
+  ['FAIL', 'site', 'Your Lock Screen wallpaper works on iOS 15.', 'ios15-wallpaper'],
+  ['PASS', 'site', 'QuranWall installs on iOS 15.0 or later; the wallpaper needs iOS 16 or later.'],
+  ['PASS', 'site', 'On iOS 15 you get the Home Screen widget and the in-app Quran.'],
+  ['PASS', 'site', 'QuranWall lists iOS 15.0 or later in the App Store.'],
+  // offline
+  ['FAIL', 'site', 'It shows no ads and works offline.', 'offline-unqualified'],
+  ['FAIL', 'site', 'QuranWall works fully offline.', 'offline-unqualified'],
+  ['PASS', 'site', 'The Quran text works offline.'],
+  ['PASS', 'site', 'Browsing, search and the widget work offline.'],
+  // confirmed absent
+  ['FAIL', 'site', 'QuranWall has a dhikr widget.', 'dhikr-widget'],
+  ['FAIL', 'site', 'QuranWall includes a tasbih counter.', 'dhikr-widget'],
+  ['PASS', 'site', 'QuranWall is not a tasbih counter.'],
+  ['FAIL', 'site', 'Install QuranWall through a Focus-mode install.', 'focus-install-bare'],
+  ['FAIL', 'site', 'Themed packs for anxiety, patience, gratitude and mercy.', 'verse-packs-bare'],
+  ['FAIL', 'site', 'Pin an ayah to keep it on your Lock Screen.', 'pin-favourites'],
+  ['FAIL', 'site', 'QuranWall works on iPad and syncs across devices with iCloud.', 'invented-platform'],
+  ['PASS', 'site', 'QuranWall is for iPhone only, with no iPad or Mac app.'],
   ['FAIL', 'site', 'QuranWall has audio recitation by famous reciters.', 'invented-audio'],
   ['FAIL', 'site', 'QuranWall lets you listen to your favourite qari.', 'invented-audio'],
   // plan names

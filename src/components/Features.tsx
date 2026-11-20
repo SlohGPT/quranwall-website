@@ -436,7 +436,7 @@ export default function Features() {
 
             <Tile index={4} icon="palette"
               title="Your background, font and colours"
-              description="Pick a gradient, a photo from the gallery or your own photo, then choose the font and text colour you like."
+              description="Pick a plain white or grey background, one of 15 Islamic images or your own photo, then choose the font, colours, size and alignment."
               className="md:col-span-2 lg:col-span-2"
             >
               <CustomiserArt />

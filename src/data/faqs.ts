@@ -1,11 +1,11 @@
 // Single FAQ source. The visible FAQ (components/FAQ.tsx, components/TestimonialsAndFAQ.tsx)
 // and every FAQPage JSON-LD (pages/Home.tsx, pages/Support.tsx) are generated from this array,
-// so they can never drift. Facts follow the live App Store listing. No pricing on the website at all
+// so they can never drift. Facts follow the app code (docs/app-knowledge/, 2026-11-20), then the live App Store listing. No pricing on the website at all
 // (Karol, 2026-11-16): no price, plan names, "free" or subscription wording; the App Store shows it.
 export const faqs = [
   {
     question: 'What is QuranWall?',
-    answer: "QuranWall is an iPhone app that puts an ayah of the Quran on your Lock Screen wallpaper and Home Screen widget, in Arabic or a translation. It needs iOS 15.0 or later.",
+    answer: "QuranWall is an iPhone app that puts an ayah of the Quran on your Lock Screen wallpaper and Home Screen widget, in Arabic or a translation. It installs on iOS 15.0 or later; the wallpaper and the Lock Screen widget need iOS 16 or later.",
   },
   {
     question: 'How does QuranWall work?',
@@ -13,11 +13,11 @@ export const faqs = [
   },
   {
     question: 'Which iPhones does QuranWall work on?',
-    answer: "QuranWall works on iPhones running iOS 15.0 or later.",
+    answer: "QuranWall installs on iPhones running iOS 15.0 or later. The Lock Screen wallpaper and the Lock Screen widget need iOS 16 or later; on iOS 15 you get the Home Screen widget and the in-app Quran.",
   },
   {
     question: 'Does QuranWall show ads or need internet?',
-    answer: "QuranWall shows no ads. Browsing, search and the widget work offline.",
+    answer: "QuranWall shows no ads. The Quran text works offline: browsing, search and the widget need no connection. Playing an ayah's recitation for the first time needs internet.",
   },
   {
     question: 'Does the wallpaper change by itself?',

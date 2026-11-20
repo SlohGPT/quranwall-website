@@ -5,7 +5,7 @@
 ## Key facts
 
 - **What it is**: an iPhone app that shows an ayah of the Quran on the Lock Screen wallpaper and Home Screen widget
-- **Platform**: iPhone, iOS 15.0 or later (App Store listing)
+- **Platform**: iPhone only. Installs on iOS 15.0 or later; the Lock Screen wallpaper and Lock Screen widgets need iOS 16 or later
 - **App Store**: https://apps.apple.com/us/app/quran-verse-lock-screen/id6781802080?pt=128303795&ct=qw-web-llms&mt=8
 - **Website**: https://quranwall.com
 - **Author / Founder**: Karol Billik
@@ -15,15 +15,17 @@
 ## What it does
 
 - Puts an ayah on the iPhone Lock Screen wallpaper and on a Home Screen widget
-- Shows the ayah in Uthmani Arabic or a translation: 10 languages in all
-- The Lock Screen wallpaper keeps the ayah you chose until you pick another; the widget can switch to a new ayah every day, every 8 hours or every hour
+- Shows each ayah in one edition at a time, Uthmani Arabic or a translation (11 editions, 10 languages in all), never both together
+- Optional romanized line under the ayah
+- Read-along recitation per ayah (Mishary Alafasy, with word highlight, speed and repeat); the first play of each ayah needs internet
+- The Lock Screen wallpaper keeps the ayah you chose until you pick another; the widget can switch to a new ayah every day, every 8 hours or every hour once you turn on auto-rotate
 - Lets you choose your own background (a preset or your own photo), font and colours
 - All 114 surahs are searchable by surah, ayah or keyword
-- No ads. The Quran text in every language ships inside the app, so browsing, search and the widget work offline
+- No ads and no account or sign-in. The Quran text in every edition ships inside the app, so browsing, search and the widget work offline
 
 ## What it does not do
 
-No tafsir, hifz tools, prayer times or qibla. There is no AI feature, no Android app and no web app.
+No tafsir, hifz tools, prayer times or qibla. There is no full-surah audio player, no AI feature, no Android app and no web app.
 
 ## Key pages
 
@@ -64,4 +66,4 @@ No tafsir, hifz tools, prayer times or qibla. There is no AI feature, no Android
 
 ## Last updated
 
-2026-11-17
+2026-11-20

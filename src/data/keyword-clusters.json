@@ -1,7 +1,7 @@
 {
   "engine_version": "1.0.0",
   "site": "quranwall.com",
-  "updated": "2026-11-16",
+  "updated": "2026-11-20",
   "clusters": [
     {
       "id": "quran-lock-screen-app",
@@ -279,7 +279,7 @@
       "content_type": "none",
       "target_url": null,
       "decision": "hold",
-      "hold_reason": "product fit unconfirmed: the live listing does not describe a dhikr or tasbih widget (TODO-KAROL.md)",
+      "hold_reason": "confirmed absent in app code 2026-11-20: QuranWall has no dhikr, tasbih or counter widget",
       "evidence": [
         {
           "type": "autocomplete",
@@ -287,7 +287,7 @@
           "note": "The seed returned no dhikr phrasing, only unrelated countdown widget questions, so autocomplete adds no signal for it today"
         }
       ],
-      "notes": "Product fit is unconfirmed: the live listing mentions no dhikr or tasbih widget. The keyword bank blocks it until Karol answers."
+      "notes": "Confirmed absent in the app code on 2026-11-20 (docs/app-knowledge/seven-answers.md question 4): there is no dhikr, tasbih or counter widget, so no page for this cluster. The keyword bank keeps it blocked."
     },
     {
       "id": "turkish-ayet-lock-screen-widget",
@@ -347,6 +347,32 @@
         }
       ],
       "notes": "A market signal only. No Indonesian page is planned, and the Turkish go or no-go (p18) does not cover it."
+    },
+    {
+      "id": "quran-transliteration-iphone",
+      "name": "Quran transliteration on the iPhone Lock Screen",
+      "head_keyword": "quran transliteration app iphone",
+      "members": [
+        "quran transliteration app iphone",
+        "quran in english letters app",
+        "quran reading in english letters",
+        "quran verses in english letters"
+      ],
+      "intent": "informational",
+      "content_type": "blog",
+      "target_url": null,
+      "decision": "hold",
+      "hold_reason": "queued as p19 until 2026-11-24",
+      "held_until": "2026-11-24",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-20",
+          "note": "A quran in english letters family plus a transliteration app phrasing; Lock Screen and wallpaper phrasings returned nothing, so that angle is the page's own contribution"
+        }
+      ],
+      "queue_id": "p19",
+      "notes": "Queued as p19 for /blog/quran-transliteration-iphone-lock-screen, not live yet. Ships only through the demand test and the section 7 overlap check. Never name a transliteration source or translators on the page."
     }
   ]
 }

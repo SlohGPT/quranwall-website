@@ -109,7 +109,7 @@ export default function FeaturesPage() {
               surahs, tap Make It Mine, and Apple&apos;s Shortcuts app sets it. You can also add the QuranWall widget to
               your Home Screen, and once you turn on auto-rotate it brings a new ayah every day, every 8 hours or every
               hour. Each ayah shows in Uthmani Arabic or a translation (10 languages in all), with the background, font
-              and colours you pick, and the app shows no ads. {facts.brand} needs {facts.minIOSText}.
+              and colours you pick, and the app shows no ads. {facts.brand} installs on {facts.minIOSText}; the wallpaper and the Lock Screen widget need {facts.wallpaperMinIOSText}.
             </p>
           </div>
         </section>

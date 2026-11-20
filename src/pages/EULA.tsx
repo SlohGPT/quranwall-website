@@ -68,14 +68,14 @@ export default function EULA() {
                         <strong>QuranWall</strong> ("Licensed Application") is a piece of software that places an ayah (verse) of the Quran on the Lock Screen wallpaper and in a Home Screen widget, so that it stays visible throughout the day. It is customized for iOS mobile devices ("Devices").
                     </p>
                     <p>
-                        The Application’s main use is to show an ayah in the Uthmani Arabic script beside a translation (in one of 10 languages), either a new ayah each day or one the user pins, on a background, font and colours the user chooses, or on the user’s own photo.
+                        The Application’s main use is to show an ayah, in the Uthmani Arabic script or in one translation chosen by the user (10 languages), on a Lock Screen wallpaper and in a widget, on a background, font and colours the user chooses, or on the user’s own photo. The widget can show a new ayah on a schedule if the user turns on auto-rotate.
                     </p>
                     <p>Furthermore, it is used to:</p>
                     <ul>
                         <li>Search all 114 surahs of the Quran by surah, ayah or keyword;</li>
                         <li>Offer an in-app subscription;</li>
                         <li>Save user preferences and design settings for easier reuse; and</li>
-                        <li>Work offline, without ads.</li>
+                        <li>Show the Quran text without an internet connection and without ads (audio recitation, purchases and support need a connection).</li>
                     </ul>
                     <p>
                         The Licensed Application is not tailored to comply with industry-specific regulations (Health Insurance Portability and Accountability Act (HIPAA), Federal Information Security Management Act (FISMA), etc.), so if your interactions would be subjected to such laws, you may not use this Licensed Application. You may not use the Licensed Application in a way that would violate the Gramm-Leach-Bliley Act (GLBA).

@@ -128,7 +128,7 @@ export default function Home() {
                             {facts.brand} (listed on the App Store as {facts.storeName}) is an iPhone app that puts an ayah of
                             the Quran on your Lock Screen wallpaper and Home Screen widget. Search all 114 surahs by surah, ayah
                             or keyword, and read the ayah in Uthmani Arabic or a translation, 10 languages in all. It shows no
-                            ads and works offline.
+                            ads, and the Quran text works offline.
                         </p>
                     </div>
                 </div>

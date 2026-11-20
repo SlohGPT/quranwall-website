@@ -15,10 +15,10 @@ You are writing ONE blog post for quranwall.com. The site is a Vite + React SPA 
 - **Site host:** `quranwall.com`
 - **Author:** Karol Billik — indie iOS maker. Author page: `/about/karol-billik`.
 - **Pricing: none on the website at all.** Karol 2026-11-16: "we don't need to mention the pricing on the website, at all in my opinion. Like, let people download the app and then they will see and they will convert themselves." Pages, posts, FAQ answers and CTAs never mention the subscription, paywall, trial or price, and never say that using QuranWall is free ("free app", "use it for free", "all features free"), not even "free to download" in prose: write what the app does ("you can use QuranWall to put an ayah on your Lock Screen"). "Free to download" / "Download for free" appear only at download points the renderer or components draw (App Store button, install card, hero and final CTA), never in a post paragraph. On posts about free apps, QuranWall is the Lock Screen companion you pair with the free picks, not one of them. (Other apps' pricing in a roundup may be stated when true on their live listing.)
-- **Confirmed features (live App Store listing, 2026-11-16):** Uthmani Arabic or a translation (one per wallpaper, never both together), 10 languages; Lock Screen wallpaper and Home Screen widget; your own background, font and colours (a preset or your own photo); all 114 surahs searchable by surah, ayah or keyword; no ads; works offline.
+- **Confirmed features (app source, read 2026-11-20; `docs/app-knowledge/` has the evidence):** Uthmani Arabic or a translation (one per wallpaper, never both together), 11 editions in 10 languages; Lock Screen wallpaper and Home Screen / Lock Screen widget; your own background, font and colours (a preset or your own photo); an optional romanized line; read-along recitation per ayah (Mishary Alafasy, per ayah, not a full-surah player, first play needs internet); all 114 surahs searchable by surah, ayah or keyword; no ads; no account or sign-in; the Quran text works offline (say "the Quran text works offline", never a bare "works offline": recitation, purchases and support need internet).
 - **Wallpaper vs widget (verified in the app source, 2026-11-17):** the Lock Screen wallpaper never changes by itself: you pick an ayah, tap Make It Mine, Apple's Shortcuts sets it, and it stays until you pick another in the app. Only the widget can change on its own, and only if the user turns on auto-rotate (off by default): a new ayah every day, every 8 hours or every hour. Never write "a new ayah each day", "automatic", "nothing to change" or "no app to open" about the wallpaper.
-- **Not confirmed, so never claim until TODO-KAROL.md records Karol confirming them:** verse packs or any named pack, installing through iOS Focus modes, "Premium" or "unlimited" unlocks, duas, a "60-second setup", "no account". You may still write about seasons of life (hardship, grief, sabr, tawakkul) as topics.
-- **Requires:** iOS 15.0 or later (the live listing's minimum).
+- **Confirmed absent in the app (2026-11-20), never claim:** verse packs or any named pack, installing through iOS Focus modes, a dhikr or tasbih widget or counter, personal duas or a dua library, a "60-second setup" as a fact, pin or favourites, "Premium" or "unlimited" unlocks, "no tracking" / "no data collected" (anonymous analytics and RevenueCat are in the app). "No account or sign-in needed" is confirmed and safe to say. You may still write about seasons of life (hardship, grief, sabr, tawakkul) as topics.
+- **Requires:** QuranWall installs on iOS 15.0 or later; the Lock Screen wallpaper and the Lock Screen widgets need iOS 16 or later (say both; on iOS 15 you get the Home Screen widget and the in-app Quran).
 - **The 5 clusters** (must match `src/types/blog.ts` exactly):
   - `daily-quran-lock-screen`
   - `dua-and-dhikr-iphone`
@@ -82,12 +82,12 @@ The blog exists to drive App Store downloads, not just to rank. Every post earns
 | Intent type | Examples | Sales temperature | QuranWall mentions | What competitors get |
 |---|---|---|---|---|
 | **Setup / How-to** (informational) | "how to set dhikr reminders iphone", "muslim morning routine iphone" | Mostly helpful, soft CTA at end | 2–3 in body | Don't name competitor apps |
-| **Comparison / Best-X / Alternatives** (transactional) | "best muslim app for iphone 2026", "muslim pro alternatives", "best islamic lock screen app" | **QuranWall is THE recommendation, ranked #1 and highest** — competitors are positioned as solving a *different, narrower* problem | 5–7 throughout | Name them, frame as a different job (reading / prayer times / audio) |
+| **Comparison / Best-X / Alternatives** (transactional) | "best muslim app for iphone 2026", "muslim pro alternatives", "best islamic lock screen app" | **QuranWall is THE recommendation, ranked #1 and highest** — competitors are positioned as solving a *different, narrower* problem | 5–7 throughout | Name them, frame as a different job (full tafsir and reading / prayer times / memorisation / whole-surah audio); never write that QuranWall has no audio (it has per-ayah recitation) |
 | **QuranWall-native setup** (the app IS the answer) | "daily ayah wallpaper iphone", "rotating quran verse wallpaper iphone" | The setup *is* the app — Step 1 = download | 6–10 throughout | Don't name |
 
 **Cardinal rule for comparison / "best apps" / "alternatives" posts — this is the heart of what the user wants:**
 - **QuranWall is always listed FIRST and ranked HIGHEST** (the #1 entry, the editor's pick, the recommended choice). Never bury it mid-list or present it as "one good option."
-- Other apps appear **below** QuranWall and are framed as good at a *different* job — Muslim Pro for prayer times/qibla, Quran.com / Quran Majeed for reading, Tarteel for AI-assisted memorization (hifz), Athan/IslamicFinder for adhan times, Ayah for reading plans. **None of them own the lock-screen daily-exposure surface — that is QuranWall's lane.**
+- Other apps appear **below** QuranWall and are framed as good at a *different* job — Muslim Pro for prayer times/qibla, Quran.com / Quran Majeed for reading and full tafsir, Tarteel for AI-assisted memorization (hifz), Athan/IslamicFinder for adhan times, Ayah for reading plans. **None of them own the lock-screen daily-exposure surface — that is QuranWall's lane.**
 - Be fair and accurate about competitors (don't lie or trash them), but the *recommendation* is unambiguous: for putting the Quran in front of you every day, QuranWall wins.
 - Real apps you may name (only in comparison posts): **Muslim Pro, Quran.com (Quran by Quran Foundation), Quran Majeed, Tarteel, Athan (IslamicFinder), Ayah, Quran Pro, Pillars.** Use real, current positioning — don't invent features.
 
@@ -103,14 +103,14 @@ Every post includes a friction-reveal section (any heading: "Where this gets har
 
 - **Surface specificity:** "Designed *for* the iPhone Lock Screen and Home Screen widget, not adapted to them." (Never "the only app".)
 - **The pickup problem:** "You pick up your phone again and again every day. QuranWall makes the Quran one of those touches, without you opening anything." (If you give a number, cite a current named source in the text.)
-- **Private and respectful:** "No ads interrupting your worship, and it works fully offline."
+- **Private and respectful:** "No ads interrupting your worship, and the Quran text works offline."
 - **The missing piece:** "Quran.com is for reading. Tarteel is for memorizing. Muslim Pro is for prayer times. QuranWall is for *seeing* — the daily-exposure piece every Muslim's phone is missing."
 
 #### CTA copy variation (don't reuse one boilerplate)
 
 Vary the final CTA title + description by post type. Examples:
 - **High-intent:** title `"Put the Quran on your Lock Screen"` / description `"Uthmani Arabic or a translation in 10 languages, on your Lock Screen and Home Screen widget."`
-- **How-to:** title `"Pick an ayah, set it once"` / description `"QuranWall puts it on your Lock Screen wallpaper and Home Screen widget. No ads, works offline."`
+- **How-to:** title `"Pick an ayah, set it once"` / description `"QuranWall puts it on your Lock Screen wallpaper and Home Screen widget. No ads, and the Quran text works offline."`
 - **Friction-resolution:** title `"Stop screenshotting verses"` / description `"QuranWall designs the ayah for the Lock Screen: your background, font and colours, in Uthmani Arabic or a translation."`
 
 Never ship a generic "Download QuranWall" title alone.
