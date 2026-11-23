@@ -1,7 +1,7 @@
 {
   "engine_version": "1.0.0",
   "site": "quranwall.com",
-  "updated": "2026-11-20",
+  "updated": "2026-11-23",
   "clusters": [
     {
       "id": "quran-lock-screen-app",
@@ -67,7 +67,9 @@
         "quran verse widget ios",
         "daily quran verse widget iphone",
         "daily quran verse app widget",
-        "quran verse home screen widget iphone"
+        "quran verse home screen widget iphone",
+        "ayah of the day widget",
+        "quran widget not updating iphone"
       ],
       "intent": "app-install",
       "content_type": "blog",
@@ -78,10 +80,21 @@
           "type": "autocomplete",
           "fetched": "2026-11-16",
           "note": "The widget seed and the daily verse seed both returned widget phrasings, iPhone and iOS forms alike"
+        },
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-23",
+          "note": "The ayah of the day widget seed returned only itself; its results are WordPress plugin pages and one app, so the product post can answer it in a sentence"
+        },
+        {
+          "type": "forum",
+          "fetched": "2026-11-23",
+          "note": "Apple Community threads about Lock Screen widgets and Shortcuts wallpapers not updating on iOS 16; no Quran-specific editorial answer for the not-updating search",
+          "source": "discussions.apple.com"
         }
       ],
-      "queue_id": "p8",
-      "notes": "Strategy section 10 gives the product post the widget phrasings. The home page and the features page carry the category phrasing through p11."
+      "queue_id": "p22",
+      "notes": "Strategy section 10 gives the product post the widget phrasings; home and features carry the category phrasing (p11). From 2026-11-23 the widget-or-wallpaper-not-changing answer and the ayah-of-the-day phrasing go on the same post (p22)."
     },
     {
       "id": "quran-wallpaper-iphone",
@@ -94,23 +107,30 @@
         "quran verse wallpaper iphone",
         "quran ayat wallpaper iphone",
         "quran aesthetic wallpaper iphone",
-        "quran lock screen wallpaper"
+        "quran lock screen wallpaper",
+        "islamic wallpaper iphone",
+        "islamic wallpaper iphone aesthetic",
+        "islamic wallpaper iphone 4k",
+        "islamic wallpaper iphone hd"
       ],
       "intent": "informational",
       "content_type": "blog",
       "target_url": null,
-      "decision": "hold",
-      "hold_reason": "queued as p16 until 2026-12-07",
-      "held_until": "2026-12-07",
+      "decision": "new-post",
       "evidence": [
         {
           "type": "autocomplete",
           "fetched": "2026-11-16",
           "note": "A separate wallpaper family showed up next to the widget one, with aesthetic and ayat phrasings"
+        },
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-23",
+          "note": "An islamic wallpaper iphone family (4k, aesthetic, hd and device-model forms); its results share no URLs with the quran wallpaper ones but the same wallpaper app leads both"
         }
       ],
       "queue_id": "p16",
-      "notes": "Queued as p16 for /blog/quran-wallpaper-iphone, which is not live yet. It ships only through the demand test and after the depth items. Check first whether the product post already answers the wallpaper intent."
+      "notes": "Queued as p16 for /blog/quran-wallpaper-iphone, eligible from 2026-11-23. One wallpaper post owns the quran and islamic phrasings. It ships through the demand test and first checks whether the product post already answers the wallpaper intent."
     },
     {
       "id": "islamic-lock-screen-wallpaper",
@@ -361,9 +381,7 @@
       "intent": "informational",
       "content_type": "blog",
       "target_url": null,
-      "decision": "hold",
-      "hold_reason": "queued as p19 until 2026-11-24",
-      "held_until": "2026-11-24",
+      "decision": "new-post",
       "evidence": [
         {
           "type": "autocomplete",
@@ -372,7 +390,57 @@
         }
       ],
       "queue_id": "p19",
-      "notes": "Queued as p19 for /blog/quran-transliteration-iphone-lock-screen, not live yet. Ships only through the demand test and the section 7 overlap check. Never name a transliteration source or translators on the page."
+      "notes": "Queued as p19 for /blog/quran-transliteration-iphone-lock-screen, not live yet; eligible from 2026-11-23. Ships only through the demand test and the section 7 overlap check. Never name a transliteration source or translators on the page."
+    },
+    {
+      "id": "best-dhikr-app",
+      "name": "Best dhikr app",
+      "head_keyword": "best dhikr app",
+      "members": [
+        "best dhikr app",
+        "best dhikr app for iphone",
+        "best zikr app",
+        "best dhikr counter app",
+        "best dua and dhikr app"
+      ],
+      "intent": "compare",
+      "content_type": "compare",
+      "target_url": "/blog/best-dhikr-app-for-iphone",
+      "decision": "depth-pass",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-23",
+          "note": "The best dhikr app seed returned zikr, counter and dua-and-dhikr forms plus two question forms"
+        }
+      ],
+      "queue_id": "p24",
+      "notes": "One roundup owns the family. QuranWall has no dhikr or tasbih counter, so the counter phrasings are answered honestly inside the roundup (other apps count; QuranWall keeps an ayah in view), never with a page of their own."
+    },
+    {
+      "id": "muslim-morning-routine",
+      "name": "Muslim morning routine",
+      "head_keyword": "muslim morning routine",
+      "members": [
+        "muslim morning routine",
+        "muslim morning routine checklist",
+        "islamic morning routine",
+        "muslim daily routine",
+        "muslim morning routine iphone"
+      ],
+      "intent": "informational",
+      "content_type": "blog",
+      "target_url": "/blog/muslim-morning-routine-iphone",
+      "decision": "depth-pass",
+      "evidence": [
+        {
+          "type": "autocomplete",
+          "fetched": "2026-11-23",
+          "note": "A full family around checklist, islamic morning routine and muslim daily routine; the checklist results are editorial sites, the iPhone form is App Store listings"
+        }
+      ],
+      "queue_id": "p23",
+      "notes": "The existing post adds a checklist section rather than a second URL. Low sales temperature; no rulings, no reward claims, no unsourced hadith. Essay, pdf, chart and for-kids forms are left out of scope."
     }
   ]
 }
