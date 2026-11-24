@@ -6,8 +6,8 @@ Public repo: words and positions only. No Search Console clicks, impressions or 
 
 Append-only. The next number is the highest NN here plus 1. Corrections go in a new entry.
 
-## Status (2026-11-23)
-The weekly refresh set the Search Console baseline. The data is thin and arrived during the November 2026 core update, so nothing was re-ranked on it. Most sitemap URLs are now indexed, including /features and the money posts; the dhikr-reminders post is crawled but not indexed, and p25 is queued for it. Seven new items (p20-p26) were queued and p16/p19 pulled forward, so eight items are eligible. Pipeline healthy; the next refresh runs Monday 2026-11-30.
+## Status (2026-11-24)
+Merge gate 07 merged p20 (`26261f0`): the stale Unsplash credits are gone from the five posts with generated covers, so no page credits a photo it no longer shows. All gates passed and the five verses in those posts re-checked OK. No branch is waiting, so the autopilot runs tomorrow. The baseline from the 2026-11-23 refresh stands: thin data inside the core update, most sitemap URLs indexed, p25 queued for the crawled-not-indexed dhikr-reminders post. The next refresh runs Monday 2026-11-30.
 
 ## Index
 - [01 - Merge gate, 2026-11-18](01-merge-gate-2026-11-18.md): p9 comparison merged (`ed5cf7a`), all gates passed, 2:152 verified
@@ -16,3 +16,4 @@ The weekly refresh set the Search Console baseline. The data is thin and arrived
 - [04 - Merge gate, 2026-11-21](04-merge-gate-2026-11-21.md): p12 roundup refresh quarantined (`lint-facts --dist` social-proof on competitor head counts), 13:28 verified, gate note added to p12
 - [05 - Merge gate, 2026-11-22](05-merge-gate-2026-11-22.md): p12 roundup refresh merged on the second attempt (`b212dfe`), all gates passed, 13:28 verified, listings re-checked
 - [06 - Weekly SEO refresh, 2026-11-23](06-weekly-seo-refresh-2026-11-23.md): Search Console baseline set (thin, inside the core update), indexing mostly done, p20-p26 queued, 8 eligible
+- [07 - Merge gate, 2026-11-24](07-merge-gate-2026-11-24.md): p20 stale Unsplash credits removed from five posts (`26261f0`), all gates passed, 13:28, 2:152, 17:106 and 17:78 verified
