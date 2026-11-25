@@ -6,8 +6,8 @@ Public repo: words and positions only. No Search Console clicks, impressions or 
 
 Append-only. The next number is the highest NN here plus 1. Corrections go in a new entry.
 
-## Status (2026-11-24)
-Merge gate 07 merged p20 (`26261f0`): the stale Unsplash credits are gone from the five posts with generated covers, so no page credits a photo it no longer shows. All gates passed and the five verses in those posts re-checked OK. No branch is waiting, so the autopilot runs tomorrow. The baseline from the 2026-11-23 refresh stands: thin data inside the core update, most sitemap URLs indexed, p25 queued for the crawled-not-indexed dhikr-reminders post. The next refresh runs Monday 2026-11-30.
+## Status (2026-11-25)
+Merge gate 08 merged p21 (`f0c24da`): quran-verse-iphone-lock-screen is down to five in-body links and best-islamic-lock-screen-app-iphone no longer links the roundup from its first paragraph. All gates passed and both verses (2:152, 51:55) re-checked OK. No branch is waiting, so the autopilot runs tomorrow; six queue items are eligible (four depth passes, two new posts). The baseline from the 2026-11-23 refresh stands: thin data inside the core update, most sitemap URLs indexed, p25 queued for the crawled-not-indexed dhikr-reminders post. The next refresh runs Monday 2026-11-30.
 
 ## Index
 - [01 - Merge gate, 2026-11-18](01-merge-gate-2026-11-18.md): p9 comparison merged (`ed5cf7a`), all gates passed, 2:152 verified
@@ -17,3 +17,4 @@ Merge gate 07 merged p20 (`26261f0`): the stale Unsplash credits are gone from t
 - [05 - Merge gate, 2026-11-22](05-merge-gate-2026-11-22.md): p12 roundup refresh merged on the second attempt (`b212dfe`), all gates passed, 13:28 verified, listings re-checked
 - [06 - Weekly SEO refresh, 2026-11-23](06-weekly-seo-refresh-2026-11-23.md): Search Console baseline set (thin, inside the core update), indexing mostly done, p20-p26 queued, 8 eligible
 - [07 - Merge gate, 2026-11-24](07-merge-gate-2026-11-24.md): p20 stale Unsplash credits removed from five posts (`26261f0`), all gates passed, 13:28, 2:152, 17:106 and 17:78 verified
+- [08 - Merge gate, 2026-11-25](08-merge-gate-2026-11-25.md): p21 link trim merged (`f0c24da`), all gates passed, 2:152 and 51:55 verified
