@@ -4,15 +4,17 @@
     "description": "How to put a Quran verse on your iPhone Lock Screen as a wallpaper or a widget, where each one shows, and what QuranWall shows. Lock Screen widgets need iOS 16 or later.",
     "date": "June 19, 2026",
     "datePublished": "2026-06-19",
-    "dateModified": "2026-11-17",
-    "readTime": "9 min read",
+    "dateModified": "2026-11-26",
+    "readTime": "11 min read",
     "image": "/blog-thumbnails/quran-verse-iphone-lock-screen-cover.jpg",
     "keywords": [
       "Quran verse iPhone lock screen",
       "Quran lock screen widget",
       "Quran verse widget iPhone",
       "how to put Quran verse on lock screen",
-      "daily Quran verse widget"
+      "daily Quran verse widget",
+      "Quran widget not updating iPhone",
+      "ayah of the day widget"
     ],
     "cluster": "daily-quran-lock-screen"
   },
@@ -91,7 +93,7 @@
     },
     {
       "type": "paragraph",
-      "text": "A widget is the way to see a changing ayah. Add the QuranWall widget to your Lock Screen (iOS 16 or later) or your Home Screen from the iOS widget gallery. Turn on auto-rotate and the widget shows a new ayah every day, every 8 hours or every hour; leave it off and it keeps one ayah."
+      "text": "A widget is the way to see a changing ayah. Add the QuranWall widget to your Lock Screen (iOS 16 or later) or your Home Screen from the iOS widget gallery. Turn on **Auto-rotate ayahs** in QuranWall’s Settings and the widget shows a new ayah every day, every 8 hours or every hour; leave it off and it keeps one ayah."
     },
     {
       "type": "heading",
@@ -187,7 +189,7 @@
     {
       "type": "heading",
       "level": 2,
-      "text": "Troubleshooting: verse not updating or showing"
+      "text": "Troubleshooting: verse not showing"
     },
     {
       "type": "paragraph",
@@ -200,8 +202,54 @@
         "If tapping **Make It Mine** does not change your wallpaper, open the Shortcuts app and check that the QuranWall shortcut is still there, since that shortcut is what sets the wallpaper.",
         "If QuranWall is missing from the widget list, open the app once, then try again.",
         "If a widget is blank, remove it and add it again from the Lock Screen editor.",
-        "If the wrong wallpaper shows, check which Lock Screen is selected and whether a Focus linked to another Lock Screen is on.",
-        "If the widget never changes, check that auto-rotate is turned on."
+        "If the wrong wallpaper shows, check which Lock Screen is selected and whether a Focus linked to another Lock Screen is on."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why isn’t my Quran widget or wallpaper updating?"
+    },
+    {
+      "type": "paragraph",
+      "text": "In most cases nothing is broken. The QuranWall widget shows a new ayah by itself only when **Auto-rotate ayahs** is on, and that setting stays off until you turn it on. The Lock Screen wallpaper never changes by itself: it changes when you pick a new ayah in QuranWall and tap **Make It Mine**."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "The widget shows the same ayah every day"
+    },
+    {
+      "type": "paragraph",
+      "text": "Open QuranWall, go to the **Settings** tab and turn on **Auto-rotate ayahs**, then choose how often the ayah changes: every day, every 8 hours or every hour. With it off, the widget keeps the one ayah you saved. If you tapped **No thanks, keep my verse** when the app asked “Want a fresh verse?” during widget setup, that is why it is off. An ayah of the day widget is simply Auto-rotate set to every day."
+    },
+    {
+      "type": "paragraph",
+      "text": "The rotating ayahs are drawn at random from the edition you chose, Uthmani Arabic or one translation, so the widget stays in that language. iOS decides exactly when a widget reloads, so the new ayah is not guaranteed to appear on the minute. While Auto-rotate is on, QuranWall will not let you change or delete your saved ayah and shows an alert that points to Settings: turn Auto-rotate off first if you want one fixed ayah again."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "The Lock Screen wallpaper has not changed"
+    },
+    {
+      "type": "paragraph",
+      "text": "The wallpaper is a still image: QuranWall draws it and Apple’s Shortcuts app sets it, so it stays the same until you act in the app. Auto-rotate never touches it, because rotation changes the widget’s ayah, not the wallpaper image. To change the wallpaper, pick a new ayah and tap **Make It Mine**. If you changed only the font, colours or text size, tap **Update Wallpaper** on the Home tab or in Settings to put the new style on your Lock Screen."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "When iOS shows another widget, or the widget looks stuck"
+    },
+    {
+      "type": "paragraph",
+      "text": "Two checks on the iPhone side are worth making. Both rely on Apple’s support article “How to add and edit widgets on your iPhone”, read on 26 November 2026."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**A widget stack is rotating.** If the QuranWall widget sits in a stack on your Home Screen, iOS can show a different widget in its place. Apple’s article explains: “When Smart Rotate is on, iOS shows you relevant widgets throughout the day.” To keep the ayah in view, touch and hold the stack, tap **Edit Stack** and turn **Smart Rotate** off, or keep the QuranWall widget outside the stack.",
+        "**The widget still looks stuck.** If Auto-rotate is on and the interval has passed, remove the widget and add it again. Apple’s steps for removing one are: “Touch and hold the widget that you want to remove. Tap Remove Widget. Tap Remove again to confirm.” Then add QuranWall again with the steps earlier in this guide."
       ]
     },
     {
