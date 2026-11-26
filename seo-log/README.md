@@ -6,8 +6,8 @@ Public repo: words and positions only. No Search Console clicks, impressions or 
 
 Append-only. The next number is the highest NN here plus 1. Corrections go in a new entry.
 
-## Status (2026-11-25)
-Merge gate 08 merged p21 (`f0c24da`): quran-verse-iphone-lock-screen is down to five in-body links and best-islamic-lock-screen-app-iphone no longer links the roundup from its first paragraph. All gates passed and both verses (2:152, 51:55) re-checked OK. No branch is waiting, so the autopilot runs tomorrow; six queue items are eligible (four depth passes, two new posts). The baseline from the 2026-11-23 refresh stands: thin data inside the core update, most sitemap URLs indexed, p25 queued for the crawled-not-indexed dhikr-reminders post. The next refresh runs Monday 2026-11-30.
+## Status (2026-11-26)
+Merge gate 09 merged p22 (`d507c4b`): quran-verse-iphone-lock-screen now answers "why isn't my Quran widget or wallpaper updating?" with app-code setting names and two quotes from Apple's widget article. Both cluster keywords are blocked. All gates passed and 51:55 re-checked OK. Karol has three device checks for that section in TODO-KAROL.md. No branch is waiting, so the autopilot runs tomorrow; five queue items are eligible (three depth passes, two new posts). The next refresh runs Monday 2026-11-30.
 
 ## Index
 - [01 - Merge gate, 2026-11-18](01-merge-gate-2026-11-18.md): p9 comparison merged (`ed5cf7a`), all gates passed, 2:152 verified
@@ -18,3 +18,4 @@ Merge gate 08 merged p21 (`f0c24da`): quran-verse-iphone-lock-screen is down to 
 - [06 - Weekly SEO refresh, 2026-11-23](06-weekly-seo-refresh-2026-11-23.md): Search Console baseline set (thin, inside the core update), indexing mostly done, p20-p26 queued, 8 eligible
 - [07 - Merge gate, 2026-11-24](07-merge-gate-2026-11-24.md): p20 stale Unsplash credits removed from five posts (`26261f0`), all gates passed, 13:28, 2:152, 17:106 and 17:78 verified
 - [08 - Merge gate, 2026-11-25](08-merge-gate-2026-11-25.md): p21 link trim merged (`f0c24da`), all gates passed, 2:152 and 51:55 verified
+- [09 - Merge gate, 2026-11-26](09-merge-gate-2026-11-26.md): p22 widget/wallpaper-not-updating section merged (`d507c4b`), all gates passed, 51:55 verified, Apple quotes checked
