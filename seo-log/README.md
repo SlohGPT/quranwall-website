@@ -6,8 +6,8 @@ Public repo: words and positions only. No Search Console clicks, impressions or 
 
 Append-only. The next number is the highest NN here plus 1. Corrections go in a new entry.
 
-## Status (2026-11-26)
-Merge gate 09 merged p22 (`d507c4b`): quran-verse-iphone-lock-screen now answers "why isn't my Quran widget or wallpaper updating?" with app-code setting names and two quotes from Apple's widget article. Both cluster keywords are blocked. All gates passed and 51:55 re-checked OK. Karol has three device checks for that section in TODO-KAROL.md. No branch is waiting, so the autopilot runs tomorrow; five queue items are eligible (three depth passes, two new posts). The next refresh runs Monday 2026-11-30.
+## Status (2026-11-27)
+Merge gate 10 merged p24 (`28f48ab`). The best-dhikr-app roundup now has the full decision-page furniture: a dated Quick Answer with the bias line, a job table and a listing-facts table for seven apps (all re-read from the live US listings), one H3 per app with QuranWall first, and a visible four-question FAQ. Pillars was dropped because its listing shows no dhikr counter. All gates passed and 13:28 re-checked OK. No branch is waiting, so the autopilot runs tomorrow. Four queue items are eligible (p23 and p25 depth passes, p19 and p16 new posts). The next refresh runs Monday 2026-11-30.
 
 ## Index
 - [01 - Merge gate, 2026-11-18](01-merge-gate-2026-11-18.md): p9 comparison merged (`ed5cf7a`), all gates passed, 2:152 verified
@@ -19,3 +19,4 @@ Merge gate 09 merged p22 (`d507c4b`): quran-verse-iphone-lock-screen now answers
 - [07 - Merge gate, 2026-11-24](07-merge-gate-2026-11-24.md): p20 stale Unsplash credits removed from five posts (`26261f0`), all gates passed, 13:28, 2:152, 17:106 and 17:78 verified
 - [08 - Merge gate, 2026-11-25](08-merge-gate-2026-11-25.md): p21 link trim merged (`f0c24da`), all gates passed, 2:152 and 51:55 verified
 - [09 - Merge gate, 2026-11-26](09-merge-gate-2026-11-26.md): p22 widget/wallpaper-not-updating section merged (`d507c4b`), all gates passed, 51:55 verified, Apple quotes checked
+- [10 - Merge gate, 2026-11-27](10-merge-gate-2026-11-27.md): p24 best-dhikr-app roundup depth pass merged (`28f48ab`), all gates passed, 13:28 verified, seven listings re-checked
