@@ -4,8 +4,8 @@
     "description": "Build a muslim morning routine iphone setup that sticks — Fajr, adhkar, Quran, and a calm lock screen before the day gets loud.",
     "date": "June 25, 2026",
     "datePublished": "2026-06-25",
-    "dateModified": "2026-11-19",
-    "readTime": "5 min read",
+    "dateModified": "2026-11-28",
+    "readTime": "6 min read",
     "image": "/blog-thumbnails/muslim-morning-routine-iphone-cover.jpg",
     "keywords": [
       "muslim morning routine iphone",
@@ -90,6 +90,48 @@
     {
       "type": "heading",
       "level": 2,
+      "text": "A Muslim morning routine checklist"
+    },
+    {
+      "type": "paragraph",
+      "text": "A Muslim morning routine checklist is the four blocks above turned into boxes you can tick: the night before, Fajr, your morning adhkar, one ayah of the Quran and a calm start before work apps. An islamic morning routine is easier to repeat as a short written list than as a plan you carry in your head, so keep only what you will do on a tired day."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**The night before:** phone charging across the room, the Fajr alarm checked against your local prayer time, water and clothes ready.",
+        "**Fajr:** wake, make wudu and pray. If the alarm has drifted from your local Fajr time, move it that evening.",
+        "**Morning adhkar:** the adhkar you already keep, read from the book or app you trust, straight after Fajr.",
+        "**One ayah:** read one ayah slowly, in Arabic or in a translation you understand, before you open anything else.",
+        "**Calm transition:** no email, work chat or social feeds for the first ten to twenty minutes.",
+        "**On the iPhone:** a Morning Focus that silences non-essential notifications, one repeating reminder for your adhkar, and an ayah on the Lock Screen or in a widget so the Quran is the first thing you see."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "How long does the checklist take each morning?"
+    },
+    {
+      "type": "paragraph",
+      "text": "As long as your own salah, adhkar and Quran reading take. The checklist adds no new acts of worship; it only puts the ones you already keep in a fixed order. The iPhone part is set up once: a scheduled Focus and a repeating reminder come back every morning by themselves, and the Lock Screen ayah stays until you choose a new one."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Which parts does the iPhone handle, and which does QuranWall handle?"
+    },
+    {
+      "type": "paragraph",
+      "text": "The iPhone handles the quiet and the nudge. In Settings > Focus you can build a Morning Focus, and Apple’s iPhone User Guide (“Set up a Focus on iPhone”) lets you choose a Lock Screen to switch to while that Focus is on, “to help limit distractions”. The Reminders app can repeat your adhkar reminder every day. Prayer times and dhikr counting belong to a dedicated app."
+    },
+    {
+      "type": "paragraph",
+      "text": "QuranWall handles the ayah. It puts an ayah on your Lock Screen wallpaper and in a Home Screen or Lock Screen widget, shown in one edition at a time: Uthmani Arabic or a translation in one of 10 languages. All 114 surahs are searchable by surah, ayah or keyword. The wallpaper changes when you pick an ayah in the app and tap Make It Mine, which sets it through the Shortcuts app; the widget can rotate to a new ayah daily once you turn on auto-rotate. QuranWall installs on iOS 15.0 or later, and the wallpaper and Lock Screen widgets need iOS 16."
+    },
+    {
+      "type": "heading",
+      "level": 2,
       "text": "Where this gets hard"
     },
     {
@@ -111,7 +153,7 @@
     },
     {
       "type": "highlight",
-      "content": "Start with two blocks, not four. Fajr plus one Quran touchpoint for a week beats a elaborate system you abandon on day three."
+      "content": "Start with two blocks, not four. Fajr plus one Quran touchpoint for a week beats an elaborate system you abandon on day three."
     },
     {
       "type": "list",
