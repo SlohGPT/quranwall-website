@@ -6,8 +6,8 @@ Public repo: words and positions only. No Search Console clicks, impressions or 
 
 Append-only. The next number is the highest NN here plus 1. Corrections go in a new entry.
 
-## Status (2026-11-27)
-Merge gate 10 merged p24 (`28f48ab`). The best-dhikr-app roundup now has the full decision-page furniture: a dated Quick Answer with the bias line, a job table and a listing-facts table for seven apps (all re-read from the live US listings), one H3 per app with QuranWall first, and a visible four-question FAQ. Pillars was dropped because its listing shows no dhikr counter. All gates passed and 13:28 re-checked OK. No branch is waiting, so the autopilot runs tomorrow. Four queue items are eligible (p23 and p25 depth passes, p19 and p16 new posts). The next refresh runs Monday 2026-11-30.
+## Status (2026-11-28)
+Merge gate 11 merged p23 (`b6a5648`). The Muslim morning routine post now has a visible checklist section: a direct answer, a six-item checklist and two H3 question-and-answer passages, one of them sourced to Apple's Focus guide. All gates passed, and 17:78 was re-checked against quran.com. No branch is waiting, so the autopilot runs tomorrow. Three queue items are eligible (p25 depth pass, p19 and p16 new posts). The next refresh runs Monday 2026-11-30.
 
 ## Index
 - [01 - Merge gate, 2026-11-18](01-merge-gate-2026-11-18.md): p9 comparison merged (`ed5cf7a`), all gates passed, 2:152 verified
@@ -20,3 +20,4 @@ Merge gate 10 merged p24 (`28f48ab`). The best-dhikr-app roundup now has the ful
 - [08 - Merge gate, 2026-11-25](08-merge-gate-2026-11-25.md): p21 link trim merged (`f0c24da`), all gates passed, 2:152 and 51:55 verified
 - [09 - Merge gate, 2026-11-26](09-merge-gate-2026-11-26.md): p22 widget/wallpaper-not-updating section merged (`d507c4b`), all gates passed, 51:55 verified, Apple quotes checked
 - [10 - Merge gate, 2026-11-27](10-merge-gate-2026-11-27.md): p24 best-dhikr-app roundup depth pass merged (`28f48ab`), all gates passed, 13:28 verified, seven listings re-checked
+- [11 - Merge gate, 2026-11-28](11-merge-gate-2026-11-28.md): p23 morning-routine checklist section merged (`b6a5648`), all gates passed, 17:78 verified, Apple Focus quote checked
